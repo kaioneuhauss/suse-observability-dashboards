@@ -1,0 +1,10 @@
+observability:
+  url: ''
+auth:
+  existingSecret: suse-observability-monitor-token
+  serviceTokenKey: serviceToken
+runner:
+  image: python:3.12-alpine
+  downloadUrl: https://dl.stackstate.com/stackstate-cli/v3.3.6/stackstate-cli-3.3.6.linux-x86_64.tar.gz
+  caSecret: ''
+  caKey: ca.crt

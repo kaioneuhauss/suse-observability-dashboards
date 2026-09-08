@@ -1,0 +1,193 @@
+{{- if .Values.traefik.enabled }}
+{{- $name := printf "%s-traefik" .Release.Name | trunc 63 | trimSuffix "-" }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $name }}
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $name }}-{{ .Release.Namespace }}-inventory
+rules:
+  - apiGroups: [networking.k8s.io]
+    resources: [ingresses]
+    verbs: [list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $name }}-{{ .Release.Namespace }}-inventory
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: {{ $name }}-{{ .Release.Namespace }}-inventory}
+subjects: [{kind: ServiceAccount, name: {{ $name }}, namespace: {{ .Release.Namespace }}}]
+---
+{{- if .Values.traefik.allowMetricsNetworkPolicy }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $name }}-metrics
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- toYaml .Values.traefik.selector | nindent 6 }}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ .Release.Namespace | quote }}}
+          podSelector:
+            matchLabels: {app: {{ $name }}}
+      ports: [{protocol: TCP, port: {{ .Values.traefik.port }}}]
+---
+{{- end }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Values.traefik.namespace }}
+spec:
+  clusterIP: None
+  selector:
+    {{- toYaml .Values.traefik.selector | nindent 4 }}
+  ports:
+    - name: metrics
+      port: {{ .Values.traefik.port }}
+      targetPort: {{ .Values.traefik.targetPort }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+data:
+  inventory.py: |
+{{ .Files.Get "files/ingress_inventory.py" | indent 4 }}
+  scrape.yaml: |
+    global:
+      scrape_interval: {{ .Values.scrapeInterval }}
+      scrape_timeout: 10s
+      external_labels:
+        cluster_name: {{ .Values.clusterName | quote }}
+        namespace: {{ .Values.traefik.namespace | quote }}
+        telemetry_source: sre-platform-telemetry
+        collector_kind: traefik
+    scrape_configs:
+      - job_name: sre-ingress-inventory
+        static_configs:
+          - targets: ['127.0.0.1:9102']
+      - job_name: traefik
+        dns_sd_configs:
+          - names: [{{ printf "%s.%s.svc" $name .Values.traefik.namespace | quote }}]
+            type: A
+            port: {{ .Values.traefik.port }}
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: 'traefik_.*'
+            action: keep
+      {{- if .Values.vmagent.selfMonitoring }}
+      - job_name: sre-collector
+        static_configs:
+          - targets: ['127.0.0.1:8429']
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: 'vmagent_remotewrite_(pending_data_bytes|requests_total|retries_count_total|samples_dropped_total|blocks_sent_total)|vm_persistentqueue_bytes_dropped_total|vm_promscrape_config_last_reload_successful'
+            action: keep
+          - regex: 'url|path'
+            action: labeldrop
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels: {app.kubernetes.io/name: sre-platform-telemetry, app.kubernetes.io/component: traefik}
+spec:
+  replicas: 1
+  # A single writer avoids duplicate scrapes during updates.
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: {{ $name }}}
+  template:
+    metadata:
+      labels: {app: {{ $name }}, app.kubernetes.io/name: sre-platform-telemetry, app.kubernetes.io/component: traefik}
+      annotations:
+        telemetry/inventory-hash: {{ .Files.Get "files/ingress_inventory.py" | sha256sum | quote }}
+        telemetry/config-hash: {{ toJson .Values | sha256sum | quote }}
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: {{ $name }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: ingress-inventory
+          image: {{ .Values.traefik.inventoryImage | quote }}
+          command: [python3, -B, /config/inventory.py]
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            requests: {cpu: 5m, memory: 24Mi}
+            limits: {cpu: 100m, memory: 64Mi}
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: api-access, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
+        - name: vmagent
+          image: {{ .Values.vmagent.image | quote }}
+          args:
+            - -promscrape.config=/config/scrape.yaml
+            - -remoteWrite.url={{ .Values.remoteWrite.url }}
+            - -remoteWrite.basicAuth.username={{ .Values.remoteWrite.username }}
+            - -remoteWrite.basicAuth.passwordFile=/auth/{{ .Values.remoteWrite.secretKey }}
+            {{- if .Values.remoteWrite.forcePrometheusProtocol }}
+            - -remoteWrite.forcePromProto=true
+            {{- end }}
+            {{- if .Values.remoteWrite.caSecret }}
+            - -remoteWrite.tlsCAFile=/ca/{{ .Values.remoteWrite.caKey }}
+            {{- end }}
+            - -remoteWrite.tmpDataPath=/queue
+            - -remoteWrite.maxDiskUsagePerURL={{ .Values.vmagent.queueMaxDiskMiB }}MiB
+            - -memory.allowedBytes=64MiB
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            {{- toYaml .Values.vmagent.resources | nindent 12 }}
+          readinessProbe:
+            httpGet: {path: /health, port: 8429}
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: auth, mountPath: /auth, readOnly: true}
+            - {name: queue, mountPath: /queue}
+            {{- if .Values.remoteWrite.caSecret }}
+            - {name: ca, mountPath: /ca, readOnly: true}
+            {{- end }}
+      volumes:
+        - name: api-access
+          projected:
+            sources:
+              - serviceAccountToken: {path: token, expirationSeconds: 3600}
+              - configMap:
+                  name: kube-root-ca.crt
+                  items: [{key: ca.crt, path: ca.crt}]
+        - name: config
+          configMap: {name: {{ $name }}}
+        - name: auth
+          secret:
+            secretName: {{ .Values.remoteWrite.existingSecret }}
+            items: [{key: {{ .Values.remoteWrite.secretKey }}, path: {{ .Values.remoteWrite.secretKey }}}]
+        - name: queue
+          emptyDir: {sizeLimit: {{ add (int .Values.vmagent.queueMaxDiskMiB) 256 }}Mi}
+        {{- if .Values.remoteWrite.caSecret }}
+        - name: ca
+          secret: {secretName: {{ .Values.remoteWrite.caSecret }}}
+        {{- end }}
+{{- end }}

@@ -1,0 +1,28 @@
+nodes:
+- _type: Monitor
+  name: SRE · etcd commit p99 above 25ms
+  identifier: urn:custom:monitor:sre-dashboards:etcd-commit
+  description: Condição persistente por 5m; limiar inicial de diagnóstico, ajustável
+    ao baseline.
+  arguments:
+    metric:
+      query: min_over_time((histogram_quantile(0.99,sum by (cluster_name,node,le)
+        (rate(etcd_disk_backend_commit_duration_seconds_bucket{job="sre-etcd"}[5m]))))[5m:30s])
+      unit: none
+      aliasTemplate: ${node}
+    comparator: GT
+    threshold: 0.025
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · etcd commit p99 above 25ms · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Confira quorum, membros e conectividade.
+
+    2. Correlacione eleições, fsync, commits, RTT, logs anteriores e reinícios.
+
+    3. Preserve snapshots antes de qualquer recuperação.'
+  tags:
+  - sre-dashboards
+  - platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

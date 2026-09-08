@@ -1,0 +1,16 @@
+# Fragmento para MESCLAR em Edit as YAML do cluster provisionado pelo Rancher.
+# Não aplique este fragmento como um recurso Kubernetes completo.
+spec:
+  rkeConfig:
+    chartValues:
+      rke2-traefik:
+        metrics:
+          prometheus:
+            entryPoint: metrics
+            addEntryPointsLabels: true
+            addServicesLabels: true
+        ports:
+          metrics:
+            port: 9100
+            expose:
+              default: false

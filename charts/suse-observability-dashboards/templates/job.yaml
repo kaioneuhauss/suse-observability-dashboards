@@ -1,0 +1,163 @@
+{{- if .Values.dashboards.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "suse-observability-dashboards.fullname" . }}
+  labels:
+    {{- include "suse-observability-dashboards.labels" . | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "10"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: {{ .Values.runner.activeDeadlineSeconds }}
+  ttlSecondsAfterFinished: {{ .Values.runner.ttlSecondsAfterFinished }}
+  template:
+    metadata:
+      labels:
+        {{- include "suse-observability-dashboards.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/dashboards: {{ include (print $.Template.BasePath "/configmap-dashboards.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "suse-observability-dashboards.fullname" . }}
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: dashboard-applier
+          image: "{{ .Values.runner.image.repository }}:{{ .Values.runner.image.tag }}"
+          imagePullPolicy: {{ .Values.runner.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+
+              wget -qO /work/sts.tar.gz {{ .Values.runner.cli.downloadUrl | quote }}
+              tar -xzf /work/sts.tar.gz -C /work
+              chmod 0555 /work/sts
+              /work/sts version
+              {{- if .Values.runner.caSecret }}
+              export SSL_CERT_FILE=/ca/ca.crt
+              {{- end }}
+
+              dashboard_list="/work/dashboard-list.json"
+              /work/sts dashboard list --output json --no-color > "$dashboard_list"
+
+              find_dashboard_id() {
+                candidate_name="$1"
+                awk -v target="$candidate_name" '
+                  /^[[:space:]]*"id":[[:space:]]*/ {
+                    id = $0
+                    sub(/^[^:]*:[[:space:]]*/, "", id)
+                    sub(/,.*/, "", id)
+                  }
+                  /^[[:space:]]*"name":[[:space:]]*/ {
+                    name = $0
+                    sub(/^[^:]*:[[:space:]]*"/, "", name)
+                    sub(/",[[:space:]]*$/, "", name)
+                    # Go JSON escapes &, < and > even in display names.
+                    gsub(/\\u0026/, "\\&", name)
+                    gsub(/\\u003c/, "<", name)
+                    gsub(/\\u003e/, ">", name)
+                    if (name == target) {
+                      print id
+                      exit
+                    }
+                  }
+                ' "$dashboard_list"
+              }
+
+              for source_file in /dashboards/*.yaml; do
+                dashboard_name="$(awk '
+                  /^name:[[:space:]]*/ {
+                    sub(/^name:[[:space:]]*/, "")
+                    gsub(/^["'\'']|["'\'']$/, "")
+                    print
+                    exit
+                  }
+                ' "$source_file")"
+
+                if [ -z "$dashboard_name" ]; then
+                  echo "Dashboard sem campo name: $source_file" >&2
+                  exit 1
+                fi
+
+                existing_id="$(find_dashboard_id "$dashboard_name")"
+                if [ -z "$existing_id" ]; then
+                  while IFS='|' read -r current_name legacy_name; do
+                    if [ "$current_name" = "$dashboard_name" ]; then
+                      existing_id="$(find_dashboard_id "$legacy_name")"
+                      [ -z "$existing_id" ] || break
+                    fi
+                  done < /dashboards/dashboard-aliases.txt
+                fi
+
+                if [ -n "$existing_id" ]; then
+                  # sts CLI 3.3.6 only patches dashboard metadata when an ID is present;
+                  # the Perses definition is left unchanged. Recreate by name so the
+                  # declarative YAML remains authoritative instead of reporting a false
+                  # successful update. The source ConfigMap makes this recoverable.
+                  echo "Substituindo dashboard customizado: $dashboard_name (ID anterior $existing_id)"
+                  /work/sts dashboard delete --id "$existing_id"
+                else
+                  echo "Criando dashboard: $dashboard_name"
+                fi
+
+                /work/sts dashboard apply --file "$source_file"
+              done
+          env:
+            - name: STS_CLI_URL
+              value: {{ .Values.observability.url | quote }}
+            - name: STS_CLI_SERVICE_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.existingSecret | quote }}
+                  key: {{ .Values.auth.serviceTokenKey | quote }}
+            - name: HOME
+              value: /work
+          resources:
+            {{- toYaml .Values.runner.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: dashboards
+              mountPath: /dashboards
+              readOnly: true
+            - name: work
+              mountPath: /work
+            {{- if .Values.runner.caSecret }}
+            - name: ca
+              mountPath: /ca
+              readOnly: true
+            {{- end }}
+      volumes:
+        - name: dashboards
+          configMap:
+            name: {{ include "suse-observability-dashboards.fullname" . }}
+        - name: work
+          emptyDir:
+            sizeLimit: 64Mi
+        {{- if .Values.runner.caSecret }}
+        - name: ca
+          secret:
+            secretName: {{ .Values.runner.caSecret }}
+            items: [{key: {{ .Values.runner.caKey }}, path: ca.crt}]
+        {{- end }}
+{{- end }}

@@ -1,0 +1,416 @@
+Dashboard - Instrumented apps:
+  description: Application traffic, failed responses, and response time measured inside the application.
+  filters:
+  - Application cluster
+  - Instrumented application
+  remove:
+  - requests30d
+  - counter
+  - routeVolume
+  milliseconds:
+  - p95_1h
+  - latency
+  - slowServices
+  guide: '**Start with failed responses and response time.** Requests are calls to an application, not people. Totals cover the previous hour or 24 hours and move with time. They are rounded estimates from metric samples, displayed with all digits; collection gaps can leave a period incomplete. Health and metrics routes are excluded. **p95 means 95 out of 100 calls finished within the displayed time. 1000 ms = 1 second.** Applications appear only when they publish the compatible metrics used by this dashboard. **Investigating errors:** use the route/code table and the time chart, then check logs or traces for that period. Metrics do not contain each request or its root cause.'
+  panels:
+    guide:
+    - How to read this dashboard
+    - Traffic and timing measured inside the application. Proxy traffic is shown separately in Traefik Ingress Health.
+    rps:
+    - Requests per second · average over the last hour
+    - Requests observed in the last hour divided by 3600. This is not the number of simultaneous users.
+    requests1h:
+    - Completed requests · last hour
+    - Estimated completed calls in a moving one-hour window. Health and metrics routes are excluded.
+    requests24h:
+    - Completed requests · last 24 hours
+    - Observed calls within a moving 24-hour window. A full-day interpretation requires complete collection history.
+    success:
+    - Successful responses · last hour · %
+    - Share of responses with HTTP status 2xx or 3xx. Without traffic, this percentage does not apply. The initial green reference is 99%; use your service target.
+    error5xx:
+    - Server error responses · last hour · %
+    - Share of HTTP 5xx responses. Initial color references are 1% for warning and 5% for critical; adapt them to the service target.
+    p95_1h:
+    - Response time for 95% of calls · ms
+    - 95 out of 100 calls observed in the last hour finished within this time. Lower is better.
+    throughput:
+    - Requests per second by route
+    - A route is an application endpoint. This chart shows which functions receive the most calls.
+    outcomes:
+    - Response types over time
+    - 2xx means success; 3xx means redirection; 4xx needs client or authentication context; 5xx means a server error.
+    errorRoutes:
+    - When and where HTTP errors occurred · requests/s
+    - Find the application, normalized route and exact HTTP code. Each point averages five minutes. 400/404 can be invalid client input or an unknown path; 500/503 can come from the application or its dependencies. These are possibilities, not a diagnosis. Use logs or traces for the exact event and cause.
+    latency:
+    - Response time over time · ms
+    - p50 covers half the calls, p95 covers 95%, and p99 covers 99%. Without completed calls, no response time can be calculated.
+    routeTotals:
+    - Requests by route · last hour
+    - One row per application and route. Values are rounded to whole requests and do not count unique users.
+    slowServices:
+    - Slowest applications · p95 response time in ms
+    - Compare the time taken by 95% of calls in the last hour. Investigate the slowest application together with its errors.
+    errorTotals:
+    - HTTP errors by application, route and code · last hour
+    - One row per application, normalized route, method and HTTP status. Counts are rounded estimates from collected counters. A 400 is a rejected request; a 500 is an internal server failure. The reason needs request context from logs or traces. Without a recorded error series, this chart has no data.
+Workload Resource Efficiency:
+  description: Application resource use compared with configured requests and limits.
+  filters:
+  - Cluster
+  - Application namespace
+  remove:
+  - restarts
+  guide: '**Usage** is measured consumption. A **request** reserves capacity for scheduling. A **limit** is a configured ceiling. **1000 mCPU = 1 CPU core; 1 GiB = 1024 MiB.** Each group of three CPU or memory tables shows the same five busiest pods. Usage is averaged over five minutes. Memory working set includes some cache and is not Java heap. **The four counters count pods, not containers:** a pod counts once in a category when at least one running regular container lacks that setting. A pod can appear in several categories. The supporting list identifies the pod, namespace, and missing setting. No CPU limit can be an intentional policy. Empty inventory is not a confirmed zero. Restarts are in Kubernetes Platform Health; memory inside a VM is in Harvester VM & Host Health. Circular gauges show the highest selected utilization, not the average across resources; orange starts at 80% and red at 90%. The named resource may change as utilization changes.'
+  panels:
+    guide:
+    - Understand usage, requests, and limits
+    - These values describe containers, not the total memory or CPU use of a VM or physical server.
+    cpuUsageTop:
+    - CPU used · five busiest pods · mCPU
+    - Five-minute average. 1000 mCPU means one CPU core used continuously.
+    cpuRequestTop:
+    - CPU requested by the same pods · mCPU
+    - Sum of CPU requests for regular containers. Reserved capacity is not measured usage. Missing settings are listed below.
+    cpuLimitTop:
+    - CPU limits for the same pods · mCPU
+    - Sum of configured limits. A container without a limit does not have a zero ceiling, so the total can be partial.
+    cpuRequestMissingList:
+    - 'Pods: no CPU request'
+    - Number of distinct pods with at least one running regular container without a positive CPU request. A pod with three affected containers counts as one pod. Zero means none found in the available running-container inventory; No data means this inventory is unavailable for the selection.
+    cpuLimitMissingList:
+    - 'Pods: no CPU limit'
+    - Number of distinct pods with at least one running regular container without a positive CPU limit. Each pod counts once. A missing CPU limit can be intentional and is not automatically an incident. Zero requires a valid running-container inventory.
+    memUsageTop:
+    - Memory used · five busiest pods
+    - Five-minute average of memory working set. Active cache and other memory can make this larger than Java heap.
+    memRequestTop:
+    - Memory requested by the same pods
+    - Sum of memory requests for regular containers. This is reserved scheduling capacity, not memory already consumed.
+    memLimitTop:
+    - Memory limits for the same pods
+    - Sum of configured memory limits. Use the missing-limits list to identify pods where this total is partial.
+    memRequestMissingList:
+    - 'Pods: no memory request'
+    - Number of distinct pods with at least one running regular container without a positive memory request. Each pod counts once. A request reserves scheduling capacity; it is not measured consumption. Zero requires a valid running-container inventory.
+    memLimitMissingList:
+    - 'Pods: no memory limit'
+    - Number of distinct pods with at least one running regular container without a positive memory limit. Each pod counts once. Review the pod and its containers to assess uncontrolled memory growth. Zero requires a valid running-container inventory.
+    missingSettingsPods:
+    - Which pods have missing resource settings
+    - 'One row per pod and missing setting: cluster, namespace, pod, and setting. The same pod may lack both CPU and memory settings. Counts above deduplicate within each category. Empty means no matching rows; check inventory coverage and filters. This checks running regular containers, not init containers, stopped pods, or optional pod-level resource budgets.'
+    memoryRisk:
+    - Memory close to its limit · ten highest percentages
+    - Highest working set in the last hour divided by the same container's positive limit. Near 100% means less room before an out-of-memory termination.
+    cpuReservation:
+    - CPU use compared with request · ten highest percentages
+    - Five-minute average usage divided by the request. More than 100% is allowed and means usage exceeds the reserved amount.
+    throttling:
+    - CPU restricted by its limit · ten highest percentages
+    - Share of CPU periods that were throttled, checked per container. The ten highest are selected at each point; the full-period legend can contain more than ten. Compare sustained high values with application slowness.
+    workingSetRSS:
+    - Two memory measurements for the five busiest pods
+    - Working set includes memory that is not easily reclaimed. RSS measures resident memory differently. Neither value is Java heap. The five busiest pods are selected at each point, so the full-period legend can contain more than five pods.
+    cpuUseGauge:
+    - Pod CPU use versus limit · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU used divided by the sum of CPU limits in the same pod. Every running regular container must have a positive limit and usage data; partially configured pods are excluded.
+    memUseGauge:
+    - Pod memory use versus limit · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Working set divided by the sum of memory limits in the same pod. Every running regular container must have a positive limit and usage data. A single container can still run out of memory before the pod total reaches 100%.
+Kubernetes Platform Health:
+  description: Platform availability, server capacity, storage, etcd, and collection health.
+  filters:
+  - Cluster
+  - Namespace · applications and PVCs only
+  remove:
+  - nodeFree
+  - pvcAvailable
+  - nodeMissing
+  milliseconds:
+  - etcdWAL
+  - etcdCommit
+  - etcdPeer
+  guide: '**Start with available nodes, collection coverage, and pods needing attention.** Namespace filters applications and PVCs; nodes, host disks, PVs, and etcd remain cluster-wide. Disk rows identify the server, mount, and device. Do not add repeated mounts of the same disk. **Used** is occupied space; **capacity** is the filesystem size. Block volumes need measurements inside the VM; missing data does not mean 0% or 100% used. Linux **pressure stall information (PSI)** requires kernel support; its two charts have no data on unsupported kernels. The etcd section explains its own signals. Monitor descriptions state the threshold, duration, and next action. Circular gauges show the highest selected utilization, not the average across resources; orange starts at 80% and red at 90%. The named resource may change as utilization changes.'
+  panels:
+    guide:
+    - How to check platform health
+    - Availability, capacity, and collection coverage answer different questions. Check all three before drawing a conclusion.
+    ready:
+    - Nodes available to Kubernetes · %
+    - Share of known nodes with the Ready condition. This does not prove that every metrics collector is working.
+    coverage:
+    - Nodes with working OS collection · %
+    - Healthy OS collectors divided by known nodes. Below 100% means at least one server is missing visibility.
+    nonRunning:
+    - Pods needing a check · count
+    - Pods outside Running or Succeeded at the selected end time. Pending can be temporary during creation or an update.
+    nonRunningList:
+    - Which pods need a check
+    - Namespace, pod, and current phase. Interpret an empty list together with collection coverage.
+    restarts:
+    - Container restarts · last hour
+    - Only positive increases are shown, with the affected resources. No rows means no increase was observed in this window.
+    availability:
+    - Unavailable application replicas
+    - Expected replicas minus ready replicas, grouped by namespace. Short periods during an update can be normal.
+    filesystem:
+    - Disk space used · % matching df
+    - 'Used space divided by used plus space available to applications. Reserved blocks are excluded from this denominator. Each mount is identified. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data.'
+    nodeUsed:
+    - Space used on each host filesystem
+    - 'Filesystem capacity minus free space. Includes the Harvester data disk and distinguishes partitions. Do not add repeated mounts of one device. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data.'
+    nodeTotal:
+    - Capacity of each host filesystem
+    - 'Formatted size of the identified mount. It can differ from raw device capacity or the size requested by a PVC. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data.'
+    inodeRisk:
+    - File entries already used · % of inodes
+    - 'Inodes represent files. They can run out even when bytes remain free. This percentage is calculated only when the inode total is positive. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data.'
+    pvcRisk:
+    - Measured PVC filesystems · space used in %
+    - Only PVCs with positive inode statistics are included. Block and unmounted volumes are not treated as full.
+    pvcUsed:
+    - Space used in measured PVC filesystems
+    - Usage reported by the kubelet and storage driver. This is not Longhorn replica storage or the filesystem inside a VM backed by a Block PVC.
+    pvcCapacity:
+    - Capacity of measured PVC filesystems
+    - Formatted capacity reported by the kubelet. Filesystem metadata can make it smaller than the requested PVC size.
+    pvcUnmeasured:
+    - PVCs without filesystem usage measurements
+    - Collection inventory, including Block volumes and volumes without mounted-filesystem statistics. Missing data is not a usage percentage.
+    pvPhases:
+    - Cluster storage volumes · PV status
+    - Bound means attached to a claim; Available means available for a claim; Released requires checking retention policy and data ownership. Released is not always a failure.
+    pvcPhases:
+    - Storage requests · PVC status
+    - Namespace, claim name, phase, and storage class. Investigate claims that remain Pending.
+    etcdGuide:
+    - How to read etcd health
+    - etcd stores Kubernetes state. Check leadership, disk writes, peer communication, and collection separately.
+    etcdLeader:
+    - etcd can see a leader · 1 yes / 0 no
+    - Every member should recognize a leader. Zero needs investigation; no data means a valid sample is unavailable.
+    etcdLeaderChanges:
+    - Leader changes seen by each etcd member · last hour
+    - Do not add the same election observed by multiple members. Repeated elections can indicate instability; restarts also affect the history.
+    etcdPending:
+    - etcd operations waiting for agreement
+    - Proposals waiting for consensus. A growing queue can indicate slow disks, network problems, or difficulty reaching a majority of members.
+    etcdApplyLag:
+    - etcd operations agreed but not yet applied
+    - Committed proposals minus applied proposals, per member. Sustained growth means the stored state is falling behind agreed changes.
+    etcdFailed:
+    - Failed etcd operations · last 15 minutes
+    - Proposals that did not complete through consensus. Compare with elections, connectivity, and logs.
+    etcdWAL:
+    - etcd write-ahead log write time · p99 in ms
+    - 99% of write-ahead log flushes completed within this time. Above 10 ms for five minutes is an initial investigation threshold.
+    etcdCommit:
+    - etcd database write time · p99 in ms
+    - 99% of database commits completed within this time. Above 25 ms for five minutes is an initial investigation threshold.
+    etcdDB:
+    - etcd database quota already used · %
+    - Physical database size divided by its quota. Near 100% risks blocking new writes. The initial monitor warns above 80% for ten minutes.
+    etcdScrape:
+    - etcd metrics collection · 1 working / 0 failed
+    - Shows whether each metrics endpoint answered the collector. This does not prove healthy consensus. Also check leadership and expected member count.
+    etcdPeer:
+    - Network round trip between etcd members · p99 in ms
+    - Time to contact another member and receive a response. A single-member cluster has no peers, so this chart does not apply. Too few observations can also leave it empty.
+    hostCPU:
+    - CPU busy on each server · %
+    - Average utilization across logical processors. Compare sustained high values with CPU limits and slow applications.
+    hostMemory:
+    - Memory still available on each server · %
+    - Linux MemAvailable divided by MemTotal. Lower values mean less headroom. Kubernetes requests are not used in this calculation.
+    ioPressure:
+    - Time tasks wait for disk or I/O · %
+    - Linux PSI measures time when at least one task waits for I/O. Requires kernel support; unsupported nodes have no series.
+    memoryPressure:
+    - Time tasks stall because of memory pressure · %
+    - Linux PSI measures tasks stalled by memory pressure. It can reveal contention before an out-of-memory termination.
+    networkErrors:
+    - Network errors by interface · packets per second
+    - Receive plus transmit errors. Interface names help distinguish physical and virtual networks.
+    collectorQueue:
+    - Metrics waiting to reach SUSE · bytes
+    - Small temporary peaks are normal. Persistent growth suggests a receiver or connection problem. If sending stops completely, this series also stops arriving.
+    collectorRetries:
+    - Metric delivery retries · last 15 minutes
+    - Zero is expected in a stable period. Logs distinguish DNS, certificates, authentication, and HTTP 503 receiver failures.
+    cpuGauge:
+    - Server CPU busy · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Five-minute CPU utilization averaged across the server logical processors. Namespace does not filter servers.
+    memoryGauge:
+    - Server memory used · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Linux total minus available memory, divided by total. Reclaimable cache is accounted for in available memory. Namespace does not filter servers.
+    diskGauge:
+    - Host filesystem used · highest · %
+    - 'Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by used plus space available to applications, matching df. The mount and device identify the filesystem. Namespace does not filter host disks. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data.'
+Traefik Ingress Health:
+  description: Incoming application traffic, errors, response times, and certificate expiry.
+  filters:
+  - Traefik cluster
+  - Namespace with Ingress
+  - Application / Service
+  remove:
+  - backendRaw
+  - byMethod
+  - serviceRequests1h
+  milliseconds:
+  - p95
+  - latency
+  - serviceLatency
+  - meanLatency
+  guide: '**Traefik is the entry point for applications.** These metrics do not require instrumentation inside each application. Requests include automated health checks, APIs, and other machine traffic; they are not people or business visits. Totals are rounded estimates over moving time windows. Collection gaps leave incomplete history. **Compare the same application and time window.** Five-minute rates smooth short tests; the recent rate still averages the latest scrape interval, normally 30 seconds. **Response time means how long a request takes to get a response, measured by Traefik.** 1000 ms = 1 second. **Average:** add the response times and divide by the number of requests. Three calls taking 50, 100, and 150 ms have an average of 100 ms. **p95:** if it shows 200 ms, about 95 out of 100 calls finished within 200 ms; the other five took longer. Browser timing also includes the connection to Traefik. Certificates and open connections remain cluster-wide. Negative certificate days mean expired. After changing the cluster, reset namespace and application to Everything.'
+  panels:
+    guide:
+    - How to read incoming traffic
+    - HTTP at the proxy includes health checks, APIs, authentication, and other automated calls.
+    rps:
+    - Requests per second · five-minute average
+    - Requests averaged over five minutes. A brief load test is diluted by the quiet part of that window. Select its application before comparing traffic.
+    rpsRecent:
+    - Requests per second · latest sample interval
+    - Counter change divided by elapsed time between the latest two scrapes, normally about 30 seconds. This is not an exact one-second peak or the achieved rate of a shorter benchmark. Missing or stale samples are not zero traffic.
+    meanLatency:
+    - Average response time · last five minutes · ms
+    - 'How long a request takes on average to get a response, measured by Traefik for the selected applications. Add all response times and divide by the number of completed requests. Example: calls taking 50, 100, and 150 ms give an average of 100 ms. Lower means faster responses. A few slow calls can be hidden by this average; also check the 95-of-100 response time. Browser timing includes extra network time. Without completed requests, this value is unavailable.'
+    requestRate:
+    - Requests per second · recent traffic and five-minute average
+    - The recent line uses the latest two scrapes, normally 30 seconds apart; the average line uses five minutes. Hover over the test period. A short burst can be lower than the benchmark rate in both lines.
+    requests1h:
+    - Completed requests · last hour
+    - Estimated completed HTTP requests in a moving one-hour window. Includes health checks and does not count people.
+    requests24h:
+    - Completed requests · last 24 hours
+    - Observed HTTP requests within a moving 24-hour window. Incomplete collection does not represent a full day of demand.
+    client4xx:
+    - HTTP 4xx responses · last hour
+    - Rejected or invalid HTTP requests. Authentication failures and unknown addresses need context before they are classified as incidents.
+    error5xx:
+    - HTTP 5xx responses · last hour
+    - Server or proxy failures. Identify the affected application. Initial color references are one and ten responses.
+    p95:
+    - Response time for 95 of 100 calls · last hour · ms
+    - 'If this shows 200 ms, about 95 out of 100 calls finished within 200 ms and the other five took longer. This is the p95 response time: it helps spot slow experiences that an average can hide. It is estimated from Traefik measurements for the selected applications over the last hour, including earlier tests. Lower means faster responses. Browser measurements can differ because they include extra network time.'
+    serviceCount:
+    - Applications receiving requests · last hour
+    - Selected backends with a positive request-counter increase. No traffic does not mean that an application does not exist.
+    serviceRequests24h:
+    - Requests by application · last 24 hours
+    - Up to ten services with the largest totals. Use the response-code table below for the other selected services.
+    serviceErrorRatio:
+    - Server error responses by application · last hour · %
+    - HTTP 5xx responses divided by observed requests for the same service. A small request count can produce unstable percentages.
+    serviceTraffic:
+    - Requests per second by application
+    - Traffic distribution and changes across the selected services.
+    byCode:
+    - HTTP response codes · requests per second
+    - 2xx means success; 3xx redirection; 4xx client error or rejection; 5xx server failure. Code zero is a proxy or connection outcome.
+    latency:
+    - Response time over time · average and slower calls · ms
+    - 'Each point summarizes the preceding five minutes. Average adds all response times and divides by completed requests. Half of calls (p50) finished within that line''s time; 95 of 100 (p95) and 99 of 100 (p99) show how long slower calls took. Example: p95 of 200 ms means about 95% finished within 200 ms and 5% took longer. Rising lines mean slower responses. Traefik estimates these percentiles from timing buckets; without calls, no response time can be calculated.'
+    serviceLatency:
+    - Slowest applications · response time for 95 of 100 calls · ms
+    - Compare applications over five-minute windows. If an application shows 200 ms, about 95 out of 100 calls finished within 200 ms and five took longer. This estimate is called p95. Higher values identify applications whose slower responses need investigation.
+    bandwidth:
+    - Application data transferred per second
+    - Request and response payload bytes for selected services. This is not total network-interface traffic.
+    tlsExpiry:
+    - TLS certificates · days until expiry · whole cluster
+    - Certificate names (SAN) and serial number identify each certificate. Lower values need attention; negative means expired. Namespace and application filters do not apply.
+    openConnections:
+    - Open Traefik connections · whole cluster
+    - Includes long-lived connections such as WebSockets. An open connection is not a completed request or unique user.
+    codeTotals:
+    - Requests by application, code, and method · last 24 hours
+    - Use these rows to explain the total. Code zero is not a successful HTTP status. Investigating individual paths requires access logs.
+    history:
+    - Age of oldest observed sample · up to 24 hours
+    - Upper bound of available history. Even 24 hours here does not prove uninterrupted collection of every series.
+    errorTimeline:
+    - When HTTP errors occurred · application and code
+    - Shows HTTP 4xx and 5xx rates for each selected application and code. Hover to locate the time window; each point averages five minutes. Exact request times and paths require access logs. OriginStatus and DownstreamStatus help distinguish the backend/proxy result from the response sent to the client; application logs or traces are needed to confirm the cause.
+Harvester VM & Host Health:
+  description: Memory and CPU inside VMs, configured VM resources, and Harvester host consumption.
+  filters:
+  - Harvester cluster
+  - VM namespace
+  - Virtual machine
+  remove: []
+  guide: '**Inside the VM:** memory used is OS total minus OS available memory. **VM settings:** requests, limits, and configured guest memory are different values. **On the host:** the QEMU process also consumes memory to run the VM. **1000 mCPU = 1 vCPU; 1 GiB = 1024 MiB.** Guest memory needs balloon statistics; guest filesystems need QEMU Guest Agent. A stopped VM has no current consumption. Harvester host panels remain cluster-wide when a VM or namespace is selected. Circular gauges show the highest selected utilization, not the average across resources; orange starts at 80% and red at 90%. The named resource may change as utilization changes.'
+  panels:
+    guide:
+    - Understand the three measurement layers
+    - The OS inside a VM, the VM resource configuration, and consumption on the Harvester server.
+    guestUsed:
+    - Memory used inside the VM
+    - Guest OS total minus available memory, from KubeVirt balloon statistics. This differs from QEMU memory resident on the host.
+    guestAvailable:
+    - Memory still available inside the VM
+    - Memory the guest expects to use without swapping. This comes from the KubeVirt usable_bytes metric.
+    guestTotal:
+    - Total memory seen by the VM operating system
+    - Total reported by the guest. Reserved regions can make it smaller than the configured guest memory.
+    domainRequest:
+    - Memory requested by the VM
+    - The VM domain memory request is used for scheduling. It is not measured memory consumption.
+    domainLimit:
+    - Configured VM memory limit
+    - The VM domain memory limit. It differs from the virt-launcher container limit, which can include overhead.
+    configuredGuest:
+    - Memory configured for the guest OS
+    - Memory assigned to the guest. It is not automatically the same as the scheduling request.
+    resident:
+    - VM process memory on the host · QEMU
+    - Resident memory of the process running the VM. It does not directly measure application memory inside the guest.
+    vcpuUse:
+    - CPU used by the VM · vCPU cores
+    - Five-minute average. A value of 1 means one core used continuously; this value is not in millicores.
+    vcpuRequest:
+    - CPU requested by the VM · mCPU
+    - Scheduling reservation, not the number of configured virtual CPUs. For example, a VM can have four vCPUs and a request of 250 mCPU.
+    vcpuLimit:
+    - Configured VM CPU limit · vCPU cores
+    - Configured domain CPU ceiling. A missing series does not mean a zero limit.
+    hostUsed:
+    - Memory used on Harvester hosts · whole cluster
+    - Linux total minus available memory. Includes VMs and host services. This is not the sum of Kubernetes requests.
+    hostAvailable:
+    - Memory available on Harvester hosts · whole cluster
+    - Memory the host considers available for use. VM and namespace filters do not apply.
+    hostRequests:
+    - Memory requested by Harvester pods · whole cluster
+    - Sum of requests for regular containers, including virt-launcher. Reserved capacity is not consumption and does not include every special scheduling rule.
+    hostLimits:
+    - Sum of Harvester pod memory limits · whole cluster
+    - Sum of configured limits. Missing limits make this view partial; the sum can exceed physical memory.
+    guestMissing:
+    - Running VMs without OS memory statistics
+    - Running VMs missing total or available memory measurements. Check balloon support. QEMU Guest Agent provides additional filesystem information.
+    guestDiskUsed:
+    - Space used inside each VM filesystem
+    - QEMU Guest Agent reports each mount. This is not PVC allocation or physical space occupied by Longhorn replicas. Loop-mounted OS images are excluded.
+    guestDiskCapacity:
+    - Capacity of each VM filesystem
+    - Capacity reported by the guest agent. Reserved blocks and metadata can differ from other disk measurements. Loop-mounted OS images are excluded.
+    guestDiskRatio:
+    - VM filesystem space used · %
+    - Used space divided by capacity reported by the guest agent. This can differ from df Use%, which excludes reserved blocks. Loop-mounted OS images are excluded.
+    guestCpuGauge:
+    - VM CPU used · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU cores used divided by configured guest vCPUs, not the smaller scheduling request. The VM and namespace filters apply.
+    guestMemoryGauge:
+    - VM memory used · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Guest OS total minus available memory, divided by guest OS total. Requires balloon statistics. The VM and namespace filters apply.
+    guestDiskGauge:
+    - VM filesystem used · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by filesystem capacity from QEMU Guest Agent. Reserved blocks mean this may differ from df Use%. The VM and namespace filters apply. Loop-mounted OS images are excluded.
+    hostCpuGauge:
+    - Harvester host CPU busy · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Five-minute CPU utilization on the virtualization host. It includes VMs and host services. VM and namespace filters do not apply.
+    hostMemoryGauge:
+    - Harvester host memory used · highest · %
+    - Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Host OS total minus available memory, divided by host OS total. It includes VMs and host services. VM and namespace filters do not apply.

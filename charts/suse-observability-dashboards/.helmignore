@@ -1,0 +1,5 @@
+.git/
+scripts/
+tools/
+README.md
+*.tgz

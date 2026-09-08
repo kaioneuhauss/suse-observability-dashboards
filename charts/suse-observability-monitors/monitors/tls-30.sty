@@ -1,0 +1,27 @@
+nodes:
+- _type: Monitor
+  name: SRE · Traefik certificate expires within 30 days
+  identifier: urn:custom:monitor:sre-dashboards:tls-30
+  description: Condição persistente calculada na consulta. Limiar de diagnóstico ajustável
+    ao ambiente. Investigue coleta ausente separadamente.
+  arguments:
+    metric:
+      query: ((min by (cluster_name,sans,serial) ({__name__=~"traefik_tls_certs_not_after|_traefik_tls_certs_not_after"})
+        - time()) / 86400) * on (cluster_name) group_left(namespace,daemonset) (max
+        by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_desired{daemonset=~".*traefik.*"})
+        * 0 + 1)
+      unit: none
+      aliasTemplate: ${sans} · ${serial}
+    comparator: LT
+    threshold: 30
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:daemonset/${daemonset}
+    titleTemplate: SRE · Traefik certificate expires within 30 days · ${sans} · ${serial}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Identifique SAN/serial no dashboard. Localize Secret e emissor;
+    confira renovação. Valide o certificado servido pelo endpoint.
+  tags:
+  - sre-dashboards
+  - platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

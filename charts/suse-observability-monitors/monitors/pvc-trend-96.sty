@@ -1,0 +1,28 @@
+nodes:
+- _type: Monitor
+  name: SRE · PVC filesystem projected full within 96h
+  identifier: urn:custom:monitor:sre-dashboards:pvc-trend-96
+  description: Condição persistente calculada na consulta. Limiar de diagnóstico ajustável
+    ao ambiente. Investigue coleta ausente separadamente.
+  arguments:
+    metric:
+      query: max_over_time((predict_linear((max by (cluster_name,namespace,persistentvolumeclaim)
+        (kubernetes_kubelet_volume_stats_available_bytes))[6h:5m], 345600) and on
+        (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim)
+        (kubernetes_kubelet_volume_stats_inodes) > 0))[30m:30s])
+      unit: none
+      aliasTemplate: ${persistentvolumeclaim}
+    comparator: LT
+    threshold: 0
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:persistent-volume-claim/${persistentvolumeclaim}
+    titleTemplate: SRE · PVC filesystem projected full within 96h · ${persistentvolumeclaim}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Projeção linear de 6h, persistente por 30m; confira crescimento
+    real, retenção e capacidade. Exclui raw block. Preserve dados e confirme suporte
+    da expansão.
+  tags:
+  - sre-dashboards
+  - platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

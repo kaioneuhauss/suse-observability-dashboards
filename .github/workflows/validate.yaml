@@ -1,0 +1,39 @@
+name: Validate charts and documentation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.17.3
+      - name: Install validation dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Check publication boundaries and documentation links
+        run: python scripts/validate-publication.py
+      - name: Validate chart templates and definitions
+        run: bash scripts/validate.sh
+      - name: Check that generated files are current
+        run: |
+          python charts/suse-observability-dashboards/tools/generate_dashboards.py
+          python scripts/generate-alerts.py
+          git diff --exit-code -- charts alerts
+      - name: Check that all charts can be packaged
+        run: |
+          mkdir -p /tmp/helm-packages
+          for chart in charts/*; do
+            helm package "$chart" --destination /tmp/helm-packages
+          done

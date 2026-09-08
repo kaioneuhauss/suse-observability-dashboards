@@ -1,0 +1,698 @@
+name: Workload Resource Efficiency
+description: Application resource use compared with configured requests and limits.
+scope: publicDashboard
+dashboard:
+  metadata:
+    project: '{"saveVariables":false}'
+  spec:
+    layouts:
+    - kind: Grid
+      spec:
+        items:
+        - x: 0
+          y: 0
+          width: 24
+          height: 2
+          content:
+            $ref: '#/spec/panels/guide'
+        - x: 0
+          y: 2
+          width: 12
+          height: 2
+          content:
+            $ref: '#/spec/panels/cpuUseGauge'
+        - x: 12
+          y: 2
+          width: 12
+          height: 2
+          content:
+            $ref: '#/spec/panels/memUseGauge'
+        - x: 0
+          y: 4
+          width: 6
+          height: 2
+          content:
+            $ref: '#/spec/panels/cpuRequestMissingList'
+        - x: 6
+          y: 4
+          width: 6
+          height: 2
+          content:
+            $ref: '#/spec/panels/cpuLimitMissingList'
+        - x: 12
+          y: 4
+          width: 6
+          height: 2
+          content:
+            $ref: '#/spec/panels/memRequestMissingList'
+        - x: 18
+          y: 4
+          width: 6
+          height: 2
+          content:
+            $ref: '#/spec/panels/memLimitMissingList'
+        - x: 0
+          y: 6
+          width: 24
+          height: 3
+          content:
+            $ref: '#/spec/panels/missingSettingsPods'
+        - x: 0
+          y: 9
+          width: 8
+          height: 3
+          content:
+            $ref: '#/spec/panels/cpuUsageTop'
+        - x: 8
+          y: 9
+          width: 8
+          height: 3
+          content:
+            $ref: '#/spec/panels/cpuRequestTop'
+        - x: 16
+          y: 9
+          width: 8
+          height: 3
+          content:
+            $ref: '#/spec/panels/cpuLimitTop'
+        - x: 0
+          y: 12
+          width: 8
+          height: 3
+          content:
+            $ref: '#/spec/panels/memUsageTop'
+        - x: 8
+          y: 12
+          width: 8
+          height: 3
+          content:
+            $ref: '#/spec/panels/memRequestTop'
+        - x: 16
+          y: 12
+          width: 8
+          height: 3
+          content:
+            $ref: '#/spec/panels/memLimitTop'
+        - x: 0
+          y: 15
+          width: 12
+          height: 3
+          content:
+            $ref: '#/spec/panels/memoryRisk'
+        - x: 12
+          y: 15
+          width: 12
+          height: 3
+          content:
+            $ref: '#/spec/panels/cpuReservation'
+        - x: 0
+          y: 18
+          width: 24
+          height: 3
+          content:
+            $ref: '#/spec/panels/throttling'
+        - x: 0
+          y: 21
+          width: 24
+          height: 3
+          content:
+            $ref: '#/spec/panels/workingSetRSS'
+    panels:
+      guide:
+        spec:
+          display:
+            name: Understand usage, requests, and limits
+            description: These values describe containers, not the total memory or CPU use of a VM or physical server.
+          plugin:
+            kind: Markdown
+            spec:
+              text: '**Usage** is measured consumption. A **request** reserves capacity for scheduling. A **limit** is a configured ceiling. **1000 mCPU = 1 CPU core; 1 GiB = 1024 MiB.** Each group of three CPU or memory tables shows the same five busiest pods. Usage is averaged over five minutes. Memory working set includes some cache and is not Java heap. **The four counters count pods, not containers:** a pod counts once in a category when at least one running regular container lacks that setting. A pod can appear in several categories. The supporting list identifies the pod, namespace, and missing setting. No CPU limit can be an intentional policy. Empty inventory is not a confirmed zero. Restarts are in Kubernetes Platform Health; memory inside a VM is in Harvester VM & Host Health. Circular gauges show the highest selected utilization, not the average across resources; orange starts at 80% and red at 90%. The named resource may change as utilization changes.'
+          queries: []
+      cpuUsageTop:
+        spec:
+          display:
+            name: CPU used · five busiest pods · mCPU
+            description: Five-minute average. 1000 mCPU means one CPU core used continuously.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 1
+                  unit: none
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) / 1000000))), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      cpuRequestTop:
+        spec:
+          display:
+            name: CPU requested by the same pods · mCPU
+            description: Sum of CPU requests for regular containers. Reserved capacity is not measured usage. Missing settings are listed below.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 1
+                  unit: none
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) / 1000000)))), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      cpuLimitTop:
+        spec:
+          display:
+            name: CPU limits for the same pods · mCPU
+            description: Sum of configured limits. A container without a limit does not have a zero ceiling, so the total can be partial.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 1
+                  unit: none
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) / 1000000)))), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      cpuRequestMissingList:
+        spec:
+          display:
+            name: 'Pods: no CPU request'
+            description: Number of distinct pods with at least one running regular container without a positive CPU request. A pod with three affected containers counts as one pod. Zero means none found in the available running-container inventory; No data means this inventory is unavailable for the selection.
+          plugin:
+            kind: StatChart
+            spec:
+              calculation: last
+              format:
+                decimalPlaces: 0
+                unit: none
+              sparkline: false
+              valueFontSize: 40
+              thresholds:
+                defaultColor: '#1976B9'
+                steps: []
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: Pods
+                  query: last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000 > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())
+      cpuLimitMissingList:
+        spec:
+          display:
+            name: 'Pods: no CPU limit'
+            description: Number of distinct pods with at least one running regular container without a positive CPU limit. Each pod counts once. A missing CPU limit can be intentional and is not automatically an incident. Zero requires a valid running-container inventory.
+          plugin:
+            kind: StatChart
+            spec:
+              calculation: last
+              format:
+                decimalPlaces: 0
+                unit: none
+              sparkline: false
+              valueFontSize: 40
+              thresholds:
+                defaultColor: '#1976B9'
+                steps: []
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: Pods
+                  query: last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000 > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())
+      cpuUseGauge:
+        spec:
+          display:
+            name: Pod CPU use versus limit · highest · %
+            description: Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU used divided by the sum of CPU limits in the same pod. Every running regular container must have a positive limit and usage data; partially configured pods are excluded.
+          plugin:
+            kind: GaugeChart
+            spec:
+              calculation: last
+              format:
+                unit: percentunit
+                decimalPlaces: 1
+              max: 1
+              thresholds:
+                mode: absolute
+                defaultColor: '#2E8540'
+                steps:
+                - color: '#E69F00'
+                  value: 0.8
+                - color: '#D32F2F'
+                  value: 0.9
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m]
+                    @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m]
+                    @ end())) / 1000000))))))[1s:1s] @ end())), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      memUsageTop:
+        spec:
+          display:
+            name: Memory used · five busiest pods
+            description: Five-minute average of memory working set. Active cache and other memory can make this larger than Java heap.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 2
+                  unit: bytes(IEC)
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()))))), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      memRequestTop:
+        spec:
+          display:
+            name: Memory requested by the same pods
+            description: Sum of memory requests for regular containers. This is reserved scheduling capacity, not memory already consumed.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 2
+                  unit: bytes(IEC)
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())))))), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      memLimitTop:
+        spec:
+          display:
+            name: Memory limits for the same pods
+            description: Sum of configured memory limits. Use the missing-limits list to identify pods where this total is partial.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 2
+                  unit: bytes(IEC)
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())))))), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      memRequestMissingList:
+        spec:
+          display:
+            name: 'Pods: no memory request'
+            description: Number of distinct pods with at least one running regular container without a positive memory request. Each pod counts once. A request reserves scheduling capacity; it is not measured consumption. Zero requires a valid running-container inventory.
+          plugin:
+            kind: StatChart
+            spec:
+              calculation: last
+              format:
+                decimalPlaces: 0
+                unit: none
+              sparkline: false
+              valueFontSize: 40
+              thresholds:
+                defaultColor: '#1976B9'
+                steps: []
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: Pods
+                  query: last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())
+      memLimitMissingList:
+        spec:
+          display:
+            name: 'Pods: no memory limit'
+            description: Number of distinct pods with at least one running regular container without a positive memory limit. Each pod counts once. Review the pod and its containers to assess uncontrolled memory growth. Zero requires a valid running-container inventory.
+          plugin:
+            kind: StatChart
+            spec:
+              calculation: last
+              format:
+                decimalPlaces: 0
+                unit: none
+              sparkline: false
+              valueFontSize: 40
+              thresholds:
+                defaultColor: '#1976B9'
+                steps: []
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: Pods
+                  query: last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())
+      memUseGauge:
+        spec:
+          display:
+            name: Pod memory use versus limit · highest · %
+            description: Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Working set divided by the sum of memory limits in the same pod. Every running regular container must have a positive limit and usage data. A single container can still run out of memory before the pod total reaches 100%.
+          plugin:
+            kind: GaugeChart
+            spec:
+              calculation: last
+              format:
+                unit: percentunit
+                decimalPlaces: 1
+              max: 1
+              thresholds:
+                mode: absolute
+                defaultColor: '#2E8540'
+                steps:
+                - color: '#E69F00'
+                  value: 0.8
+                - color: '#D32F2F'
+                  value: 0.9
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m]
+                    @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m]
+                    @ end()))))))))[1s:1s] @ end())), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))
+      missingSettingsPods:
+        spec:
+          display:
+            name: Which pods have missing resource settings
+            description: 'One row per pod and missing setting: cluster, namespace, pod, and setting. The same pod may lack both CPU and memory settings. Counts above deduplicate within each category. Empty means no matching rows; check inventory coverage and filters. This checks running regular containers, not init containers, stopped pods, or optional pod-level resource budgets.'
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values: []
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 0
+                  unit: none
+                show: false
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join(((label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000 > 0))), "missing_setting", "CPU request", "pod_name", ".*")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m]
+                    @ end())) * 1000 > 0))), "missing_setting", "CPU limit", "pod_name", ".*")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) > 0))), "missing_setting", "Memory request", "pod_name", ".*")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_running{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container)
+                    (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) > 0))), "missing_setting", "Memory limit", "pod_name", ".*"))), "sre_series", " · ", "cluster_name", "namespace", "pod_name", "missing_setting"))
+      memoryRisk:
+        spec:
+          display:
+            name: Memory close to its limit · ten highest percentages
+            description: Highest working set in the last hour divided by the same container's positive limit. Near 100% means less room before an out-of-memory termination.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 2
+                  unit: percentunit
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((topk(10, (max by (cluster_name,namespace,pod_name,container) (max_over_time(container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[1h] @ end())) / (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_memory_limit{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) > 0))), "sre_series", " · ", "cluster_name", "namespace", "pod_name", "container"))
+      cpuReservation:
+        spec:
+          display:
+            name: CPU use compared with request · ten highest percentages
+            description: Five-minute average usage divided by the request. More than 100% is allowed and means usage exceeds the reserved amount.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 1
+                  unit: percentunit
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((topk(10, ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) / 1000000) / (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(kubernetes_state_container_cpu_requested{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m] @ end())) * 1000 > 0))), "sre_series", " · ", "cluster_name", "namespace", "pod_name", "container"))
+      throttling:
+        spec:
+          display:
+            name: CPU restricted by its limit · ten highest percentages
+            description: Share of CPU periods that were throttled, checked per container. The ten highest are selected at each point; the full-period legend can contain more than ten. Compare sustained high values with application slowness.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: table
+                position: bottom
+                show: true
+                values:
+                - last
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 2
+                  unit: percentunit
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_join((topk(10, max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_throttled_periods{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m])) / clamp_min(max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_elapsed_periods{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}[5m])), 0.001))), "sre_series", " · ", "cluster_name", "namespace", "pod_name", "container"))
+      workingSetRSS:
+        spec:
+          display:
+            name: Two memory measurements for the five busiest pods
+            description: Working set includes memory that is not easily reclaimed. RSS measures resident memory differently. Neither value is Java heap. The five busiest pods are selected at each point, so the full-period legend can contain more than five pods.
+          plugin:
+            kind: TimeSeriesChart
+            spec:
+              legend:
+                mode: list
+                position: right
+                show: true
+                values: []
+              thresholds:
+                mode: absolute
+                steps: []
+              visual:
+                connectNulls: false
+              yAxis:
+                format:
+                  decimalPlaces: 2
+                  unit: bytes(IEC)
+                show: true
+          queries:
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_replace((label_join((topk(5, sum by (cluster_name,namespace,pod_name) (container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}))), "sre_series", " · ", "cluster_name", "namespace", "pod_name")), "sre_series", "Working set · $1", "sre_series", "(.*)"))
+          - kind: TimeSeriesQuery
+            spec:
+              plugin:
+                kind: PrometheusTimeSeriesQuery
+                spec:
+                  alias: ${sre_series}
+                  query: max by (sre_series) (label_replace((label_join((sum by (cluster_name,namespace,pod_name) (container_memory_rss{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}) and on (cluster_name,namespace,pod_name) topk(5, sum by (cluster_name,namespace,pod_name) (container_memory_working_set{cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"}))), "sre_series", " · ", "cluster_name", "namespace", "pod_name")), "sre_series", "RSS · $1", "sre_series", "(.*)"))
+    variables:
+    - perseslistvariable:
+        kind: ListVariable
+        spec:
+          name: workload_cluster
+          display:
+            name: Cluster
+            description: Select one or more values. After changing a parent filter, reset the following filters to Everything.
+          allowAllValue: true
+          allowMultiple: true
+          customAllValue: .*
+          sort: alphabetical-asc
+          defaultValue:
+            perseslistvariabledefaultsinglevalue:
+              kind: singleValue
+              singleValue: '{"type":"Everything"}'
+            perseslistvariabledefaultslicevalues: null
+          plugin:
+            kind: MetricLabelValues
+            spec:
+              labelName: cluster_name
+              matchers:
+              - container_cpu_usage
+      persestextvariable: null
+    - perseslistvariable:
+        kind: ListVariable
+        spec:
+          name: workload_namespace
+          display:
+            name: Application namespace
+            description: Select one or more values. After changing a parent filter, reset the following filters to Everything.
+          allowAllValue: true
+          allowMultiple: true
+          customAllValue: .*
+          sort: alphabetical-asc
+          defaultValue:
+            perseslistvariabledefaultsinglevalue:
+              kind: singleValue
+              singleValue: '{"type":"Everything"}'
+            perseslistvariabledefaultslicevalues: null
+          plugin:
+            kind: MetricLabelValues
+            spec:
+              labelName: namespace
+              matchers:
+              - kubernetes_state_container_running{cluster_name=~"${workload_cluster}"}
+      persestextvariable: null

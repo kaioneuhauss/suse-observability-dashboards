@@ -1,0 +1,25 @@
+nodes:
+- _type: Monitor
+  name: SRE · host OS below 10 percent available RAM · 15m
+  identifier: urn:custom:monitor:sre-dashboards:node-memory
+  description: Condição persistente calculada na consulta. Limiar de diagnóstico ajustável
+    ao ambiente. Investigue coleta ausente separadamente.
+  arguments:
+    metric:
+      query: max_over_time((max by (cluster_name,node) (node_memory_MemAvailable_bytes{job="sre-node"})
+        / max by (cluster_name,node) (node_memory_MemTotal_bytes{job="sre-node"}))[15m:30s])
+      unit: none
+      aliasTemplate: ${node}
+    comparator: LT
+    threshold: 0.1
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · host OS below 10 percent available RAM · 15m · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Confira /proc/meminfo, pressão de memória, OOM, processos e guests.
+    Não use soma de requests como uso real. Colete evidências antes de ajustar recursos.
+  tags:
+  - sre-dashboards
+  - platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

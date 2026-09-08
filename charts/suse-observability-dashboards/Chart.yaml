@@ -1,0 +1,11 @@
+apiVersion: v2
+name: suse-observability-dashboards
+description: Portable, declarative SRE dashboards for SUSE Observability
+type: application
+version: 0.10.1
+appVersion: "2.10.2"
+kubeVersion: ">=1.25.0-0"
+annotations:
+  category: Monitoring
+  suse-observability.io/tested-platform-version: "2.10.2"
+  suse-observability.io/tested-cli-version: "3.3.6"

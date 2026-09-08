@@ -1,0 +1,6 @@
+# EDITE a URL e o nome do Secret de publicação.
+observability:
+  url: https://observability.cliente.example
+auth:
+  existingSecret: suse-observability-monitor-token
+  serviceTokenKey: serviceToken

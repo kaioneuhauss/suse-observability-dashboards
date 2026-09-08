@@ -1,0 +1,27 @@
+nodes:
+- _type: Monitor
+  name: SRE · etcd scrape failing · 3m
+  identifier: urn:custom:monitor:sre-dashboards:etcd-scrape
+  description: Condição persistente calculada na consulta. Limiar de diagnóstico ajustável
+    ao ambiente. Investigue coleta ausente separadamente.
+  arguments:
+    metric:
+      query: max_over_time((min by (cluster_name,node) (up{job="sre-etcd"}))[3m:30s])
+      unit: none
+      aliasTemplate: ${node}
+    comparator: LT
+    threshold: 1
+    failureState: CRITICAL
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · etcd scrape failing · 3m · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Confira quorum, membros e conectividade.
+
+    2. Correlacione eleições, fsync, commits, RTT, logs anteriores e reinícios.
+
+    3. Preserve snapshots antes de qualquer recuperação.'
+  tags:
+  - sre-dashboards
+  - platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

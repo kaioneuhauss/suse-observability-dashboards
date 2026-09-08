@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sre-platform-telemetry
+description: Node, etcd and Traefik telemetry with exact Ingress backend inventory
+type: application
+version: 0.3.1
+appVersion: "1.12.1"

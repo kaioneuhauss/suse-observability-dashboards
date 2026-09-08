@@ -1,0 +1,57 @@
+clusterName: ""
+remoteWrite:
+  url: ""
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+  username: apikey
+  # Leave empty for the system trust store. Never disable verification.
+  caSecret: ""
+  caKey: ca.crt
+  # SUSE receiver expects Prometheus remote write; avoid protocol negotiation.
+  forcePrometheusProtocol: true
+scrapeInterval: 30s
+# Native Prometheus collection: independent of annotations on the RKE2 chart.
+traefik:
+  enabled: false
+  namespace: kube-system
+  selector:
+    app.kubernetes.io/name: rke2-traefik
+  port: 9100
+  targetPort: metrics
+  # Enable ONLY when existing policies already isolate Traefik and allow web traffic.
+  # Adds TCP metrics access from this collector, preserving other policies.
+  allowMetricsNetworkPolicy: false
+  inventoryImage: python:3.12-alpine
+nodeExporter:
+  enabled: true
+  # Requires /proc/pressure on the host. Disable when the kernel lacks PSI.
+  pressureEnabled: true
+  image: quay.io/prometheus/node-exporter:v1.12.1
+  port: 19100
+  resources:
+    requests: {cpu: 10m, memory: 24Mi}
+    limits: {cpu: 100m, memory: 96Mi}
+etcd:
+  enabled: false
+  # RKE2 exposes this on loopback. No TLS keys or remote etcd access needed.
+  endpoint: http://127.0.0.1:2381/metrics
+  nodeSelector:
+    node-role.kubernetes.io/etcd: "true"
+vmagent:
+  image: registry.rancher.com/suse-observability/vmagent:1.144.0-so6
+  nodePort: 18429
+  etcdPort: 18430
+  # Disk queue per collector. The volume adds 256 MiB of headroom automatically.
+  # emptyDir survives container restarts, but NOT pod replacement/node loss.
+  queueMaxDiskMiB: 1024
+  selfMonitoring: true
+  resources:
+    requests: {cpu: 10m, memory: 32Mi}
+    limits: {cpu: 150m, memory: 128Mi}
+imagePullSecrets: []
+nodeSelector:
+  kubernetes.io/os: linux
+tolerations:
+  - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
+  - {key: node-role.kubernetes.io/master, operator: Exists, effect: NoSchedule}
+  - {key: node-role.kubernetes.io/etcd, operator: Exists, effect: NoExecute}

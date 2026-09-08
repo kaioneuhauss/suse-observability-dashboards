@@ -1,0 +1,35 @@
+backups/
+*.tgz
+*.token
+*.kubeconfig
+.env
+.env.*
+__pycache__/
+*.py[cod]
+rendered/
+
+# Environment and audit material stays local.
+/AGENTS.md
+/environments/
+/evidence/
+/config/local/
+/config/cliente/
+/docs/*.docx
+/docs/IMPLEMENTACAO.pt-BR.md
+/docs/REFERENCIA.md
+/docs/VALIDACAO.md
+/scripts/create-guide-docx.py
+/scripts/build-audit-report.py
+/scripts/collect-audit-snapshots.py
+/scripts/audit-pod-health.py
+/scripts/validate-dashboards.sh
+
+# Credentials, tooling and generated packages.
+*.pem
+*.key
+*.p12
+*.pfx
+.venv/
+.DS_Store
+/dist/
+*.log

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: suse-observability-monitors
+description: Native SRE monitors with safe name reconciliation and explicit topology mappings
+type: application
+version: 0.2.2
+appVersion: '2.10.2'

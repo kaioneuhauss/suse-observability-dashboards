@@ -1,0 +1,11 @@
+# Fragmento dos valores do chart RKE2 Traefik; mescle com os valores existentes.
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true
+ports:
+  metrics:
+    port: 9100
+    expose:
+      default: false
