@@ -1,4 +1,5 @@
 # SUSE Observability dashboards: install, use, remove
+**THIS IS NOT INTENDED FOR PRODUCTION. USE IT AS YOUR RISK.**
 
 Add **five dashboards and 33 monitors** to an existing SUSE Observability installation. Three Helm charts provide the content and extra RKE2/Harvester metrics. Dashboards are in English; the [customer guide](docs/GUIA-HELM-FLEET.md) and [study guide](docs/GUIA-ESTUDO.md) are in Portuguese.
 
