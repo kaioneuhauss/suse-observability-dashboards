@@ -1,0 +1,52 @@
+{{- if and .Values.traefik.enabled .Values.tests.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ .Release.Name }}-test-traefik
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-traefik
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+spec:
+  restartPolicy: Never
+  activeDeadlineSeconds: 120
+  automountServiceAccountToken: false
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    seccompProfile: {type: RuntimeDefault}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+  tolerations:
+{{ toYaml .Values.tolerations | indent 4 }}
+  imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 4 }}
+  containers:
+    - name: test
+      image: {{ .Values.traefik.inventoryImage | quote }}
+      command: [python3, -B, -c]
+      args:
+        - |
+          import socket, urllib.request
+          host = {{ printf "%s-traefik.%s.svc" .Release.Name .Values.traefik.namespace | quote }}
+          port = {{ .Values.traefik.port }}
+          ips = sorted({x[4][0] for x in socket.getaddrinfo(host,port,type=socket.SOCK_STREAM)})
+          assert ips, 'Service sem enderecos'
+          for ip in ips:
+              addr = '['+ip+']' if ':' in ip else ip
+              with urllib.request.urlopen('http://'+addr+':'+str(port)+'/metrics',timeout=10) as r:
+                  body = r.read(16*1024*1024).decode()
+                  assert r.status == 200
+                  assert any(x.startswith('traefik_') for x in body.splitlines()), 'Sem familia traefik_'
+              print('OK',ip,flush=True)
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: [ALL]}
+      resources:
+        requests: {cpu: 5m, memory: 32Mi}
+        limits: {cpu: 100m, memory: 96Mi}
+{{- end }}

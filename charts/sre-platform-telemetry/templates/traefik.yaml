@@ -66,7 +66,7 @@ data:
   scrape.yaml: |
     global:
       scrape_interval: {{ .Values.scrapeInterval }}
-      scrape_timeout: 10s
+      scrape_timeout: {{ .Values.scrapeTimeout }}
       external_labels:
         cluster_name: {{ .Values.clusterName | quote }}
         namespace: {{ .Values.traefik.namespace | quote }}
@@ -77,14 +77,21 @@ data:
         static_configs:
           - targets: ['127.0.0.1:9102']
       - job_name: traefik
+        {{ if eq .Values.safety.cardinality.mode "enforce" }}
+        sample_limit: {{ .Values.safety.cardinality.traefik.sampleLimit }}
+        series_limit: {{ .Values.safety.cardinality.traefik.seriesLimit }}
+        label_limit: {{ .Values.safety.cardinality.traefik.labelLimit }}
+        {{ end }}
         dns_sd_configs:
           - names: [{{ printf "%s.%s.svc" $name .Values.traefik.namespace | quote }}]
             type: A
             port: {{ .Values.traefik.port }}
+        {{ if .Values.safety.metricAllowlist.enabled }}
         metric_relabel_configs:
           - source_labels: [__name__]
-            regex: 'traefik_.*'
+            regex: {{ .Values.safety.metricAllowlist.traefikRegex | quote }}
             action: keep
+        {{ end }}
       {{- if .Values.vmagent.selfMonitoring }}
       - job_name: sre-collector
         static_configs:
@@ -137,8 +144,7 @@ spec:
           command: [python3, -B, /config/inventory.py]
           securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
           resources:
-            requests: {cpu: 5m, memory: 24Mi}
-            limits: {cpu: 100m, memory: 64Mi}
+            {{- toYaml .Values.traefik.inventoryResources | nindent 12 }}
           volumeMounts:
             - {name: config, mountPath: /config, readOnly: true}
             - {name: api-access, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
@@ -146,6 +152,7 @@ spec:
           image: {{ .Values.vmagent.image | quote }}
           args:
             - -promscrape.config=/config/scrape.yaml
+            - -promscrape.maxScrapeSize={{ .Values.vmagent.maxScrapeSize }}
             - -remoteWrite.url={{ .Values.remoteWrite.url }}
             - -remoteWrite.basicAuth.username={{ .Values.remoteWrite.username }}
             - -remoteWrite.basicAuth.passwordFile=/auth/{{ .Values.remoteWrite.secretKey }}
@@ -157,7 +164,7 @@ spec:
             {{- end }}
             - -remoteWrite.tmpDataPath=/queue
             - -remoteWrite.maxDiskUsagePerURL={{ .Values.vmagent.queueMaxDiskMiB }}MiB
-            - -memory.allowedBytes=64MiB
+            - -memory.allowedBytes={{ .Values.vmagent.memoryAllowedBytes }}
           securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
           resources:
             {{- toYaml .Values.vmagent.resources | nindent 12 }}

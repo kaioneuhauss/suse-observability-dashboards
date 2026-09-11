@@ -1,249 +1,240 @@
-# SUSE Observability Dashboards
+# SUSE Observability dashboards with Helm and Fleet
 
-Five dashboards and 24 native monitors for Kubernetes, RKE2, Traefik and SUSE Virtualization (Harvester), installed with Helm. Explore application traffic, response times, resource usage, storage, etcd health and virtual machine usage through 117 panels with clear English explanations.
+Five readable dashboards, 33 custom SUSE monitors, and the additional collectors needed for RKE2 and Harvester. Version 6 was tested against the live lab on **11 September 2026**. See [validation results and limits](tests/RESULTADOS.md).
 
-**Start here:** configure the [prerequisites](docs/PREREQUISITES.md), then follow [Install via Helm](#install-via-helm-recommended). This project extends an existing SUSE Observability installation. It does not install the Observability server or automatically instrument applications.
+This is a custom integration package. It requires an existing SUSE Observability server and the official Kubernetes Agent. It does not install the server, instrument arbitrary applications, or configure notification destinations.
 
-## What you get
+## Download this version
 
-| Dashboard | Questions it helps answer |
-| --- | --- |
-| Instrumented apps | How many calls reached the application? Which routes return errors or respond slowly? |
-| Workload Resource Efficiency | Which pods lack resource settings? How does usage compare with CPU and memory requests and limits? |
-| Kubernetes Platform Health | Are nodes and workloads available? Are disks, PVC filesystems, etcd and metric collectors healthy? |
-| Traefik Ingress Health | Which applications receive traffic? How fast do they respond? Which HTTP codes and certificates need attention? |
-| Harvester VM & Host Health | What does each running VM use? How does that differ from its configuration and the physical host? |
-
-The [monitor catalog](alerts/catalog.json) covers etcd, disk space, inodes, memory, PVC growth, certificates and collection failures. Review its starting thresholds for your environment; this is not a complete SLO, hardware or backup-monitoring solution.
-
-## Where each component runs
-
-| Component | Install location | Frequency |
-| --- | --- | --- |
-| Official SUSE Observability Agent | Every monitored Kubernetes cluster, including Harvester | Once per cluster, using the official integration |
-| [`sre-platform-telemetry`](charts/sre-platform-telemetry/README.md) | Each monitored cluster | Once per cluster; enable applicable collectors |
-| [KubeVirt OpenTelemetry collector](docs/KUBEVIRT.md) | Harvester Kubernetes cluster | Once per Harvester cluster, using an upstream Helm chart |
-| [`suse-observability-dashboards`](charts/suse-observability-dashboards/README.md) | Management namespace with access to the SUSE API | Once per SUSE Observability instance |
-| [`suse-observability-monitors`](charts/suse-observability-monitors/README.md) | Same management namespace | Once per SUSE Observability instance |
-
-A Harvester host and an RKE2 node inside a VM are different layers. Each Kubernetes cluster has its own etcd. Do not install the KubeVirt collector in each guest VM or publish another copy of the dashboards for each cluster.
-
-## Prerequisites
-
-- A working SUSE Observability instance and an official Kubernetes integration for every monitored cluster.
-- Helm 3, `kubectl`, Bash and cluster access. Python 3 with PyYAML is needed for validation and customization.
-- Linux nodes. Host collectors use host networking and read-only host mounts, which your admission policy must allow.
-- An **ingestion API key** for telemetry and separate **SUSE service tokens** for dashboard and monitor publishing.
-- HTTPS access to SUSE endpoints, container registries and the pinned CLI download. Default publishing Jobs use a Linux x86-64 CLI binary.
-- Traefik Prometheus metrics configured persistently in RKE2/Rancher. For VMs, complete the [KubeVirt prerequisites](docs/KUBEVIRT.md).
-
-Follow [Prerequisites and credentials](docs/PREREQUISITES.md) for the exact commands, Rancher YAML, TLS configuration and etcd checks. **Installing the dashboard chart alone does not produce metrics.**
-
-Validated baseline: SUSE Observability **2.10.2**, `sts` CLI **3.3.6**, and RKE2 Traefik chart versions **39.0.703 / 40.1.003**. Validate metric names, labels, certificates and API behavior when using other versions. See [validation limits](docs/OPERATIONS.md#validation-and-limitations).
-
-## Install via Helm (recommended)
-
-### 1. Download and prepare values
+This version is published on the [`helm-fleet-v6` branch](https://github.com/kaioneuhauss/suse-observability-dashboards/tree/helm-fleet-v6). Clone that branch before following this README:
 
 ```bash
-git clone https://github.com/kaioneuhauss/suse-observability-dashboards.git
+git clone --branch helm-fleet-v6 --single-branch https://github.com/kaioneuhauss/suse-observability-dashboards.git
 cd suse-observability-dashboards
-
-mkdir -p config/local
-cp config/cluster.values.yaml config/local/production.values.yaml
-cp config/harvester.values.yaml config/local/harvester.values.yaml
-cp config/dashboards.values.yaml config/local/dashboards.values.yaml
-cp config/monitors.values.yaml config/local/monitors.values.yaml
 ```
 
-`config/local/` is ignored by Git. Store credentials in a secret manager and Kubernetes Secrets, not in values files. Checked-in templates contain placeholders only.
+Run local checks with `python -m pip install -r requirements-dev.txt`, `python -m unittest discover -s tests -v`, and `bash tests/helm-checks.sh`. These checks do not deploy to a cluster.
 
-Replace these example paths, contexts and namespaces:
+## What to install
+
+| Chart | Where | What it does |
+|---|---|---|
+| `sre-platform-telemetry` | Once in each monitored cluster | Host, etcd, Traefik and read-only Pod configuration inventory; Prometheus remote write |
+| `sre-kubevirt-telemetry` | Once in Harvester | KubeVirt and VM metrics; OTLP with verified TLS |
+| `suse-observability-content` | Once in the central server cluster | All selected dashboards and monitors, using two separate publisher identities |
+
+The central chart contains **Instrumented apps**, **Workload Resource Efficiency**, **Kubernetes Platform Health**, **Traefik Ingress Health**, and **Harvester VM & Host Health**. Keep these separate views: each answers a different operational question and uses different filters. They share one installation and one SUSE URL.
+
+## 1. Prepare your environment
+
+Use Helm 3 and kubectl. Run the commands from the extracted package root. Choose either manual Helm or Fleet for a release; do not use both to reconcile it.
 
 ```bash
-export SRE_CLUSTER_KCFG="$HOME/.kube/production.yaml"
-export SRE_CLUSTER_CTX="production"
-export SRE_AGENT_NS="suse-observability"
-export SRE_HRV_KCFG="$HOME/.kube/harvester.yaml"
-export SRE_HRV_CTX="harvester"
-export SRE_HRV_AGENT_NS="suse-observability"
-export SRE_CENTRAL_KCFG="$HOME/.kube/observability.yaml"
-export SRE_CENTRAL_CTX="observability"
-export SRE_CENTRAL_NS="suse-observability"
+export OBS_KCFG=/path/to/observability.yaml
+export RAN_KCFG=/path/to/rancher.yaml
+export HRV_KCFG=/path/to/harvester.yaml
 ```
 
-Use the namespace containing the actual Agent Secret. Skip Harvester variables and steps if you do not use Harvester.
+The examples below use contexts `observability`, `rancher-kaio`, and `harvester`. Replace these with your real context names. Kubernetes context names and SUSE integration names are different concepts.
 
-### 2. Install telemetry in each cluster
+Before installing:
 
-First complete [Agent, Traefik and etcd preparation](docs/PREREQUISITES.md). Edit `config/local/production.values.yaml`:
+1. Install the official Agent in every cluster. Confirm its integration is receiving topology and metrics in SUSE. On Harvester, use the supported process for your version; the documented v1.8 add-on is Experimental. Do not install a second Agent over it.
+2. Get each integration name from the Agent's `suse-observability-agent-cluster-name` ConfigMap. Use that exact `STS_CLUSTER_NAME` as `clusterName` in this package.
+3. Confirm the intake Secret exists **in the collector namespace**: `suse-observability-agent-secrets`, key `STS_API_KEY`. Secret names can be customized.
+4. Prepare the two publisher Service Tokens in the central namespace. [Exact role and Secret commands](docs/REFERENCIA-OPERACIONAL.md#1-cliente-novo-roles-e-secrets-dos-publicadores) are provided. These credentials are used by every Helm/Fleet publication, not just by an assistant. Dashboard ownership matters when updating existing objects.
+5. Confirm outbound HTTPS, DNS, trusted CA chains, and access to the image registries. Private CAs and registry credentials belong in local Secrets/ConfigMaps, never in Git.
+
+The lab uses `suse-observability-agent` for the Observability cluster's collectors, and `suse-observability` for the Rancher and Harvester collectors. The central publisher uses `suse-observability`. Adjust both commands and Fleet namespaces if your layout differs.
+
+### RKE2 and Traefik
+
+Only enable Traefik collection on clusters that actually run Traefik. Harvester in this lab uses NGINX, so its Traefik collector is disabled.
+
+For a Rancher-provisioned RKE2 cluster, merge [the Rancher fragment](prerequisites/rancher-rke2-traefik.yaml) into `spec.rkeConfig.chartValues.rke2-traefik` in **Edit Config → Edit as YAML**. For a local/imported cluster, merge [the HelmChartConfig values](prerequisites/rke2-traefik-values.yaml) into the existing `rke2-traefik` HelmChartConfig in `kube-system`. Preserve the configuration's existing owner/source.
+
+Required Traefik settings:
 
 ```yaml
-clusterName: production
-remoteWrite:
-  url: https://observability.example.com/receiver/prometheus/api/v1/write
-  existingSecret: suse-observability-agent-secrets
-  secretKey: STS_API_KEY
-nodeExporter:
-  pressureEnabled: false
-etcd:
-  enabled: true
-traefik:
-  enabled: true
-  allowMetricsNetworkPolicy: false
+metrics:
+  prometheus:
+    entryPoint: metrics
+    addEntryPointsLabels: true
+    addServicesLabels: true
+ports:
+  metrics:
+    port: 9100
+    expose:
+      default: false
 ```
 
-`clusterName` must match the SUSE Kubernetes integration name, which need not equal the kubeconfig context. Disable etcd or Traefik collection when not applicable. Enable PSI only after checking kernel support on the selected nodes.
+Do not publish port 9100 through an Internet-facing Service. If existing NetworkPolicies isolate Traefik, allow the collector to reach this port. The lab's Rancher profile enables a narrowly scoped policy after confirming existing web access rules. **Do not copy that opt-in blindly:** creating the first policy can isolate traffic that was previously allowed. [Detailed checks](docs/GUIA-HELM-FLEET.md#5-pré-requisito-rke2-configurar-o-traefik).
+
+### RKE2 etcd
+
+The collector runs on etcd nodes with host networking and reads `127.0.0.1:2381/metrics`. It does not connect to the client API on 2379. The tested clusters already provided this local endpoint. `etcd-expose-metrics` exposes metrics on the client interface and is not required by this local collection design. Confirm the actual endpoint and etcd node labels before enabling the collector; do not open the endpoint publicly. [Detailed procedure](docs/GUIA-HELM-FLEET.md#51-confirmar-as-métricas-locais-do-etcd).
+
+### Harvester and KubeVirt
+
+Prepare these before installing the KubeVirt chart:
+
+- An authenticated TLS OTLP gRPC endpoint on the SUSE server. Merge [the OTLP fragment](prerequisites/otlp-ingress-values.yaml) into the **complete values of the existing server release**, if the endpoint is not already configured.
+- The public KubeVirt CA, copied from the Harvester `kubevirt-ca` ConfigMap into `kubevirt-metrics-ca` in the collector namespace. Verify each component's certificate SAN; update the configured server names when required by your version.
+- A valid registry pull Secret such as `application-collection` in that namespace.
+
+The guide includes copyable commands for [OTLP, CA and registry preparation](docs/GUIA-HELM-FLEET.md#4-pré-requisitos-de-kubevirt-e-otlp). A copied CA does not rotate automatically: refresh it and increment `kubevirt.ca.revision` after rotation. Keep TLS verification enabled.
+
+## 2. Edit five configuration files
+
+Change the lab hostnames and cluster names before deploying to a customer.
+
+| File | Change |
+|---|---|
+| `charts/sre-platform-telemetry/config/observability-cluster.yaml` | Integration name, remote-write URL/Secret, etcd and Traefik selection |
+| `charts/sre-platform-telemetry/config/rancher-kaio.yaml` | Same fields; review the opt-in NetworkPolicy |
+| `charts/sre-platform-telemetry/config/harvester.yaml` | Same fields; keep Traefik disabled when absent |
+| `charts/sre-kubevirt-telemetry/config/values.yaml` | Harvester integration name, OTLP endpoint, CA and registry Secret |
+| `charts/suse-observability-content/config/values.yaml` | SUSE URL, the two publisher Secrets, dashboards/monitors to include |
+
+Defaults live in each chart's root `values.yaml`. Only environment-specific overrides belong in `config/`. There are no Python-generated Helm values and no separate configuration file for each dashboard.
+
+```bash
+bash tests/helm-checks.sh
+```
+
+This checks rendering and invalid settings. It does not prove that the target can pull images, authenticate, or deliver metrics. Apply a server dry-run of rendered resources where admission policies require it, then validate a canary installation.
+
+## 3. Install the collectors with Helm
+
+Start with the Observability cluster:
 
 ```bash
 helm upgrade --install sre-platform-telemetry ./charts/sre-platform-telemetry \
-  --kubeconfig "$SRE_CLUSTER_KCFG" --kube-context "$SRE_CLUSTER_CTX" \
-  --namespace "$SRE_AGENT_NS" --values config/local/production.values.yaml \
-  --wait --timeout 5m
-```
-
-Repeat with a separate file and context for each monitored cluster, including the cluster hosting SUSE. Avoid duplicate collectors for the same targets.
-
-For Harvester, edit `config/local/harvester.values.yaml` with its integration name, receiver URL and Secret. Keep Traefik disabled if the Harvester cluster does not use it:
-
-```bash
-helm upgrade --install sre-platform-telemetry ./charts/sre-platform-telemetry \
-  --kubeconfig "$SRE_HRV_KCFG" --kube-context "$SRE_HRV_CTX" \
-  --namespace "$SRE_HRV_AGENT_NS" --values config/local/harvester.values.yaml \
-  --wait --timeout 5m
-```
-
-### 3. Install KubeVirt collection on Harvester
-
-Follow [KubeVirt installation](docs/KUBEVIRT.md): copy its values template, set the OTLP endpoint and integration name, prepare ingestion and registry Secrets, verify the four TLS identities, then install the upstream OpenTelemetry chart with the public CA bundle. The guide includes the complete Helm command.
-
-Guest memory needs balloon statistics; guest filesystems need QEMU Guest Agent. Powered-off VMs have no current usage. Skip this step without Harvester.
-
-### 4. Publish the dashboards once
-
-Create the publishing Secret using [the credential procedure](docs/PREREQUISITES.md#publishing-credentials). Edit `config/local/dashboards.values.yaml`:
-
-```yaml
-observability:
-  url: https://observability.example.com
-auth:
-  existingSecret: suse-observability-dashboard-token
-  serviceTokenKey: serviceToken
-```
-
-```bash
-helm upgrade --install suse-observability-dashboards ./charts/suse-observability-dashboards \
-  --kubeconfig "$SRE_CENTRAL_KCFG" --kube-context "$SRE_CENTRAL_CTX" \
-  --namespace "$SRE_CENTRAL_NS" --values config/local/dashboards.values.yaml \
-  --wait --timeout 5m
-```
-
-The finite Job publishes native definitions through the SUSE API; `Completed` is its expected state. It does not install Grafana or a separate Perses server.
-
-**Upgrade behavior:** managed dashboards are recreated by name to ensure their full definitions are updated with the validated CLI version. IDs can change, and manual edits to managed dashboards are replaced. See [Updates and removal](docs/OPERATIONS.md#updates-and-removal).
-
-### 5. Publish the monitors once
-
-Prepare the separate monitor role and Secret using [the credential procedure](docs/PREREQUISITES.md#publishing-credentials). Edit `config/local/monitors.values.yaml`:
-
-```yaml
-observability:
-  url: https://observability.example.com
-auth:
-  existingSecret: suse-observability-monitor-token
-  serviceTokenKey: serviceToken
-```
-
-```bash
-helm upgrade --install suse-observability-monitors ./charts/suse-observability-monitors \
-  --kubeconfig "$SRE_CENTRAL_KCFG" --kube-context "$SRE_CENTRAL_CTX" \
-  --namespace "$SRE_CENTRAL_NS" --values config/local/monitors.values.yaml \
+  --kubeconfig "$OBS_KCFG" --kube-context observability \
+  -n suse-observability-agent \
+  -f charts/sre-platform-telemetry/config/observability-cluster.yaml \
   --wait --timeout 10m
+helm test sre-platform-telemetry --kubeconfig "$OBS_KCFG" \
+  --kube-context observability -n suse-observability-agent --logs --timeout 3m
 ```
 
-The publisher preserves monitor identifiers by name and verifies persisted definitions. Expect `persisted_monitors: 24` in the output. Confirm Enabled state and component mapping in SUSE. **Configure notification channels and routing separately**; publication does not prove notification delivery.
-
-## Use the dashboards
-
-1. Open **SUSE Observability → Dashboards** and select a dashboard.
-2. Start with **Everything**, then select the cluster and applicable namespace, application or VM.
-3. After changing the cluster, reset dependent filters to **Everything**. Disabling “Include everything” without selecting a value means **None**.
-4. Choose the time window and refresh before comparing a new test. A 24-hour panel has partial history until a full day is collected.
-5. Open `?` for explanations. Expand `+N more` to see all rows in a compact legend.
-
-Viewer filter changes are not saved into the managed definition. Gauges show the **highest selected utilization**, not an average. `1000 mCPU = 1 vCPU`; `1 GiB = 1024 MiB`.
-
-The five-minute request rate smooths short bursts. The recent rate averages the latest scrape interval, normally 30 seconds; it is not a true one-second measurement. Average response time is the sum of durations divided by completed requests. A p95 of 200 ms means about 95 of 100 calls finished within 200 ms.
-
-Counts have no `K`/`M` abbreviation, but rolling-window increases remain estimates from sampled counters. Metrics show error codes, periods and routes where available. Individual exceptions or failure reasons need [logs or traces](docs/APPLICATION_METRICS.md).
-
-## Validate the installation
+After checking collection and ingestion, deploy the remaining profiles:
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-bash scripts/validate.sh
-
-kubectl get daemonset,deployment,pods \
-  --kubeconfig "$SRE_CLUSTER_KCFG" --context "$SRE_CLUSTER_CTX" \
-  --namespace "$SRE_AGENT_NS" \
-  --selector app.kubernetes.io/name=sre-platform-telemetry
-
-python scripts/audit-collector-logs.py \
-  --kubeconfig "$SRE_CLUSTER_KCFG" --context "$SRE_CLUSTER_CTX" \
-  --namespace "$SRE_AGENT_NS" --since 10m --output /tmp/collector-check.json
-
-kubectl get jobs \
-  --kubeconfig "$SRE_CENTRAL_KCFG" --context "$SRE_CENTRAL_CTX" \
-  --namespace "$SRE_CENTRAL_NS"
+helm upgrade --install sre-platform-telemetry ./charts/sre-platform-telemetry \
+  --kubeconfig "$RAN_KCFG" --kube-context rancher-kaio -n suse-observability \
+  -f charts/sre-platform-telemetry/config/rancher-kaio.yaml --wait --timeout 10m
+helm test sre-platform-telemetry --kubeconfig "$RAN_KCFG" \
+  --kube-context rancher-kaio -n suse-observability --logs --timeout 3m
+helm upgrade --install sre-platform-telemetry ./charts/sre-platform-telemetry \
+  --kubeconfig "$HRV_KCFG" --kube-context harvester -n suse-observability \
+  -f charts/sre-platform-telemetry/config/harvester.yaml --wait --timeout 10m
+helm upgrade --install kubevirt-otel-collector ./charts/sre-kubevirt-telemetry \
+  --kubeconfig "$HRV_KCFG" --kube-context harvester -n suse-observability \
+  -f charts/sre-kubevirt-telemetry/config/values.yaml --wait --timeout 10m
 ```
 
-In Metrics Explorer, inspect `up{job="sre-node"}`, `up{job="sre-etcd"}` and `up{job="traefik"}` for enabled targets and verify sample timestamps. Allow two scrapes and ingestion time before testing rates. [Operations and troubleshooting](docs/OPERATIONS.md) includes per-panel API tests and visual acceptance.
+Check ready Pods, logs, all expected targets, recent samples, and delivery queues. `helm test` verifies reachability of every Traefik metrics endpoint; it does not prove SUSE ingestion. In Metrics Explorer:
 
-`No data` can mean no traffic, no matching resource, a stopped VM, an unsupported metric or broken collection. It is not automatically an error or proof of health.
+```promql
+up{job=~"sre-node|sre-etcd|traefik"}
+sre_pod_inventory_success
+up{service_name="kubevirt-metrics"}
+```
 
-## Customize
+Compare the number of healthy targets with the actual inventory. One healthy sample is insufficient when three replicas should be collected.
 
-| Change | Edit |
-| --- | --- |
-| Environment, endpoints, Secrets and collector settings | Your ignored `config/local/*.values.yaml` files |
-| Dashboard titles and explanations | `charts/suse-observability-dashboards/tools/presentation-en.yaml` |
-| Queries, units and layout | `charts/suse-observability-dashboards/tools/generate_dashboards.py` |
-| Monitor queries, thresholds and runbooks | `scripts/generate-alerts.py` |
-| Application instrumentation | Follow [the metric contract](docs/APPLICATION_METRICS.md) |
-
-Generated YAML and STY files are included, so initial installation does not require generators. After changing their sources:
+## 4. Publish all dashboards and monitors
 
 ```bash
-python3 charts/suse-observability-dashboards/tools/generate_dashboards.py
-python3 scripts/generate-alerts.py
-bash scripts/validate.sh
+helm upgrade --install suse-observability-content ./charts/suse-observability-content \
+  --kubeconfig "$OBS_KCFG" --kube-context observability -n suse-observability \
+  -f charts/suse-observability-content/config/values.yaml --wait --timeout 15m
+kubectl logs job/suse-observability-content-dashboards \
+  --kubeconfig "$OBS_KCFG" --context observability -n suse-observability
+kubectl logs job/suse-observability-content-monitors \
+  --kubeconfig "$OBS_KCFG" --context observability -n suse-observability
 ```
 
-Review the diff, increment the affected chart version and upgrade that release. Each chart README explains its values and lifecycle.
+Both Jobs must complete and report verified persisted content. Open the five shared dashboards. Select the cluster, then reset dependent namespace/application filters to Everything before choosing a new value. Ordinary filter changes should not ask you to save; editing a widget still does.
 
-## Repository contents
+Set `dashboards.include` to select views. `monitors.include: []` includes all 33 rules; use slugs from [the catalog](charts/suse-observability-content/files/catalog.json) for a subset. Disabling a section prevents publication; it does not delete existing objects.
+
+For a v5 migration, export existing SUSE objects and keep the owner token. Pause old Fleet reconciliation, install the consolidated content chart, verify it, then uninstall only the obsolete custom publisher releases. The guide explains [ownership, backup and deletion](docs/REFERENCIA-OPERACIONAL.md).
+
+## 5. Use Fleet instead of manual Helm
+
+Each chart is a self-contained Fleet bundle. It includes the chart, `fleet.yaml`, and `config/` files. `valuesFiles` explicitly loads root defaults first and profile overrides second. The same files are used by manual Helm.
+
+1. Publish **this package's contents** at the root of your Git branch. The supplied GitRepos reference `helm-fleet-v6`; creating or extracting a ZIP does not publish that branch.
+2. Edit `fleet/gitrepo-*.yaml`: repository URL, branch, paths and workspace namespaces.
+3. On the management cluster, list `clusters.fleet.cattle.io -A`. Label only the intended Fleet Cluster objects with `observability.example.com/enabled=true` and `observability.example.com/cluster=<integration-name>`. Do not label Kubernetes Nodes for this selection. Align those labels with `targetCustomizations` in the chart's `fleet.yaml`.
+4. Put downstream GitRepos in their Fleet workspace, usually `fleet-default`. The management/local cluster may be in `fleet-local`, requiring its separate GitRepo.
+5. Apply collectors first. After metric acceptance, apply content:
+
+```bash
+kubectl apply -f fleet/gitrepo-collectors.yaml \
+  --kubeconfig "$RAN_KCFG" --context rancher-kaio
+kubectl apply -f fleet/gitrepo-management.yaml \
+  --kubeconfig "$RAN_KCFG" --context rancher-kaio
+# After collector acceptance:
+kubectl apply -f fleet/gitrepo-content.yaml \
+  --kubeconfig "$RAN_KCFG" --context rancher-kaio
+```
+
+Unmatched clusters are excluded. Content targets the central cluster; KubeVirt targets Harvester; platform uses a profile per matching cluster. For another cluster, add one platform profile and one matching target customization.
+
+Do not enable `force` or `takeOwnership` to bypass conflicts with an existing manually managed release. Plan the transition and preserve Secrets/CA. Fleet reconciles Kubernetes resources, not continuous drift in the external SUSE API. Increment `lifecycle.revision` to rerun publication. See [the full Fleet procedure](docs/GUIA-HELM-FLEET.md#9-usar-os-mesmos-charts-no-fleet).
+
+## 6. Configure notifications and operational acceptance
+
+Monitors and notification delivery are separate. Configure a SUSE notification with the required project monitors, severity, component scope, and an approved destination. Test channel connectivity, then opening and recovery, and confirm cluster, resource, observed value, threshold and investigation link in the delivered message. This package does not contain your Slack, Teams, email or webhook credentials.
+
+The publisher role can import/status-check monitors. A 403 from `sts monitor run` with that role does not mean scheduled evaluations are failing. Use an authorized operator for runtime test actions; do not grant administrator privileges to the publisher.
+
+In this lab, both the built-in email test and real HTTP monitor opening emails were received and confirmed by the recipient. The recipient also confirmed the recovery emails. Configure SMTP globally on the SUSE server and create notification rules manually; this is the agreed operating model, and no notification publisher credentials are required.
+
+## Reading the charts correctly
+
+- **Requests/s, five-minute average:** requests divided over a moving 300-second window. A short load test has a higher rate while it is running.
+- **Benchmark comparison:** allow collection and ingestion, then click Refresh. A 3-second browser test cannot be directly compared with a five-minute rate.
+- **Average response time:** add all response times and divide by request count. Three requests taking 50, 100 and 150 ms average 100 ms.
+- **p95:** approximately 95 of 100 requests completed within this time; histogram bucket precision applies.
+- **Pod usage:** sum of measured regular containers. Requests and limits are configuration, not consumption. Counts of missing settings count each running Pod once.
+- **VM memory:** guest available/used memory differs from virt-launcher working set and the VM's configured memory. Some guest metrics require working balloon/guest-agent support.
+- **VM scheduler delay:** time waiting for a host CPU, averaged per vCPU; it is not automatically equivalent to VMware CPU Ready.
+- **Virtual disk response time:** accumulated I/O time divided by completed operations. Idle disks have no defined average; cloud-init disks are excluded.
+- **No data:** check applicability and collection health. A single-member etcd has no peer RTT. Block PVCs do not have filesystem usage. An idle disk has no measured latency. Do not turn every missing series into zero.
+
+HTTP error charts identify code, route/application, and time window. Root cause and individual request IDs require logs/traces; arbitrary request IDs and full URLs must not become metric labels.
+
+A newly created counter series needs a baseline scrape. If its first sample is already 100 after a short test, `increase()` cannot reconstruct those initial 100 events. Warm the route/status series, wait for a successful scrape, then start the measured test.
+
+## Repository layout
 
 ```text
-charts/          Three Helm charts and their generated definitions
-config/          Generic templates; copy into ignored config/local/
-integrations/    RKE2 Traefik, Agent coverage and access-log fragments
-alerts/          Catalog of 24 native monitors
-scripts/         Generators, validators and configuration helpers
-docs/            Prerequisites, KubeVirt, application metrics and operations
-.github/         Automated repository validation
+charts/          Three charts, their Fleet definitions and environment profiles
+fleet/           Three GitRepo manifests for phased rollout and workspace separation
+prerequisites/   Fragments to merge into existing Agent, Traefik and server configuration
+docs/            Portuguese customer procedure, study guide, PDFs and impact analysis
+examples/        Optional private CA, image and metric allowlist overrides
+tests/           Regression checks and the recorded acceptance results
+scripts/         Read-only live query/filter audit
+images/          Optional publisher image for restricted networks
 ```
 
-Private environment values, kubeconfigs, credentials, raw telemetry, laboratory reports and generated Word files are excluded from this public repository.
+For production, review image digests, resource limits, CA/token rotation, admission policy, telemetry loss/backlog monitoring and receiver availability. The defaults use bounded collection and TLS validation, but this custom package is not a vendor certification or a complete SRE program. SLOs, external availability probes, backups/restore tests and notification ownership remain environment-specific.
 
-## References
+See [alert thresholds and all panel mappings](docs/ALERT-COVERAGE.md) for investigation guidance and notification boundaries.
 
-- [SUSE Observability documentation](https://documentation.suse.com/suse-observability/latest/)
-- [RKE2 Helm and HelmChartConfig](https://docs.rke2.io/helm/)
-- [Traefik metrics](https://doc.traefik.io/traefik/reference/install-configuration/observability/metrics/)
-- [etcd metrics](https://etcd.io/docs/v3.6/metrics/)
-- [OpenTelemetry Collector Helm chart](https://github.com/open-telemetry/opentelemetry-helm-charts/tree/main/charts/opentelemetry-collector)
-- [SUSE Observability GenAI dashboards](https://github.com/doccaz/suse-observability-genai-dashboards) — reference for the installation-first documentation structure.
+Estimated request totals and breakdowns follow the toolbar time period. Five-minute traffic and response-time windows remain explicitly labelled. See [implementation and compatibility](docs/REFERENCIA-OPERACIONAL.md#totals-that-follow-the-selected-time-period).
 
-This community project is not an official SUSE product or support commitment.
+## Guides and resource budgets
+
+- [Customer deployment procedure (PDF)](docs/Guia-SUSE-Observability-Helm-Fleet-v6.pdf) and [copyable Markdown](docs/GUIA-HELM-FLEET.md): prerequisites, editable files, Helm/Fleet commands and acceptance.
+- [Study guide (PDF)](docs/Guia-Estudo-SUSE-Observability-v6.pdf) and [Markdown](docs/GUIA-ESTUDO.md): how the charts, queries, dashboards and monitors work.
+- [CPU, memory, storage and security assessment](docs/IMPACTO-E-SEGURANCA.md): measured collector overhead, server history, storage scenarios and limitations.
+- [Request-by-request acceptance matrix](tests/MATRIZ-SOLICITACOES.md).
+
+Every chart component has CPU and memory requests and limits, including publisher and test Jobs. Helm schemas reject missing or zero budgets. Keep headroom for bursts; measured idle usage is not a safe limit. SMTP and notification rules remain manual. Use `sre-dashboards` for all project monitors or a `dashboard-*` tag for a specific dashboard, as listed in [alert coverage](docs/ALERT-COVERAGE.md).
+

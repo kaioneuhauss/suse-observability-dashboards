@@ -1,0 +1,25 @@
+# Opcional. Mescle com os valores persistentes do rke2-traefik somente quando
+# o cliente quiser investigação detalhada por requisição. Revise retenção e
+# exposição de RequestPath/ClientHost antes de habilitar.
+logs:
+  access:
+    enabled: true
+    format: json
+    fields:
+      general:
+        defaultmode: drop
+        names:
+          StartUTC: keep
+          RequestMethod: keep
+          RequestPath: keep
+          RequestHost: keep
+          DownstreamStatus: keep
+          Duration: keep
+          ServiceName: keep
+          RouterName: keep
+          ClientHost: keep
+          OriginStatus: keep
+          OriginDuration: keep
+          RetryAttempts: keep
+      headers:
+        defaultmode: drop

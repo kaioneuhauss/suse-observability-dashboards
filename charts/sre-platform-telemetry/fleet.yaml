@@ -1,0 +1,42 @@
+defaultNamespace: suse-observability
+helm:
+  chart: .
+  releaseName: sre-platform-telemetry
+  timeoutSeconds: 600
+  waitForJobs: true
+  disableDependencyUpdate: true
+  disablePreProcess: true
+  force: false
+  atomic: false
+  takeOwnership: false
+targetCustomizations:
+- name: harvester
+  clusterSelector:
+    matchLabels:
+      observability.example.com/cluster: harvester
+  defaultNamespace: suse-observability
+  helm:
+    valuesFiles:
+    - values.yaml
+    - config/harvester.yaml
+- name: observability-cluster
+  clusterSelector:
+    matchLabels:
+      observability.example.com/cluster: observability-cluster
+  defaultNamespace: suse-observability-agent
+  helm:
+    valuesFiles:
+    - values.yaml
+    - config/observability-cluster.yaml
+- name: rancher-kaio
+  clusterSelector:
+    matchLabels:
+      observability.example.com/cluster: rancher-kaio
+  defaultNamespace: suse-observability
+  helm:
+    valuesFiles:
+    - values.yaml
+    - config/rancher-kaio.yaml
+- name: exclude-others
+  clusterSelector: {}
+  doNotDeploy: true

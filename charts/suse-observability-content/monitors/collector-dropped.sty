@@ -1,0 +1,33 @@
+nodes:
+- _type: Monitor
+  name: SRE · metric collector discarded data · 15m
+  identifier: urn:custom:monitor:sre-dashboards:collector-dropped
+  description: 1 means the collector discarded samples or queued bytes during the
+    last 15 minutes. 0 means neither counter increased. The two different units are
+    not added together.
+  arguments:
+    metric:
+      query: max by (cluster_name,node,collector_kind) ((increase(vmagent_remotewrite_samples_dropped_total{job="sre-collector",node!=""}[15m])
+        > bool 0) or (increase(vm_persistentqueue_bytes_dropped_total{job="sre-collector",node!=""}[15m])
+        > bool 0))
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node} · ${collector_kind}
+    comparator: GT
+    threshold: 0
+    failureState: CRITICAL
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · metric collector discarded data · 15m · ${cluster_name} ·
+      ${node} · ${collector_kind}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Check the collector pod, readiness, recent and previous logs.
+
+    2. Verify DNS, TLS, NetworkPolicy, endpoint reachability, ingestion credentials
+    and remote-write responses.
+
+    3. Check queue growth and dropped samples. A running pod does not prove successful
+    delivery.'
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

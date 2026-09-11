@@ -1,0 +1,33 @@
+name: Validate Helm integration
+on:
+  push:
+    branches: [main, helm-fleet-v6]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        helm: [v3.19.0, v4.1.1]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: azure/setup-helm@v4
+        with:
+          version: ${{ matrix.helm }}
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m unittest discover -s tests -v
+      - run: bash tests/helm-checks.sh
+      - name: Verify package files
+        run: sha256sum --check SHA256SUMS
+      - name: Package each chart
+        run: |
+          mkdir -p /tmp/helm-packages
+          for chart in charts/*; do
+            helm package "$chart" --destination /tmp/helm-packages
+          done

@@ -1,0 +1,5 @@
+# Construa images/Dockerfile.publisher, espelhe e substitua o digest.
+publisher:
+  image: registry.cliente.example/observability/publisher@sha256:PREENCHA_DIGEST
+  cli:
+    path: /usr/local/bin/sts

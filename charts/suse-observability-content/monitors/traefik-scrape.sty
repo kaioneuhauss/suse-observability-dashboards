@@ -1,0 +1,32 @@
+nodes:
+- _type: Monitor
+  name: SRE · Traefik metrics scrape failing · 3m
+  identifier: urn:custom:monitor:sre-dashboards:traefik-scrape
+  description: A configured Traefik endpoint has no successful scrape in the observed
+    three-minute window. A missing target is different from a failed scrape; validate
+    the inventory as well.
+  arguments:
+    metric:
+      query: max_over_time((min by (cluster_name,instance) (up{job="traefik"}))[3m:30s])
+        * on (cluster_name) group_left(namespace,daemonset) (max by (cluster_name,namespace,daemonset)
+        (kubernetes_state_daemonset_desired{daemonset=~".*traefik.*"}) * 0 + 1)
+      unit: none
+      aliasTemplate: ${cluster_name} · ${instance}
+    comparator: LT
+    threshold: 1
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:daemonset/${daemonset}
+    titleTemplate: SRE · Traefik metrics scrape failing · ${cluster_name} · ${instance}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Check the collector pod, readiness, recent and previous logs.
+
+    2. Verify DNS, TLS, NetworkPolicy, endpoint reachability, ingestion credentials
+    and remote-write responses.
+
+    3. Check queue growth and dropped samples. A running pod does not prove successful
+    delivery.'
+  tags:
+  - sre-dashboards
+  - dashboard-traefik
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

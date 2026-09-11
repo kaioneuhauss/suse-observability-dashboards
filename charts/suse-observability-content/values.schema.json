@@ -1,0 +1,290 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "observability",
+    "auth",
+    "publisher"
+  ],
+  "properties": {
+    "observability": {
+      "type": "object",
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^https://[^ /]+(/.*)?$"
+        }
+      }
+    },
+    "auth": {
+      "type": "object",
+      "required": [
+        "dashboards",
+        "monitors"
+      ],
+      "properties": {
+        "dashboards": {
+          "type": "object",
+          "required": [
+            "existingSecret",
+            "serviceTokenKey"
+          ],
+          "properties": {
+            "existingSecret": {
+              "type": "string",
+              "minLength": 1
+            },
+            "serviceTokenKey": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "monitors": {
+          "type": "object",
+          "required": [
+            "existingSecret",
+            "serviceTokenKey"
+          ],
+          "properties": {
+            "existingSecret": {
+              "type": "string",
+              "minLength": 1
+            },
+            "serviceTokenKey": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "enum": [
+            "apply",
+            "plan",
+            "delete"
+          ]
+        },
+        "confirmDelete": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        }
+      }
+    },
+    "publisher": {
+      "type": "object",
+      "properties": {
+        "cli": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string"
+            },
+            "downloadUrl": {
+              "type": "string",
+              "pattern": "^https://"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^([a-fA-F0-9]{64})?$"
+            }
+          }
+        },
+        "activeDeadlineSeconds": {
+          "type": "integer",
+          "minimum": 60
+        },
+        "ttlSecondsAfterFinished": {
+          "type": "integer",
+          "minimum": 60
+        },
+        "resources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      },
+      "required": [
+        "resources"
+      ]
+    },
+    "dashboards": {
+      "type": "object",
+      "required": [
+        "enabled",
+        "include",
+        "updateStrategy"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "include": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "applications",
+              "resources",
+              "platform",
+              "traefik",
+              "harvester"
+            ]
+          }
+        },
+        "updateStrategy": {
+          "enum": [
+            "patch",
+            "replace"
+          ]
+        }
+      }
+    },
+    "monitors": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "include": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "etcd-no-leader",
+              "etcd-elections",
+              "etcd-failed",
+              "etcd-pending",
+              "etcd-lag",
+              "etcd-fsync",
+              "etcd-commit",
+              "etcd-quota",
+              "etcd-scrape",
+              "node-space",
+              "node-inodes",
+              "node-memory",
+              "node-telemetry",
+              "pvc-space",
+              "container-memory",
+              "vm-guest-memory",
+              "tls-30",
+              "tls-7",
+              "pvc-trend-12",
+              "pvc-trend-96",
+              "collector-backlog",
+              "collector-dropped",
+              "etcd-telemetry-missing",
+              "ingress-inventory",
+              "traefik-scrape",
+              "host-disk-latency",
+              "vm-cpu-delay",
+              "vm-disk-latency",
+              "traefik-http-errors",
+              "traefik-http-latency",
+              "app-http-errors",
+              "app-http-latency",
+              "vm-filesystem-used"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "componentResources": {
+      "type": "object",
+      "required": [
+        "requests",
+        "limits"
+      ],
+      "properties": {
+        "requests": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

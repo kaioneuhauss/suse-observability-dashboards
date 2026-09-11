@@ -1,0 +1,74 @@
+{
+  "etcd-no-leader": [
+    "urn:custom:monitor:sre-etcd-without-leader-1-m"
+  ],
+  "etcd-elections": [
+    "urn:custom:monitor:sre-etcd-leader-changes-above-3-in-15-m"
+  ],
+  "etcd-failed": [
+    "urn:custom:monitor:sre-etcd-failed-proposals-in-15-m"
+  ],
+  "etcd-pending": [
+    "urn:custom:monitor:sre-etcd-pending-proposals-above-100"
+  ],
+  "etcd-lag": [
+    "urn:custom:monitor:sre-etcd-apply-backlog-above-1000"
+  ],
+  "etcd-fsync": [
+    "urn:custom:monitor:sre-etcd-wal-p-99-above-10-ms"
+  ],
+  "etcd-commit": [
+    "urn:custom:monitor:sre-etcd-commit-p-99-above-25-ms"
+  ],
+  "etcd-quota": [
+    "urn:custom:monitor:sre-etcd-database-above-80-percent-quota"
+  ],
+  "etcd-scrape": [
+    "urn:custom:monitor:sre-etcd-scrape-failing-3-m"
+  ],
+  "node-space": [
+    "urn:custom:monitor:sre-filesystem-below-10-percent-available-15-m"
+  ],
+  "node-inodes": [
+    "urn:custom:monitor:sre-filesystem-below-10-percent-free-inodes-15-m"
+  ],
+  "node-memory": [
+    "urn:custom:monitor:sre-host-os-below-10-percent-available-ram-15-m"
+  ],
+  "node-telemetry": [
+    "urn:custom:monitor:sre-missing-node-os-telemetry-5-m"
+  ],
+  "pvc-space": [
+    "urn:custom:monitor:sre-pvc-filesystem-below-10-percent-available-15-m"
+  ],
+  "container-memory": [
+    "urn:custom:monitor:sre-container-working-set-above-95-percent-limit-5-m"
+  ],
+  "vm-guest-memory": [
+    "urn:custom:monitor:sre-vm-guest-os-below-10-percent-available-ram-15-m"
+  ],
+  "tls-30": [
+    "urn:custom:monitor:sre-traefik-certificate-expires-within-30-days"
+  ],
+  "tls-7": [
+    "urn:custom:monitor:sre-traefik-certificate-expires-within-7-days"
+  ],
+  "pvc-trend-12": [
+    "urn:custom:monitor:sre-pvc-filesystem-projected-full-within-12-h"
+  ],
+  "pvc-trend-96": [
+    "urn:custom:monitor:sre-pvc-filesystem-projected-full-within-96-h"
+  ],
+  "collector-backlog": [
+    "urn:custom:monitor:sre-metric-collection-backlog-persists-10-m"
+  ],
+  "collector-dropped": [
+    "urn:custom:monitor:sre-metric-collector-discarded-data-15-m"
+  ],
+  "etcd-telemetry-missing": [
+    "urn:custom:monitor:sre-etcd-telemetry-disappeared-5-m"
+  ],
+  "ingress-inventory": [
+    "urn:custom:monitor:sre-ingress-inventory-collection-failing-3-m"
+  ]
+}

@@ -1,0 +1,63 @@
+# Instale no namespace do Agent. Nao instala Agent, OTLP Ingress ou um segundo collector automaticamente.
+# A CA publica kubevirt-metrics-ca deve existir neste namespace.
+# A fila e contada em requests, NAO em bytes. RAM tambem limitada pelo cgroup/memory_limiter.
+clusterName: ''
+otlp:
+  endpoint: ''
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+  caSecret: ''
+  caKey: ca.crt
+image:
+  repository: dp.apps.rancher.io/containers/opentelemetry-collector
+  tag: 0.156.0-k8s-13.1
+  digest: ''
+  pullPolicy: IfNotPresent
+imagePullSecrets:
+- name: application-collection
+command: []
+kubevirt:
+  namespace: harvester-system
+  service: kubevirt-prometheus-metrics
+  metricsPortName: metrics
+  ca:
+    existingConfigMap: kubevirt-metrics-ca
+    key: ca-bundle
+    revision: '1'
+  serverNames:
+    virt-api: virt-api.harvester-system.svc
+    virt-controller: virt-controller.harvester-system.svc
+    virt-handler: virt-handler.harvester-system.svc
+    virt-operator: kubevirt-operator-webhook.harvester-system.svc
+scrapeInterval: 30s
+scrapeTimeout: 10s
+safety:
+  profile: conservative
+  metricAllowlist:
+    enabled: true
+    regex: (kubevirt_vm_resource_limits|kubevirt_vm_resource_requests|kubevirt_vmi_cpu_usage_seconds_total|kubevirt_vmi_filesystem_capacity_bytes|kubevirt_vmi_filesystem_used_bytes|kubevirt_vmi_info|kubevirt_vmi_memory_available_bytes|kubevirt_vmi_memory_resident_bytes|kubevirt_vmi_memory_usable_bytes|kubevirt_vmi_vcpu_(delay_seconds_total|wait_seconds_total|seconds_total)|kubevirt_vmi_memory_(actual_balloon_bytes|unused_bytes|cached_bytes|pgmajfault_total|pgminfault_total|swap_in_traffic_bytes|swap_out_traffic_bytes)|kubevirt_vmi_storage_(iops_read_total|iops_write_total|read_times_seconds_total|write_times_seconds_total|read_traffic_bytes_total|write_traffic_bytes_total|flush_requests_total|flush_times_seconds_total))
+  cardinality:
+    mode: observe
+    sampleLimit: 10000
+    labelLimit: 60
+otel:
+  memoryLimitMiB: 384
+  spikeLimitMiB: 102
+  queueSize: 128
+  queueConsumers: 2
+  batchSize: 1000
+  batchMaxSize: 1000
+  retryMaxElapsedTime: 5m
+resources:
+  requests:
+    cpu: 20m
+    memory: 192Mi
+    ephemeral-storage: 16Mi
+  limits:
+    cpu: 300m
+    memory: 512Mi
+    ephemeral-storage: 64Mi
+nodeSelector:
+  kubernetes.io/os: linux
+tolerations: []
+selfMonitoring: true

@@ -1,0 +1,34 @@
+nodes:
+- _type: Monitor
+  name: SRE · etcd database above 80 percent quota
+  identifier: urn:custom:monitor:sre-dashboards:etcd-quota
+  description: Checks etcd database above 80 percent quota. Values are evaluated every
+    60 seconds. Windows apply to observed samples; inspect collection health before
+    interpreting a missing result. Thresholds are starting points to review against
+    the workload baseline.
+  arguments:
+    metric:
+      query: min_over_time((max by (cluster_name,node) (etcd_mvcc_db_total_size_in_bytes{job="sre-etcd"})
+        / max by (cluster_name,node) (etcd_server_quota_backend_bytes{job="sre-etcd"}))[10m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node}
+    comparator: GT
+    threshold: 0.8
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · etcd database above 80 percent quota · ${cluster_name} ·
+      ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Identify the cluster and node in the title. Check etcd quorum
+    and peer connectivity.
+
+    2. Compare leader changes, WAL writes, database commits, peer round trips, pod
+    restarts and previous logs at the same time.
+
+    3. Preserve snapshots before recovery. Never remove a member or restore a snapshot
+    based on this alert alone.'
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

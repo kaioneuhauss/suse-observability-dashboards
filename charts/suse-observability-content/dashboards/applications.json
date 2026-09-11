@@ -1,0 +1,854 @@
+{
+  "name": "Dashboard - Instrumented apps",
+  "description": "Application traffic, failed responses, and response time measured inside the application.",
+  "scope": "publicDashboard",
+  "dashboard": {
+    "metadata": {
+      "project": "{\"saveVariables\":false}"
+    },
+    "spec": {
+      "layouts": [
+        {
+          "kind": "Grid",
+          "spec": {
+            "items": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 24,
+                "height": 1,
+                "content": {
+                  "$ref": "#/spec/panels/guide"
+                }
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/rps"
+                }
+              },
+              {
+                "x": 12,
+                "y": 1,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/requests1h"
+                }
+              },
+              {
+                "x": 0,
+                "y": 3,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/requests24h"
+                }
+              },
+              {
+                "x": 12,
+                "y": 3,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/p95_1h"
+                }
+              },
+              {
+                "x": 0,
+                "y": 5,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/success"
+                }
+              },
+              {
+                "x": 12,
+                "y": 5,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/error5xx"
+                }
+              },
+              {
+                "x": 0,
+                "y": 7,
+                "width": 24,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/routeTotals"
+                }
+              },
+              {
+                "x": 0,
+                "y": 9,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/slowServices"
+                }
+              },
+              {
+                "x": 0,
+                "y": 12,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/throughput"
+                }
+              },
+              {
+                "x": 12,
+                "y": 12,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/outcomes"
+                }
+              },
+              {
+                "x": 0,
+                "y": 15,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/errorRoutes"
+                }
+              },
+              {
+                "x": 12,
+                "y": 15,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/latency"
+                }
+              },
+              {
+                "x": 0,
+                "y": 18,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/errorTotals"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "panels": {
+        "guide": {
+          "spec": {
+            "display": {
+              "name": "How to read this dashboard",
+              "description": "Traffic and timing measured inside the application. Proxy traffic is shown separately in Traefik Ingress Health."
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**Inside the application.** These measurements cover instrumented routes. Totals are rounded estimates between scrapes. Compare the same route and time window; a short test runs faster than its one-hour average. Response time is in milliseconds (1000 ms = 1 second). The question-mark descriptions explain each calculation. Metrics locate errors; logs and traces explain individual failures.\n\n**Selected period** totals follow the toolbar time range. Five-minute rates and response times remain moving averages. Request totals are metric estimates, not an access-log count."
+              }
+            },
+            "queries": []
+          }
+        },
+        "rps": {
+          "spec": {
+            "display": {
+              "description": "Estimated completed requests divided by the duration selected in the top toolbar. For example, 600 requests over 60 seconds average 10 requests/s. Compare this with the five-minute or recent rate only when using the same time window and application.\n\nWhen to investigate / alert coverage: Traffic is context; investigate with HTTP errors and response time.",
+              "name": "Average traffic · selected period · req/s"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "reqps"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Requests/s",
+                      "query": "((sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) / clamp_min(scalar(last_over_time(vector(time())[1s:1s] @ end())) - scalar(last_over_time(vector(time())[1s:1s] @ start())), 1)))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "requests1h": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor",
+              "name": "Estimated requests · selected period"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Requests",
+                      "query": "(round(sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))), 1))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "requests24h": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor Amber means at least one error was observed in this period. The count alone does not determine incident severity; check the error percentage, affected application and monitor state.",
+              "name": "Estimated HTTP 5xx · selected period"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 1
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "HTTP 5xx",
+                      "query": "((round(sum(range_sum(increase(http_server_requests_total{status_class=\"5xx\",cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))), 1))) or (0 * ((round(sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))), 1))))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "success": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name.",
+              "name": "Successful responses · %"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "percentunit"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#D32F2F",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 0.95
+                    },
+                    {
+                      "color": "#2E8540",
+                      "value": 0.99
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Success",
+                      "query": "(((sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\",status_class=~\"2xx|3xx\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) or (sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) * 0)) / (sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) > 0)))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "error5xx": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name.",
+              "name": "Server errors · %"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "percentunit"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 0.01
+                    },
+                    {
+                      "color": "#D32F2F",
+                      "value": 0.05
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "5xx",
+                      "query": "(((sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\",status_class=\"5xx\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) or (sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) * 0)) / (sum(range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))) > 0)))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "p95_1h": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. Percentiles use histogram buckets and are estimates. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: instrumented app p95 above 3s · 10m. Application p95 response time exceeds 3 seconds with at least 100 calls per five-minute calculation window, over observed samples for ten minutes. Health attaches to the namespace; the title identifies the application.",
+              "name": "95% of calls finish within · selected period · ms"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 500
+                    },
+                    {
+                      "color": "#D32F2F",
+                      "value": 1000
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "95 of 100 calls (p95)",
+                      "query": "((histogram_quantile(0.95, sum by (le) (range_sum(increase(http_server_request_duration_seconds_bucket{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))))) * 1000",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "throughput": {
+          "spec": {
+            "display": {
+              "name": "Requests per second by route",
+              "description": "A route is an application endpoint. This chart shows which functions receive the most calls.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "reqps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,service_name,http_route) (rate(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[5m]))), \"sre_series\", \" · \", \"cluster_name\", \"service_name\", \"http_route\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "outcomes": {
+          "spec": {
+            "display": {
+              "name": "Response types over time",
+              "description": "2xx means success; 3xx means redirection; 4xx needs client or authentication context; 5xx means a server error.\n\nWhen to investigate / alert coverage: instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "reqps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (status_class) (rate(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[5m]))), \"sre_series\", \"\", \"status_class\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "errorRoutes": {
+          "spec": {
+            "display": {
+              "name": "When and where HTTP errors occurred · requests/s",
+              "description": "Find the application, normalized route and exact HTTP code. Each point averages the chart rate interval, which grows when you zoom out. Zoom in to narrow down the event window. 400/404 can be invalid client input or an unknown path; 500/503 can come from the application or its dependencies. These are possibilities, not a diagnosis. Use logs or traces for the exact event and cause.\n\nWhen to investigate / alert coverage: instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 3,
+                    "unit": "reqps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((label_join((label_join((label_join((sum by (cluster_name,service_name,http_route,http_response_status_code) (rate(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\",status_class=~\"4xx|5xx\"}[${__rate_interval}]))), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"service_name\")), \"sre_series\", \" · \", \"sre_series\", \"http_route\")), \"sre_series\", \" · HTTP \", \"sre_series\", \"http_response_status_code\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "errorTotals": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name.",
+              "name": "HTTP errors by app, route and code · selected period"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((label_join((label_join((label_join((label_join((round(sum by (cluster_name,service_name,http_route,http_request_method,http_response_status_code) (range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\",status_class=~\"4xx|5xx\"}[1m] @ end()) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))), 1)), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"service_name\")), \"sre_series\", \" · \", \"sre_series\", \"http_request_method\")), \"sre_series\", \" \", \"sre_series\", \"http_route\")), \"sre_series\", \" · HTTP \", \"sre_series\", \"http_response_status_code\"))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "latency": {
+          "spec": {
+            "display": {
+              "name": "Response time over time · ms",
+              "description": "p50 covers half the calls, p95 covers 95%, and p99 covers 99%. Without completed calls, no response time can be calculated.\n\nWhen to investigate / alert coverage: instrumented app p95 above 3s · 10m. Application p95 response time exceeds 3 seconds with at least 100 calls per five-minute calculation window, over observed samples for ten minutes. Health attaches to the namespace; the title identifies the application."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Half of calls (p50)",
+                      "query": "(histogram_quantile(0.50, sum by (le) (rate(http_server_request_duration_seconds_bucket{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[5m])))) * 1000"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "95 of 100 calls (p95)",
+                      "query": "(histogram_quantile(0.95, sum by (le) (rate(http_server_request_duration_seconds_bucket{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[5m])))) * 1000"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "99 of 100 calls (p99)",
+                      "query": "(histogram_quantile(0.99, sum by (le) (rate(http_server_request_duration_seconds_bucket{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[5m])))) * 1000"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "routeTotals": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor",
+              "name": "Requests by route · selected period"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((round(sum by (cluster_name,service_name,http_route) (range_sum(increase(http_server_requests_total{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m] @ end()) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))), 1)), \"sre_series\", \" · \", \"cluster_name\", \"service_name\", \"http_route\"))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "slowServices": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. Percentiles use histogram buckets and are estimates. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: instrumented app p95 above 3s · 10m. Application p95 response time exceeds 3 seconds with at least 100 calls per five-minute calculation window, over observed samples for ten minutes. Health attaches to the namespace; the title identifies the application.",
+              "name": "Slowest applications · p95 response time in ms"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join(((topk(10, histogram_quantile(0.95, sum by (cluster_name,service_name,le) (range_sum(increase(http_server_request_duration_seconds_bucket{cluster_name=~\"${app_cluster}\",service_name=~\"${instrumented_service}\",http_route!~\"(?i).*(health|ready|live|metrics).*\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))))) * 1000), \"sre_series\", \" · \", \"cluster_name\", \"service_name\"))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "variables": [
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "app_cluster",
+              "display": {
+                "name": "Cluster",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "cluster_name",
+                  "matchers": [
+                    "{__name__=~\"http_server_requests_total|http_server_active_requests\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        },
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "instrumented_service",
+              "display": {
+                "name": "Application",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "service_name",
+                  "matchers": [
+                    "{__name__=~\"http_server_requests_total|http_server_active_requests\",cluster_name=~\"${app_cluster}\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        }
+      ]
+    }
+  }
+}

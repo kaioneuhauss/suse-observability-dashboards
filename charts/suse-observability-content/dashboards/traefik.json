@@ -1,0 +1,1287 @@
+{
+  "name": "Traefik Ingress Health",
+  "description": "Incoming application traffic, errors, response times, and certificate expiry.",
+  "scope": "publicDashboard",
+  "dashboard": {
+    "metadata": {
+      "project": "{\"saveVariables\":false}"
+    },
+    "spec": {
+      "layouts": [
+        {
+          "kind": "Grid",
+          "spec": {
+            "items": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 24,
+                "height": 1,
+                "content": {
+                  "$ref": "#/spec/panels/guide"
+                }
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/requests1h"
+                }
+              },
+              {
+                "x": 12,
+                "y": 1,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/rps"
+                }
+              },
+              {
+                "x": 0,
+                "y": 3,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/meanLatency"
+                }
+              },
+              {
+                "x": 12,
+                "y": 3,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/p95"
+                }
+              },
+              {
+                "x": 0,
+                "y": 5,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/client4xx"
+                }
+              },
+              {
+                "x": 12,
+                "y": 5,
+                "width": 12,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/error5xx"
+                }
+              },
+              {
+                "x": 0,
+                "y": 7,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/requestRate"
+                }
+              },
+              {
+                "x": 0,
+                "y": 10,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/latency"
+                }
+              },
+              {
+                "x": 0,
+                "y": 13,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/errorTimeline"
+                }
+              },
+              {
+                "x": 0,
+                "y": 16,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/clientErrorTimeline"
+                }
+              },
+              {
+                "x": 0,
+                "y": 19,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/serviceRequests24h"
+                }
+              },
+              {
+                "x": 0,
+                "y": 22,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/serviceTraffic"
+                }
+              },
+              {
+                "x": 12,
+                "y": 22,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/serviceErrorRatio"
+                }
+              },
+              {
+                "x": 0,
+                "y": 25,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/byCode"
+                }
+              },
+              {
+                "x": 12,
+                "y": 25,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/serviceLatency"
+                }
+              },
+              {
+                "x": 0,
+                "y": 28,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/codeTotals"
+                }
+              },
+              {
+                "x": 0,
+                "y": 31,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/tlsExpiry"
+                }
+              },
+              {
+                "x": 0,
+                "y": 34,
+                "width": 24,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/openConnections"
+                }
+              },
+              {
+                "x": 0,
+                "y": 36,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/bandwidth"
+                }
+              },
+              {
+                "x": 0,
+                "y": 39,
+                "width": 24,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/collection"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "panels": {
+        "guide": {
+          "spec": {
+            "display": {
+              "name": "How to read incoming traffic",
+              "description": "HTTP at the proxy includes health checks, APIs, authentication, and other automated calls."
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**Totals** cover the selected period. **Traffic and response time** use five-minute windows. Short benchmarks use a different window: allow ingestion, then click **Refresh**.\n\n**Average:** 50, 100 and 150 ms average 100 ms. **p95:** about 95 of 100 calls finish within this time. Traefik measures server traffic; browser timing includes the network. Totals include automated calls and may be incomplete for new series or collection gaps. After changing Cluster, reset the other filters to Everything."
+              }
+            },
+            "queries": []
+          }
+        },
+        "rps": {
+          "spec": {
+            "display": {
+              "name": "Requests/s · 5-minute average",
+              "description": "Requests averaged over five minutes. A brief load test is diluted by the quiet part of that window. Select its application before comparing traffic.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "reqps"
+                },
+                "sparkline": false,
+                "valueFontSize": 40,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Requests/s",
+                      "query": "last_over_time((sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))))[1s:1s] @ end())"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "meanLatency": {
+          "spec": {
+            "display": {
+              "name": "Average response time · 5 min · ms",
+              "description": "How long a request takes on average to get a response, measured by Traefik for the selected applications. Add all response times and divide by the number of completed requests. Example: calls taking 50, 100, and 150 ms give an average of 100 ms. Lower means faster responses. A few slow calls can be hidden by this average; also check the 95-of-100 response time. Browser timing includes extra network time. Without completed requests, this value is unavailable.\n\nWhen to investigate / alert coverage: Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "valueFontSize": 40,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Average response time",
+                      "query": "(last_over_time((sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_sum{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_sum{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_sum{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))) / (sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_count{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_count{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_count{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))) > 0))[1s:1s] @ end())) * 1000"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "requestRate": {
+          "spec": {
+            "display": {
+              "name": "Traffic over time · 5-minute average · req/s",
+              "description": "Each point is the average number of requests per second over the previous five minutes. Short tests are spread across that window; this is not the achieved rate during the browser benchmark.\n\nWhen to investigate / alert coverage: Operational context: compare traffic with HTTP errors, response time and collection health."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "reqps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Five-minute average",
+                      "query": "sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "requests1h": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor",
+              "name": "Estimated requests · selected period"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Requests",
+                      "query": "(round(sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))), 1))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "client4xx": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Diagnostic context: some 4xx responses are expected; set a service-specific policy Amber means at least one error was observed in this period. The count alone does not determine incident severity; check the error percentage, affected application and monitor state.",
+              "name": "Estimated HTTP 4xx · selected period"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 1
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "4xx",
+                      "query": "(round((sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"4..\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"4..\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"4..\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))) or (sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))) * 0)), 1))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "error5xx": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Traefik HTTP 5xx above 5 percent · 5m. More than 5% of completed requests fail with HTTP 5xx, with at least 100 requests in each observed five-minute calculation window. The condition must persist over observed samples for five minutes. Uses Traefik counters, not span sampling. Amber means at least one error was observed in this period. The count alone does not determine incident severity; check the error percentage, affected application and monitor state.",
+              "name": "Estimated HTTP 5xx · selected period"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 1
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "5xx",
+                      "query": "(round((sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))) or (sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m]))))) * 0)), 1))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "p95": {
+          "spec": {
+            "display": {
+              "name": "95% of calls finish within · 5 min · ms",
+              "description": "If this shows 200 ms, about 95 out of 100 calls finished within 200 ms and the other five took longer. This is the p95 response time: it helps spot slow experiences that an average can hide. It is estimated from Traefik measurements for the selected applications over the last hour, including earlier tests. Lower means faster responses. Browser measurements can differ because they include extra network time. Uses the same five-minute window as average response time. The average can exceed p95 when a few requests take an exceptionally long time, such as long polling.\n\nWhen to investigate / alert coverage: Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "valueFontSize": 40,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 500.0
+                    },
+                    {
+                      "color": "#D32F2F",
+                      "value": 1000.0
+                    }
+                  ]
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "95 of 100 calls (p95)",
+                      "query": "(last_over_time((histogram_quantile(0.95, sum by (le) ((sum by (cluster_name,service,protocol,code,method,le) ((max by (cluster_name,instance,service,protocol,code,method,le) (increase(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(increase(_traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (increase(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(last_over_time(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}[5m]), \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(last_over_time(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}[5m]), \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (last_over_time(sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}[5m])))))))[1s:1s] @ end())) * 1000"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "serviceRequests24h": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor",
+              "name": "Requests by application · selected period"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((topk(10, round(sum by (cluster_name,namespace,backend) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))), 1))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"backend\"))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "serviceErrorRatio": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Traefik HTTP 5xx above 5 percent · 5m. More than 5% of completed requests fail with HTTP 5xx, with at least 100 requests in each observed five-minute calculation window. The condition must persist over observed samples for five minutes. Uses Traefik counters, not span sampling.",
+              "name": "Server errors by application · selected period · %"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "percentunit"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((topk(10, (sum by (cluster_name,namespace,backend) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))) or ((sum by (cluster_name,namespace,backend) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))) * 0)) / ((sum by (cluster_name,namespace,backend) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))) > 0))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"backend\"))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "serviceTraffic": {
+          "spec": {
+            "display": {
+              "name": "Requests per second by application",
+              "description": "Traffic distribution and changes across the selected services.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "reqps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,backend) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"backend\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "byCode": {
+          "spec": {
+            "display": {
+              "name": "HTTP response codes · requests per second",
+              "description": "2xx means success; 3xx redirection; 4xx client error or rejection; 5xx server failure. Code zero is a proxy or connection outcome.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "reqps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_replace((label_join((sum by (code) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))), \"sre_series\", \"\", \"code\")), \"sre_series\", \"HTTP $1\", \"sre_series\", \"(.*)\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "latency": {
+          "spec": {
+            "display": {
+              "name": "Response time · average, p50, p95, p99 · ms",
+              "description": "Each point summarizes the preceding five minutes. Average adds all response times and divides by completed requests. Half of calls (p50) finished within that line's time; 95 of 100 (p95) and 99 of 100 (p99) show how long slower calls took. Example: p95 of 200 ms means about 95% finished within 200 ms and 5% took longer. Rising lines mean slower responses. Traefik estimates these percentiles from timing buckets; without calls, no response time can be calculated.\n\nWhen to investigate / alert coverage: Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Average",
+                      "query": "(sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_sum{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_sum{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_sum{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))) / (sum((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_count{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_count{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_count{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))) > 0)) * 1000"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Half of calls (p50)",
+                      "query": "(histogram_quantile(0.50, sum by (le) ((sum by (cluster_name,service,protocol,code,method,le) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))))) * 1000"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "95 of 100 calls (p95)",
+                      "query": "(histogram_quantile(0.95, sum by (le) ((sum by (cluster_name,service,protocol,code,method,le) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))))) * 1000"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "99 of 100 calls (p99)",
+                      "query": "(histogram_quantile(0.99, sum by (le) ((sum by (cluster_name,service,protocol,code,method,le) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))))) * 1000"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "serviceLatency": {
+          "spec": {
+            "display": {
+              "name": "Slowest applications · p95 · ms",
+              "description": "Compare applications over five-minute windows. If an application shows 200 ms, about 95 out of 100 calls finished within 200 ms and five took longer. This estimate is called p95. Higher values identify applications whose slower responses need investigation.\n\nWhen to investigate / alert coverage: Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join(((histogram_quantile(0.95, sum by (cluster_name,namespace,backend,le) ((sum by (cluster_name,service,protocol,code,method,le) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_request_duration_seconds_bucket{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))))) * 1000), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"backend\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "bandwidth": {
+          "spec": {
+            "display": {
+              "name": "Application data transferred per second",
+              "description": "Request and response payload bytes for selected services. This is not total network-interface traffic.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "Bps"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Incoming bytes/s",
+                      "query": "sum((sum by (cluster_name,service,protocol) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_bytes_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_requests_bytes{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_requests_bytes_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Outgoing bytes/s",
+                      "query": "sum((sum by (cluster_name,service,protocol) ((max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_responses_bytes_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m]))) or ((label_replace(rate(_traefik_service_responses_bytes{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[5m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (rate(traefik_service_responses_bytes_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[5m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "tlsExpiry": {
+          "spec": {
+            "display": {
+              "name": "TLS certificates · days until expiry · whole cluster",
+              "description": "Certificate names (SAN) and serial number identify each certificate. Lower values need attention; negative means expired. Namespace and application filters do not apply.\n\nWhen to investigate / alert coverage: Traefik certificate expires within 30 days. Checks Traefik certificate expires within 30 days. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline. Traefik certificate expires within 7 days. Checks Traefik certificate expires within 7 days. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((label_join((label_join(((min by (cluster_name,sans,serial) ((traefik_tls_certs_not_after{cluster_name=~\"${ingress_cluster}\"}) or (_traefik_tls_certs_not_after{cluster_name=~\"${ingress_cluster}\"})) - time()) / 86400), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"sans\")), \"sre_series\", \" · serial \", \"sre_series\", \"serial\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "openConnections": {
+          "spec": {
+            "display": {
+              "name": "Open Traefik connections · whole cluster",
+              "description": "Includes long-lived connections such as WebSockets. An open connection is not a completed request or unique user.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,entrypoint) ((traefik_open_connections{cluster_name=~\"${ingress_cluster}\"}) or ((_traefik_open_connections{cluster_name=~\"${ingress_cluster}\"}) unless on (cluster_name) (traefik_open_connections{cluster_name=~\"${ingress_cluster}\"})))), \"sre_series\", \" · \", \"cluster_name\", \"entrypoint\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "codeTotals": {
+          "spec": {
+            "display": {
+              "description": "Uses the time period selected in the top toolbar. Sums non-overlapping one-minute counter changes across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial minute boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor",
+              "name": "Requests by app, code and method · selected period"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((round(sum by (cluster_name,namespace,backend,code,method) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))))) or ((label_replace(range_sum(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",traefik_backend!=\"\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start())))), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (range_sum(increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\"}[1m]) and on() (vector(time()) > scalar(last_over_time(vector(time())[1s:1s] @ start()))))))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"})))), 1)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"backend\", \"code\", \"method\"))",
+                      "minStep": "1m"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "errorTimeline": {
+          "spec": {
+            "display": {
+              "name": "HTTP 5xx · application and time",
+              "description": "Each line identifies the cluster, namespace, application and response code. Hover over a peak to see its time window. Each point estimates errors in the preceding chart interval, which grows when you zoom out. Adjacent windows can overlap: do not add the points to obtain a total. Scrapes are normally 30 seconds apart. Exact request timestamps and the reason require access logs and application logs/traces. A 5xx is a server-side failure; a 4xx is a rejected request, not necessarily an outage.\n\nWhen to investigate / alert coverage: Traefik HTTP 5xx above 5 percent · 5m. More than 5% of completed requests fail with HTTP 5xx, with at least 100 requests in each observed five-minute calculation window. The condition must persist over observed samples for five minutes. Uses Traefik counters, not span sampling."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "unit": "none",
+                    "decimalPlaces": 1
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((label_join((label_join((label_join((sum by (cluster_name,namespace,backend,code) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\"}[${__interval}]))) or ((label_replace(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\",traefik_backend!=\"\"}[${__interval}]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"5..\"}[${__interval}])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"namespace\")), \"sre_series\", \" · \", \"sre_series\", \"backend\")), \"sre_series\", \" · HTTP \", \"sre_series\", \"code\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "collection": {
+          "spec": {
+            "display": {
+              "name": "Traefik collection · 1 working / 0 failed",
+              "description": "One line for each Traefik target. A zero is a scrape failure; a missing cluster has no configured target. Namespace and application filters do not apply.\n\nWhen to investigate / alert coverage: Traefik metrics scrape failing · 3m. A configured Traefik endpoint has no successful scrape in the observed three-minute window. A missing target is different from a failed scrape; validate the inventory as well. Ingress inventory collection failing · 3m. Checks Ingress inventory collection failing · 3m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "none"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((min by (cluster_name,instance) (up{job=\"traefik\",cluster_name=~\"${ingress_cluster}\"})), \"sre_series\", \" · \", \"cluster_name\", \"instance\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "clientErrorTimeline": {
+          "spec": {
+            "display": {
+              "name": "HTTP 4xx · application and time",
+              "description": "Each line identifies the cluster, namespace, application and response code. Hover over a peak to see its time window. Each point estimates errors in the preceding minute, from scrapes normally 30 seconds apart. Exact request timestamps and the reason require access logs and application logs/traces. A 5xx is a server-side failure; a 4xx is a rejected request, not necessarily an outage.\n\nWhen to investigate / alert coverage: Diagnostic context: investigate unexpected rejection patterns, not every 4xx as an outage"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "unit": "none",
+                    "decimalPlaces": 1
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((label_join((label_join((label_join((sum by (cluster_name,namespace,backend,code) ((sum by (cluster_name,service,protocol,code,method) ((max by (cluster_name,instance,service,protocol,code,method,le) (increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"4..\"}[1m]))) or ((label_replace(increase(_traefik_service_requests{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"4..\",traefik_backend!=\"\"}[1m]), \"service\", \"$1\", \"traefik_backend\", \"(.*)\")) unless on (cluster_name) (max by (cluster_name,instance,service,protocol,code,method,le) (increase(traefik_service_requests_total{cluster_name=~\"${ingress_cluster}\",protocol=\"http\",code=~\"4..\"}[1m])))))) * on (cluster_name,service) group_left(namespace,backend) ((max by (cluster_name,namespace,service,backend) (label_replace(sre_ingress_backend_info{cluster_name=~\"${ingress_cluster}\",ingress_namespace!=\"\",ingress_namespace=~\"${ingress_namespace}\",backend=~\"${ingress_service}\"}, \"namespace\", \"$1\", \"ingress_namespace\", \"(.*)\"))) or ((max by (cluster_name,namespace,service,backend) (label_replace(label_join(label_replace(kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\",service=~\"${ingress_service}\"}, \"backend\", \"$1\", \"service\", \"(.*)\"), \"service_key\", \"-\", \"namespace\", \"service\", \"kube_service_port\"), \"service\", \"$1@kubernetes\", \"service_key\", \"(.*)\"))) unless on (cluster_name) (sre_ingress_inventory_success{cluster_name=~\"${ingress_cluster}\"}))))), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"namespace\")), \"sre_series\", \" · \", \"sre_series\", \"backend\")), \"sre_series\", \" · HTTP \", \"sre_series\", \"code\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "variables": [
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "ingress_cluster",
+              "display": {
+                "name": "Cluster",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "cluster_name",
+                  "matchers": [
+                    "up{job=\"traefik\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        },
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "ingress_namespace",
+              "display": {
+                "name": "Namespace",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "namespace",
+                  "matchers": [
+                    "kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",service!=\"\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        },
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "ingress_service",
+              "display": {
+                "name": "Application",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "service",
+                  "matchers": [
+                    "kubernetes_state_ingress_path{cluster_name=~\"${ingress_cluster}\",namespace=~\"${ingress_namespace}\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        }
+      ]
+    }
+  }
+}

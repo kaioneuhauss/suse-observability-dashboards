@@ -15,7 +15,7 @@ data:
   scrape.yaml: |
     global:
       scrape_interval: {{ $root.Values.scrapeInterval }}
-      scrape_timeout: 10s
+      scrape_timeout: {{ $root.Values.scrapeTimeout }}
       external_labels:
         cluster_name: {{ required "clusterName is required" $root.Values.clusterName | quote }}
         node: "%{NODE_NAME}"
@@ -23,6 +23,12 @@ data:
         collector_kind: {{ $kind }}
     scrape_configs:
       - job_name: sre-{{ $kind }}
+        {{ if eq $root.Values.safety.cardinality.mode "enforce" }}
+        {{ $limits := ternary $root.Values.safety.cardinality.node $root.Values.safety.cardinality.etcd (eq $kind "node") }}
+        sample_limit: {{ $limits.sampleLimit }}
+        series_limit: {{ $limits.seriesLimit }}
+        label_limit: {{ $limits.labelLimit }}
+        {{ end }}
         static_configs:
           - targets:
             {{- if eq $kind "node" }}
@@ -30,10 +36,12 @@ data:
             {{- else }}
               - {{ trimPrefix "http://" ($root.Values.etcd.endpoint | trimSuffix "/metrics") | quote }}
             {{- end }}
+        {{ if $root.Values.safety.metricAllowlist.enabled }}
         metric_relabel_configs:
           - source_labels: [__name__]
-            regex: {{ if eq $kind "node" }}'node_(filesystem_.*|memory_.*|cpu_seconds_total|pressure_.*|load.*|time_seconds|boot_time_seconds|disk_.*|network_.*)|node_scrape_collector_success'{{ else }}'etcd_(server_.*|disk_.*|network_peer_.*|mvcc_.*|debugging_mvcc_.*)|process_start_time_seconds'{{ end }}
+            regex: {{ ternary $root.Values.safety.metricAllowlist.nodeRegex $root.Values.safety.metricAllowlist.etcdRegex (eq $kind "node") | quote }}
             action: keep
+        {{ end }}
       {{- if $root.Values.vmagent.selfMonitoring }}
       - job_name: sre-collector
         static_configs:
@@ -64,13 +72,11 @@ spec:
         telemetry/config-hash: {{ toJson $root.Values | sha256sum | quote }}
     spec:
       hostNetwork: true
-      {{- if eq $kind "node" }}
-      hostPID: true
-      {{- end }}
+      hostPID: false
       dnsPolicy: ClusterFirstWithHostNet
       automountServiceAccountToken: false
       nodeSelector:
-        {{- toYaml (merge (deepCopy $root.Values.nodeSelector) (ternary (dict) $root.Values.etcd.nodeSelector (eq $kind "node"))) | nindent 8 }}
+        {{- toYaml (mergeOverwrite (deepCopy $root.Values.nodeSelector) (ternary (dict) $root.Values.etcd.nodeSelector (eq $kind "node"))) | nindent 8 }}
       tolerations:
         {{- toYaml $root.Values.tolerations | nindent 8 }}
       {{- with $root.Values.imagePullSecrets }}
@@ -99,9 +105,7 @@ spec:
             - --collector.filesystem
             - --collector.diskstats
             - --collector.netdev
-            - --collector.loadavg
-            - --collector.time
-            - --collector.stat
+            - --collector.vmstat
             {{- if $root.Values.nodeExporter.pressureEnabled }}
             - --collector.pressure
             {{- end }}
@@ -127,6 +131,7 @@ spec:
           image: {{ $root.Values.vmagent.image | quote }}
           args:
             - -promscrape.config=/config/scrape.yaml
+            - -promscrape.maxScrapeSize={{ $root.Values.vmagent.maxScrapeSize }}
             - -remoteWrite.url={{ required "remoteWrite.url is required" $root.Values.remoteWrite.url }}
             - -remoteWrite.basicAuth.username={{ $root.Values.remoteWrite.username }}
             - -remoteWrite.basicAuth.passwordFile=/auth/{{ $root.Values.remoteWrite.secretKey }}
@@ -139,7 +144,7 @@ spec:
             - -remoteWrite.tmpDataPath=/queue
             - -remoteWrite.maxDiskUsagePerURL={{ $root.Values.vmagent.queueMaxDiskMiB }}MiB
             - -httpListenAddr=127.0.0.1:{{ ternary $root.Values.vmagent.nodePort $root.Values.vmagent.etcdPort (eq $kind "node") }}
-            - -memory.allowedBytes=64MiB
+            - -memory.allowedBytes={{ $root.Values.vmagent.memoryAllowedBytes }}
           env:
             - name: NODE_NAME
               valueFrom: {fieldRef: {fieldPath: spec.nodeName}}

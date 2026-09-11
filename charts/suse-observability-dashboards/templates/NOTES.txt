@@ -1,8 +1,0 @@
-Declarative dashboards configured for {{ .Values.observability.url }}.
-
-O Job Helm usa o Secret existente:
-  {{ .Values.auth.existingSecret }} / chave {{ .Values.auth.serviceTokenKey }}
-
-Verifique o Job:
-  kubectl get job -n {{ .Release.Namespace }} {{ include "suse-observability-dashboards.fullname" . }}
-  kubectl logs -n {{ .Release.Namespace }} job/{{ include "suse-observability-dashboards.fullname" . }}

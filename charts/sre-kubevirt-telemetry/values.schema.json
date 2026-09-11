@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": [
+    "clusterName",
+    "otlp",
+    "resources"
+  ],
+  "properties": {
+    "clusterName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "otlp": {
+      "type": "object",
+      "required": [
+        "endpoint",
+        "existingSecret",
+        "secretKey"
+      ],
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^[^/: ]+:[0-9]+$"
+        },
+        "existingSecret": {
+          "type": "string",
+          "minLength": 1
+        },
+        "secretKey": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "scrapeInterval": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*s$"
+    },
+    "scrapeTimeout": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*s$"
+    },
+    "kubevirt": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "minLength": 1
+        },
+        "service": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ca": {
+          "type": "object",
+          "properties": {
+            "existingConfigMap": {
+              "type": "string",
+              "minLength": 1
+            },
+            "key": {
+              "type": "string",
+              "minLength": 1
+            },
+            "revision": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "serverNames": {
+          "type": "object",
+          "required": [
+            "virt-api",
+            "virt-handler",
+            "virt-controller",
+            "virt-operator"
+          ],
+          "minProperties": 4,
+          "maxProperties": 4,
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "enum": [
+            "conservative",
+            "custom"
+          ]
+        },
+        "metricAllowlist": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "regex": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "cardinality": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "observe",
+                "enforce"
+              ]
+            },
+            "sampleLimit": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "labelLimit": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
+      }
+    },
+    "otel": {
+      "type": "object",
+      "properties": {
+        "memoryLimitMiB": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "spikeLimitMiB": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "queueSize": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "queueConsumers": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "batchSize": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "batchMaxSize": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "resources": {
+      "$ref": "#/definitions/componentResources"
+    }
+  },
+  "definitions": {
+    "componentResources": {
+      "type": "object",
+      "required": [
+        "requests",
+        "limits"
+      ],
+      "properties": {
+        "requests": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

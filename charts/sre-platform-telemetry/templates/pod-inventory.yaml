@@ -1,0 +1,153 @@
+{{- if .Values.podInventory.enabled }}
+{{- $name := printf "%s-pods" .Release.Name | trunc 63 | trimSuffix "-" }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $name }}
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ $name }}-{{ .Release.Namespace }}-inventory
+rules:
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [list]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ $name }}-{{ .Release.Namespace }}-inventory
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: {{ $name }}-{{ .Release.Namespace }}-inventory}
+subjects: [{kind: ServiceAccount, name: {{ $name }}, namespace: {{ .Release.Namespace }}}]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+data:
+  inventory.py: |
+{{ .Files.Get "files/pod_inventory.py" | indent 4 }}
+  scrape.yaml: |
+    global:
+      scrape_interval: {{ .Values.scrapeInterval }}
+      scrape_timeout: {{ .Values.scrapeTimeout }}
+      external_labels:
+        cluster_name: {{ .Values.clusterName | quote }}
+        telemetry_source: sre-platform-telemetry
+        collector_kind: pods
+    scrape_configs:
+      - job_name: sre-pod-inventory
+        static_configs:
+          - targets: ['127.0.0.1:9102']
+      {{- if .Values.vmagent.selfMonitoring }}
+      - job_name: sre-collector
+        static_configs:
+          - targets: ['127.0.0.1:8429']
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: 'vmagent_remotewrite_(pending_data_bytes|requests_total|retries_count_total|samples_dropped_total|blocks_sent_total)|vm_persistentqueue_bytes_dropped_total|vm_promscrape_config_last_reload_successful'
+            action: keep
+          - regex: 'url|path'
+            action: labeldrop
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels: {app.kubernetes.io/name: sre-platform-telemetry, app.kubernetes.io/component: pods}
+spec:
+  replicas: 1
+  # A single writer avoids duplicate scrapes during updates.
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: {{ $name }}}
+  template:
+    metadata:
+      labels: {app: {{ $name }}, app.kubernetes.io/name: sre-platform-telemetry, app.kubernetes.io/component: pods}
+      annotations:
+        telemetry/inventory-hash: {{ .Files.Get "files/pod_inventory.py" | sha256sum | quote }}
+        telemetry/config-hash: {{ toJson .Values | sha256sum | quote }}
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: {{ $name }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: pod-inventory
+          image: {{ .Values.podInventory.image | quote }}
+          command: [python3, -B, /config/inventory.py]
+          readinessProbe:
+            exec:
+              command: [python3, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9102/health',timeout=2); urllib.request.urlopen('http://127.0.0.1:8429/health',timeout=2)"]
+            timeoutSeconds: 5
+            periodSeconds: 30
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            {{- toYaml .Values.podInventory.resources | nindent 12 }}
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: api-access, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
+        - name: vmagent
+          image: {{ .Values.vmagent.image | quote }}
+          args:
+            - -promscrape.config=/config/scrape.yaml
+            - -promscrape.maxScrapeSize={{ .Values.vmagent.maxScrapeSize }}
+            - -remoteWrite.url={{ .Values.remoteWrite.url }}
+            - -remoteWrite.basicAuth.username={{ .Values.remoteWrite.username }}
+            - -remoteWrite.basicAuth.passwordFile=/auth/{{ .Values.remoteWrite.secretKey }}
+            {{- if .Values.remoteWrite.forcePrometheusProtocol }}
+            - -remoteWrite.forcePromProto=true
+            {{- end }}
+            {{- if .Values.remoteWrite.caSecret }}
+            - -remoteWrite.tlsCAFile=/ca/{{ .Values.remoteWrite.caKey }}
+            {{- end }}
+            - -remoteWrite.tmpDataPath=/queue
+            - -remoteWrite.maxDiskUsagePerURL={{ .Values.vmagent.queueMaxDiskMiB }}MiB
+            - -httpListenAddr=127.0.0.1:8429
+            - -memory.allowedBytes={{ .Values.vmagent.memoryAllowedBytes }}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            {{- toYaml .Values.vmagent.resources | nindent 12 }}
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: auth, mountPath: /auth, readOnly: true}
+            - {name: queue, mountPath: /queue}
+            {{- if .Values.remoteWrite.caSecret }}
+            - {name: ca, mountPath: /ca, readOnly: true}
+            {{- end }}
+      volumes:
+        - name: api-access
+          projected:
+            sources:
+              - serviceAccountToken: {path: token, expirationSeconds: 3600}
+              - configMap:
+                  name: kube-root-ca.crt
+                  items: [{key: ca.crt, path: ca.crt}]
+        - name: config
+          configMap: {name: {{ $name }}}
+        - name: auth
+          secret:
+            secretName: {{ .Values.remoteWrite.existingSecret }}
+            items: [{key: {{ .Values.remoteWrite.secretKey }}, path: {{ .Values.remoteWrite.secretKey }}}]
+        - name: queue
+          emptyDir: {sizeLimit: {{ add (int .Values.vmagent.queueMaxDiskMiB) 256 }}Mi}
+        {{- if .Values.remoteWrite.caSecret }}
+        - name: ca
+          secret: {secretName: {{ .Values.remoteWrite.caSecret }}}
+        {{- end }}
+{{- end }}

@@ -4,7 +4,14 @@
   "required": [
     "clusterName",
     "remoteWrite",
-    "etcd"
+    "etcd",
+    "scrapeInterval",
+    "scrapeTimeout",
+    "safety",
+    "nodeExporter",
+    "vmagent",
+    "traefik",
+    "podInventory"
   ],
   "properties": {
     "clusterName": {
@@ -36,6 +43,84 @@
         }
       }
     },
+    "scrapeInterval": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*s$"
+    },
+    "scrapeTimeout": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*s$"
+    },
+    "safety": {
+      "type": "object",
+      "required": [
+        "profile",
+        "metricAllowlist",
+        "cardinality"
+      ],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "enum": [
+            "conservative",
+            "custom"
+          ]
+        },
+        "metricAllowlist": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "nodeRegex",
+            "etcdRegex",
+            "traefikRegex"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "nodeRegex": {
+              "type": "string",
+              "minLength": 1
+            },
+            "etcdRegex": {
+              "type": "string",
+              "minLength": 1
+            },
+            "traefikRegex": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "cardinality": {
+          "type": "object",
+          "required": [
+            "mode",
+            "node",
+            "etcd",
+            "traefik"
+          ],
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "observe",
+                "enforce"
+              ]
+            },
+            "node": {
+              "$ref": "#/definitions/vmagentLimits"
+            },
+            "etcd": {
+              "$ref": "#/definitions/vmagentLimits"
+            },
+            "traefik": {
+              "$ref": "#/definitions/vmagentLimits"
+            }
+          }
+        }
+      }
+    },
     "etcd": {
       "type": "object",
       "properties": {
@@ -56,7 +141,8 @@
       "type": "object",
       "required": [
         "queueMaxDiskMiB",
-        "selfMonitoring"
+        "selfMonitoring",
+        "resources"
       ],
       "properties": {
         "queueMaxDiskMiB": {
@@ -65,6 +151,183 @@
         },
         "selfMonitoring": {
           "type": "boolean"
+        },
+        "maxScrapeSize": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*(KiB|MiB)$"
+        },
+        "resources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      }
+    },
+    "traefik": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "allowMetricsNetworkPolicy": {
+          "type": "boolean"
+        },
+        "existingIsolationConfirmed": {
+          "type": "boolean"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "targetPort": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
+        },
+        "inventoryResources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      },
+      "required": [
+        "inventoryResources"
+      ]
+    },
+    "nodeExporter": {
+      "type": "object",
+      "required": [
+        "resources"
+      ],
+      "properties": {
+        "resources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      }
+    },
+    "podInventory": {
+      "type": "object",
+      "required": [
+        "resources"
+      ],
+      "properties": {
+        "resources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "vmagentLimits": {
+      "type": "object",
+      "required": [
+        "sampleLimit",
+        "seriesLimit",
+        "labelLimit"
+      ],
+      "properties": {
+        "sampleLimit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seriesLimit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "labelLimit": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "componentResources": {
+      "type": "object",
+      "required": [
+        "requests",
+        "limits"
+      ],
+      "properties": {
+        "requests": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
         }
       }
     }

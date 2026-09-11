@@ -1,0 +1,16 @@
+# Publish this package at the configured branch root before applying.
+apiVersion: fleet.cattle.io/v1alpha1
+kind: GitRepo
+metadata:
+  name: suse-observability-content
+  namespace: fleet-default
+spec:
+  repo: https://github.com/kaioneuhauss/suse-observability-dashboards
+  branch: helm-fleet-v6
+  paths:
+  - charts/suse-observability-content
+  targets:
+  - name: opt-in
+    clusterSelector:
+      matchLabels:
+        observability.example.com/enabled: 'true'

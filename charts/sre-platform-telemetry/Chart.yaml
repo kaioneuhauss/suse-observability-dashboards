@@ -1,6 +1,6 @@
 apiVersion: v2
 name: sre-platform-telemetry
-description: Node, etcd and Traefik telemetry with exact Ingress backend inventory
+description: 'Coleta complementar por cluster: node, etcd e Traefik. Values nativos Helm/Fleet.'
 type: application
-version: 0.3.1
-appVersion: "1.12.1"
+version: 0.6.0
+appVersion: 1.12.1

@@ -1,0 +1,31 @@
+nodes:
+- _type: Monitor
+  name: SRE · instrumented app p95 above 3s · 10m
+  identifier: urn:custom:monitor:sre-dashboards:app-http-latency
+  description: Application p95 response time exceeds 3 seconds with at least 100 calls
+    per five-minute calculation window, over observed samples for ten minutes. Health
+    attaches to the namespace; the title identifies the application.
+  arguments:
+    metric:
+      query: min_over_time(((histogram_quantile(0.95,sum by(cluster_name,namespace,service_name,le)
+        (rate(http_server_request_duration_seconds_bucket{http_route!~"(?i).*(health|ready|live|metrics).*"}[5m]))))
+        and on(cluster_name,namespace,service_name) (sum by(cluster_name,namespace,service_name)
+        (increase(http_server_requests_total{http_route!~"(?i).*(health|ready|live|metrics).*"}[5m]))
+        >= 100))[10m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${service_name}
+    comparator: GT
+    threshold: 3
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:namespace/${namespace}
+    titleTemplate: SRE · instrumented app p95 above 3s · 10m · ${cluster_name} · ${namespace}
+      · ${service_name}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Check route latency, errors, recent deployments and dependency
+    traces. Three seconds is an initial baseline only; use the application service
+    objective. Compare measurements from the client, proxy and application separately.
+  tags:
+  - sre-dashboards
+  - dashboard-applications
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}
