@@ -1,0 +1,14 @@
+# Platform collectors: install this chart once per Kubernetes cluster.
+# 1. Set the exact integration name shown by the official SUSE Agent.
+clusterName: downstream-example
+remoteWrite:
+  # 2. Use the Prometheus remote-write URL of your SUSE server.
+  url: https://observability.example.com/receiver/prometheus/api/v1/write
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+# 3. Enable only after completing prerequisites/README.md.
+etcd:
+  enabled: false  # true for verified local RKE2 etcd metrics
+traefik:
+  enabled: false  # true only if this cluster runs Traefik with metrics enabled
+# Requests, limits, timeouts and metric allowlists use the chart defaults.

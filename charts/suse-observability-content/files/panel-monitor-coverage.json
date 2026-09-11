@@ -1,0 +1,1277 @@
+[
+  {
+    "dashboard": "resources",
+    "panel": "cpuUsageTop",
+    "title": "CPU used · five busiest pods · mCPU",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuRequestTop",
+    "title": "CPU requested by the same pods · mCPU",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuLimitTop",
+    "title": "CPU limits for the same pods · mCPU",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuRequestMissingList",
+    "title": "Pods missing CPU requests",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuLimitMissingList",
+    "title": "Pods missing CPU limits",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuUseGauge",
+    "title": "Pod CPU use versus limit · highest · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "CPU Throttling (native)"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memUsageTop",
+    "title": "Memory used · five busiest pods",
+    "monitor_slugs": [
+      "container-memory"
+    ],
+    "guidance": [
+      "container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memRequestTop",
+    "title": "Memory requested by the same pods",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memLimitTop",
+    "title": "Memory limits for the same pods",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memRequestMissingList",
+    "title": "Pods missing memory requests",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memLimitMissingList",
+    "title": "Pods missing memory limits",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memUseGauge",
+    "title": "Pod memory use versus limit · highest · %",
+    "monitor_slugs": [
+      "container-memory"
+    ],
+    "guidance": [
+      "container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "missingSettingsPods",
+    "title": "Pods with missing settings · current list",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memoryRisk",
+    "title": "Memory close to its limit · ten highest percentages",
+    "monitor_slugs": [
+      "container-memory"
+    ],
+    "guidance": [
+      "container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuReservation",
+    "title": "CPU used versus requested · top 10 · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "throttling",
+    "title": "CPU throttling · top 10 · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "CPU Throttling (native)"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "workingSetRSS",
+    "title": "Two memory measurements for the five busiest pods",
+    "monitor_slugs": [
+      "container-memory"
+    ],
+    "guidance": [
+      "container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "inventoryHealth",
+    "title": "Pod configuration collection · 1 working / 0 failed",
+    "monitor_slugs": [],
+    "guidance": [
+      "Pod Ready State (native) for the pod inventory Deployment"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestUsed",
+    "title": "Memory used inside the VM",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestAvailable",
+    "title": "Memory still available inside the VM",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestTotal",
+    "title": "Total memory seen by the VM operating system",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "domainRequest",
+    "title": "Memory requested by the VM",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "domainLimit",
+    "title": "Configured VM memory limit",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "configuredGuest",
+    "title": "Memory configured for the guest OS",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "resident",
+    "title": "VM process memory on the host · QEMU",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "vcpuUse",
+    "title": "CPU used by the VM · vCPU cores",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "vcpuRequest",
+    "title": "CPU requested by the VM · mCPU",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "vcpuLimit",
+    "title": "Configured VM CPU limit · vCPU cores",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "hostUsed",
+    "title": "Memory used on Harvester hosts · whole cluster",
+    "monitor_slugs": [
+      "node-memory"
+    ],
+    "guidance": [
+      "host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "hostAvailable",
+    "title": "Memory available on Harvester hosts · whole cluster",
+    "monitor_slugs": [
+      "node-memory"
+    ],
+    "guidance": [
+      "host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "hostRequests",
+    "title": "Memory requested by Harvester pods · whole cluster",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "hostLimits",
+    "title": "Sum of Harvester pod memory limits · whole cluster",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestMissing",
+    "title": "Running VMs without OS memory statistics",
+    "monitor_slugs": [],
+    "guidance": [
+      "Collection applicability: inspect balloon statistics and guest-agent support"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestDiskUsed",
+    "title": "Space used inside each VM filesystem",
+    "monitor_slugs": [
+      "vm-filesystem-used"
+    ],
+    "guidance": [
+      "VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestDiskCapacity",
+    "title": "Capacity of each VM filesystem",
+    "monitor_slugs": [
+      "vm-filesystem-used"
+    ],
+    "guidance": [
+      "VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestDiskRatio",
+    "title": "VM filesystem space used · %",
+    "monitor_slugs": [
+      "vm-filesystem-used"
+    ],
+    "guidance": [
+      "VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestCpuGauge",
+    "title": "VM CPU used · highest · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestMemoryGauge",
+    "title": "VM memory used · highest · %",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "guestDiskGauge",
+    "title": "VM filesystem used · highest · %",
+    "monitor_slugs": [
+      "vm-filesystem-used"
+    ],
+    "guidance": [
+      "VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "hostCpuGauge",
+    "title": "Harvester host CPU busy · highest · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "hostMemoryGauge",
+    "title": "Harvester host memory used · highest · %",
+    "monitor_slugs": [
+      "node-memory"
+    ],
+    "guidance": [
+      "host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "cpuReady",
+    "title": "VM CPU waiting for a turn · %",
+    "monitor_slugs": [
+      "vm-cpu-delay"
+    ],
+    "guidance": [
+      "VM CPU scheduler wait above 10 percent · 10m. Each virtual CPU spends more than 10% of wall time, on average, waiting to run on a host CPU throughout observed samples in 10 minutes. KubeVirt scheduler delay is not automatically the VMware CPU Ready counter. Health is attached to the Harvester host; the title identifies the VM."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "cpuWait",
+    "title": "VM CPU waiting for I/O · %",
+    "monitor_slugs": [
+      "vm-disk-latency"
+    ],
+    "guidance": [
+      "VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "majorFaults",
+    "title": "VM pages fetched from disk · pages/s",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "swapin",
+    "title": "VM swap read from disk · bytes/s",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "swapout",
+    "title": "VM swap written to disk · bytes/s",
+    "monitor_slugs": [
+      "vm-guest-memory"
+    ],
+    "guidance": [
+      "VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "diskread",
+    "title": "Virtual disk read response time · ms",
+    "monitor_slugs": [
+      "vm-disk-latency"
+    ],
+    "guidance": [
+      "VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "diskwrite",
+    "title": "Virtual disk write response time · ms",
+    "monitor_slugs": [
+      "vm-disk-latency"
+    ],
+    "guidance": [
+      "VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
+    ]
+  },
+  {
+    "dashboard": "harvester",
+    "panel": "diskIOPS",
+    "title": "Virtual disk operations · IOPS",
+    "monitor_slugs": [
+      "vm-disk-latency"
+    ],
+    "guidance": [
+      "VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "rps",
+    "title": "Requests/s · 5-minute average",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "meanLatency",
+    "title": "Average response time · 5 min · ms",
+    "monitor_slugs": [
+      "traefik-http-latency"
+    ],
+    "guidance": [
+      "Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "requestRate",
+    "title": "Traffic over time · 5-minute average · req/s",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "requests1h",
+    "title": "Estimated requests · selected period",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "client4xx",
+    "title": "Estimated HTTP 4xx · selected period",
+    "monitor_slugs": [],
+    "guidance": [
+      "Diagnostic context: some 4xx responses are expected; set a service-specific policy"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "error5xx",
+    "title": "Estimated HTTP 5xx · selected period",
+    "monitor_slugs": [
+      "traefik-http-errors"
+    ],
+    "guidance": [
+      "Traefik HTTP 5xx above 5 percent · 5m. More than 5% of completed requests fail with HTTP 5xx, with at least 100 requests in each observed five-minute calculation window. The condition must persist over observed samples for five minutes. Uses Traefik counters, not span sampling."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "p95",
+    "title": "95% of calls finish within · 5 min · ms",
+    "monitor_slugs": [
+      "traefik-http-latency"
+    ],
+    "guidance": [
+      "Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "serviceRequests24h",
+    "title": "Requests by application · selected period",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "serviceErrorRatio",
+    "title": "Server errors by application · selected period · %",
+    "monitor_slugs": [
+      "traefik-http-errors"
+    ],
+    "guidance": [
+      "Traefik HTTP 5xx above 5 percent · 5m. More than 5% of completed requests fail with HTTP 5xx, with at least 100 requests in each observed five-minute calculation window. The condition must persist over observed samples for five minutes. Uses Traefik counters, not span sampling."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "serviceTraffic",
+    "title": "Requests per second by application",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "byCode",
+    "title": "HTTP response codes · requests per second",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "latency",
+    "title": "Response time · average, p50, p95, p99 · ms",
+    "monitor_slugs": [
+      "traefik-http-latency"
+    ],
+    "guidance": [
+      "Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "serviceLatency",
+    "title": "Slowest applications · p95 · ms",
+    "monitor_slugs": [
+      "traefik-http-latency"
+    ],
+    "guidance": [
+      "Traefik p95 response above 3s · 10m. The estimated 95th-percentile response time exceeds 3 seconds. This means the boundary below which about 95% of requests finish is above 3 seconds; it does not mean 95% of requests take longer than 3 seconds. Requires at least 100 requests per five-minute calculation window, persisting over observed samples for ten minutes. Replace this starting threshold with the service objective."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "bandwidth",
+    "title": "Application data transferred per second",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "tlsExpiry",
+    "title": "TLS certificates · days until expiry · whole cluster",
+    "monitor_slugs": [
+      "tls-30",
+      "tls-7"
+    ],
+    "guidance": [
+      "Traefik certificate expires within 30 days. Checks Traefik certificate expires within 30 days. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+      "Traefik certificate expires within 7 days. Checks Traefik certificate expires within 7 days. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "openConnections",
+    "title": "Open Traefik connections · whole cluster",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "codeTotals",
+    "title": "Requests by app, code and method · selected period",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "errorTimeline",
+    "title": "HTTP 5xx · application and time",
+    "monitor_slugs": [
+      "traefik-http-errors"
+    ],
+    "guidance": [
+      "Traefik HTTP 5xx above 5 percent · 5m. More than 5% of completed requests fail with HTTP 5xx, with at least 100 requests in each observed five-minute calculation window. The condition must persist over observed samples for five minutes. Uses Traefik counters, not span sampling."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "collection",
+    "title": "Traefik collection · 1 working / 0 failed",
+    "monitor_slugs": [
+      "traefik-scrape",
+      "ingress-inventory"
+    ],
+    "guidance": [
+      "Traefik metrics scrape failing · 3m. A configured Traefik endpoint has no successful scrape in the observed three-minute window. A missing target is different from a failed scrape; validate the inventory as well.",
+      "Ingress inventory collection failing · 3m. Checks Ingress inventory collection failing · 3m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "traefik",
+    "panel": "clientErrorTimeline",
+    "title": "HTTP 4xx · application and time",
+    "monitor_slugs": [],
+    "guidance": [
+      "Diagnostic context: investigate unexpected rejection patterns, not every 4xx as an outage"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "ready",
+    "title": "Ready nodes · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "Node Readiness (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "coverage",
+    "title": "OS collection coverage · %",
+    "monitor_slugs": [
+      "node-telemetry"
+    ],
+    "guidance": [
+      "missing node OS telemetry · 5m. Checks missing node OS telemetry · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "nonRunning",
+    "title": "Pods needing attention",
+    "monitor_slugs": [],
+    "guidance": [
+      "Pod Ready State / Pods in Waiting State / Pod Completed State (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "nonRunningList",
+    "title": "Pods to investigate · current state",
+    "monitor_slugs": [],
+    "guidance": [
+      "Pod Ready State / Pods in Waiting State / Pod Completed State (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "restarts",
+    "title": "Affected pods · restarts in the last hour",
+    "monitor_slugs": [],
+    "guidance": [
+      "Restarts for containers (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "availability",
+    "title": "Affected workloads · missing copies",
+    "monitor_slugs": [],
+    "guidance": [
+      "Deployment / Daemonset / Statefulset desired replicas (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "filesystem",
+    "title": "Operational disks · space used · %",
+    "monitor_slugs": [
+      "node-space"
+    ],
+    "guidance": [
+      "filesystem below 10 percent available · 15m. Checks filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "nodeUsed",
+    "title": "Space used on each host filesystem",
+    "monitor_slugs": [
+      "node-space"
+    ],
+    "guidance": [
+      "filesystem below 10 percent available · 15m. Checks filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "nodeTotal",
+    "title": "Capacity of each host filesystem",
+    "monitor_slugs": [
+      "node-space"
+    ],
+    "guidance": [
+      "filesystem below 10 percent available · 15m. Checks filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "inodeRisk",
+    "title": "File entries already used · % of inodes",
+    "monitor_slugs": [
+      "node-inodes"
+    ],
+    "guidance": [
+      "filesystem below 10 percent free inodes · 15m. Checks filesystem below 10 percent free inodes · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "pvcRisk",
+    "title": "Measured PVC filesystems · space used in %",
+    "monitor_slugs": [
+      "pvc-space",
+      "pvc-trend-12",
+      "pvc-trend-96"
+    ],
+    "guidance": [
+      "PVC filesystem below 10 percent available · 15m. Checks PVC filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+      "Capacity forecasts also warn when free space is projected to run out within 12 or 96 hours. This is a trend estimate; inspect growth and available history before acting."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "pvcUsed",
+    "title": "Space used in measured PVC filesystems",
+    "monitor_slugs": [
+      "pvc-space",
+      "pvc-trend-12",
+      "pvc-trend-96"
+    ],
+    "guidance": [
+      "PVC filesystem below 10 percent available · 15m. Checks PVC filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+      "Capacity forecasts also warn when free space is projected to run out within 12 or 96 hours. This is a trend estimate; inspect growth and available history before acting."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "pvcCapacity",
+    "title": "Capacity of measured PVC filesystems",
+    "monitor_slugs": [
+      "pvc-space"
+    ],
+    "guidance": [
+      "PVC filesystem below 10 percent available · 15m. Checks PVC filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "pvcUnmeasured",
+    "title": "PVCs without filesystem usage measurements",
+    "monitor_slugs": [],
+    "guidance": [
+      "Collection applicability: block and unmounted PVCs have no filesystem percentage"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "pvPhases",
+    "title": "Cluster storage volumes · PV status",
+    "monitor_slugs": [],
+    "guidance": [
+      "Orphaned Persistent Volumes (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "pvcPhases",
+    "title": "Storage requests · PVC status",
+    "monitor_slugs": [],
+    "guidance": [
+      "Orphaned Persistent Volumes (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdLeader",
+    "title": "etcd can see a leader · 1 yes / 0 no",
+    "monitor_slugs": [
+      "etcd-no-leader"
+    ],
+    "guidance": [
+      "etcd without leader · 1m. Checks etcd without leader · 1m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdLeaderChanges",
+    "title": "Leader changes seen by each etcd member · last hour",
+    "monitor_slugs": [
+      "etcd-elections"
+    ],
+    "guidance": [
+      "etcd leader changes above 3 in 15m. Checks etcd leader changes above 3 in 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdPending",
+    "title": "etcd operations waiting for agreement",
+    "monitor_slugs": [
+      "etcd-pending"
+    ],
+    "guidance": [
+      "etcd pending proposals above 100. Checks etcd pending proposals above 100. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdApplyLag",
+    "title": "etcd operations agreed but not yet applied",
+    "monitor_slugs": [
+      "etcd-lag"
+    ],
+    "guidance": [
+      "etcd apply backlog above 1000. Checks etcd apply backlog above 1000. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdFailed",
+    "title": "Failed etcd operations · last 15 minutes",
+    "monitor_slugs": [
+      "etcd-failed"
+    ],
+    "guidance": [
+      "etcd failed proposals in 15m. Checks etcd failed proposals in 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdWAL",
+    "title": "etcd write-ahead log write time · p99 in ms",
+    "monitor_slugs": [
+      "etcd-fsync"
+    ],
+    "guidance": [
+      "etcd WAL p99 above 10ms. Checks etcd WAL p99 above 10ms. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdCommit",
+    "title": "etcd database write time · p99 in ms",
+    "monitor_slugs": [
+      "etcd-commit"
+    ],
+    "guidance": [
+      "etcd commit p99 above 25ms. Checks etcd commit p99 above 25ms. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdDB",
+    "title": "etcd database quota already used · %",
+    "monitor_slugs": [
+      "etcd-quota"
+    ],
+    "guidance": [
+      "etcd database above 80 percent quota. Checks etcd database above 80 percent quota. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdScrape",
+    "title": "etcd metrics collection · 1 working / 0 failed",
+    "monitor_slugs": [
+      "etcd-scrape",
+      "etcd-telemetry-missing"
+    ],
+    "guidance": [
+      "etcd scrape failing · 3m. Checks etcd scrape failing · 3m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+      "etcd telemetry disappeared · 5m. Checks etcd telemetry disappeared · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "etcdPeer",
+    "title": "Network round trip between etcd members · p99 in ms",
+    "monitor_slugs": [],
+    "guidance": [
+      "Diagnostic context: compare with peer network baseline and leader/commit failures"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "hostCPU",
+    "title": "CPU busy on each server · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "Capacity context: high CPU alone is not an outage; correlate service latency and VM scheduler wait"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "hostMemory",
+    "title": "Memory still available on each server · %",
+    "monitor_slugs": [
+      "node-memory"
+    ],
+    "guidance": [
+      "host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "ioPressure",
+    "title": "Disk operations in progress · average",
+    "monitor_slugs": [
+      "host-disk-latency"
+    ],
+    "guidance": [
+      "host disk response above 20ms · 10m. Average disk response exceeds 20 ms throughout observed samples in a 10-minute window, while the five-minute average activity is at least 1 operation/s. This is an initial investigation threshold, not a universal storage SLA."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "memoryPressure",
+    "title": "OS pages fetched from disk · pages/s",
+    "monitor_slugs": [
+      "node-memory"
+    ],
+    "guidance": [
+      "host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "cpuGauge",
+    "title": "Server CPU busy · highest · %",
+    "monitor_slugs": [],
+    "guidance": [
+      "Capacity context: high CPU alone is not an outage; correlate service latency and VM scheduler wait"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "memoryGauge",
+    "title": "Server memory used · highest · %",
+    "monitor_slugs": [
+      "node-memory"
+    ],
+    "guidance": [
+      "host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "diskGauge",
+    "title": "Host filesystem used · highest · %",
+    "monitor_slugs": [
+      "node-space"
+    ],
+    "guidance": [
+      "filesystem below 10 percent available · 15m. Checks filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "networkErrors",
+    "title": "Network errors by interface · packets per second",
+    "monitor_slugs": [],
+    "guidance": [
+      "Diagnostic context: investigate sustained nonzero errors and interface/link health"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "collectorQueue",
+    "title": "Telemetry waiting to be sent · bytes",
+    "monitor_slugs": [
+      "collector-backlog"
+    ],
+    "guidance": [
+      "metric collection backlog persists · 10m. Checks metric collection backlog persists · 10m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "collectorRetries",
+    "title": "Telemetry delivery retries · last 15 minutes",
+    "monitor_slugs": [
+      "collector-backlog",
+      "collector-dropped"
+    ],
+    "guidance": [
+      "metric collection backlog persists · 10m. Checks metric collection backlog persists · 10m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+      "metric collector discarded data · 15m. 1 means the collector discarded samples or queued bytes during the last 15 minutes. 0 means neither counter increased. The two different units are not added together."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "diskLatency",
+    "title": "Disk response time · average · ms",
+    "monitor_slugs": [
+      "host-disk-latency"
+    ],
+    "guidance": [
+      "host disk response above 20ms · 10m. Average disk response exceeds 20 ms throughout observed samples in a 10-minute window, while the five-minute average activity is at least 1 operation/s. This is an initial investigation threshold, not a universal storage SLA."
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "missingCopies",
+    "title": "Missing application copies",
+    "monitor_slugs": [],
+    "guidance": [
+      "Deployment / Daemonset / Statefulset desired replicas (native)"
+    ]
+  },
+  {
+    "dashboard": "platform",
+    "panel": "restartCount",
+    "title": "Restarts · last hour",
+    "monitor_slugs": [],
+    "guidance": [
+      "Restarts for containers (native)"
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "rps",
+    "title": "Average traffic · selected period · req/s",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "requests1h",
+    "title": "Estimated requests · selected period",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "requests24h",
+    "title": "Estimated HTTP 5xx · selected period",
+    "monitor_slugs": [
+      "app-http-errors"
+    ],
+    "guidance": [
+      "Server errors: investigate the error percentage and the application monitor, not raw volume alone."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "success",
+    "title": "Successful responses · %",
+    "monitor_slugs": [
+      "app-http-errors"
+    ],
+    "guidance": [
+      "instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "error5xx",
+    "title": "Server errors · %",
+    "monitor_slugs": [
+      "app-http-errors"
+    ],
+    "guidance": [
+      "instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "p95_1h",
+    "title": "95% of calls finish within · selected period · ms",
+    "monitor_slugs": [
+      "app-http-latency"
+    ],
+    "guidance": [
+      "instrumented app p95 above 3s · 10m. Application p95 response time exceeds 3 seconds with at least 100 calls per five-minute calculation window, over observed samples for ten minutes. Health attaches to the namespace; the title identifies the application."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "throughput",
+    "title": "Requests per second by route",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "outcomes",
+    "title": "Response types over time",
+    "monitor_slugs": [
+      "app-http-errors"
+    ],
+    "guidance": [
+      "instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "errorRoutes",
+    "title": "When and where HTTP errors occurred · requests/s",
+    "monitor_slugs": [
+      "app-http-errors"
+    ],
+    "guidance": [
+      "instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "errorTotals",
+    "title": "HTTP errors by app, route and code · selected period",
+    "monitor_slugs": [
+      "app-http-errors"
+    ],
+    "guidance": [
+      "instrumented app HTTP 5xx above 5 percent · 5m. Uses application counters: 5xx exceeds 5% with at least 100 calls per five-minute window, over observed samples for five minutes. Health attaches to the Kubernetes namespace because the instrumented service name may differ from its Kubernetes Service name."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "latency",
+    "title": "Response time over time · ms",
+    "monitor_slugs": [
+      "app-http-latency"
+    ],
+    "guidance": [
+      "instrumented app p95 above 3s · 10m. Application p95 response time exceeds 3 seconds with at least 100 calls per five-minute calculation window, over observed samples for ten minutes. Health attaches to the namespace; the title identifies the application."
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "routeTotals",
+    "title": "Requests by route · selected period",
+    "monitor_slugs": [],
+    "guidance": [
+      "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+    ]
+  },
+  {
+    "dashboard": "applications",
+    "panel": "slowServices",
+    "title": "Slowest applications · p95 response time in ms",
+    "monitor_slugs": [
+      "app-http-latency"
+    ],
+    "guidance": [
+      "instrumented app p95 above 3s · 10m. Application p95 response time exceeds 3 seconds with at least 100 calls per five-minute calculation window, over observed samples for ten minutes. Health attaches to the namespace; the title identifies the application."
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuLimitReview",
+    "title": "Pods above 80% of their CPU limit",
+    "monitor_slugs": [],
+    "guidance": [
+      "CPU Throttling (native)"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memLimitReview",
+    "title": "Pods above 80% of their memory limit",
+    "monitor_slugs": [
+      "container-memory"
+    ],
+    "guidance": [
+      "container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuOver80Count",
+    "title": "Pods above 80% CPU limit · count",
+    "monitor_slugs": [],
+    "guidance": [
+      "CPU Throttling (native)"
+    ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memOver80Count",
+    "title": "Pods above 80% memory limit · count",
+    "monitor_slugs": [
+      "container-memory"
+    ],
+    "guidance": [
+      "container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+    ]
+  }
+]

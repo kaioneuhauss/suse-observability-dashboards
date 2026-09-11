@@ -1,0 +1,34 @@
+nodes:
+- _type: Monitor
+  name: SRE · Traefik p95 response above 3s · 10m
+  identifier: urn:custom:monitor:sre-dashboards:traefik-http-latency
+  description: The estimated 95th-percentile response time exceeds 3 seconds. This
+    means the boundary below which about 95% of requests finish is above 3 seconds;
+    it does not mean 95% of requests take longer than 3 seconds. Requires at least
+    100 requests per five-minute calculation window, persisting over observed samples
+    for ten minutes. Replace this starting threshold with the service objective.
+  arguments:
+    metric:
+      query: min_over_time((((histogram_quantile(0.95,sum by(cluster_name,service,le)
+        (rate(traefik_service_request_duration_seconds_bucket{protocol="http"}[5m]))))
+        and on(cluster_name,service) (sum by(cluster_name,service) (increase(traefik_service_requests_total{protocol="http"}[5m]))
+        >= 100)) * on(cluster_name,service) group_left(namespace,backend) (max by(cluster_name,namespace,service,backend)
+        (label_replace(sre_ingress_backend_info{ingress_namespace!=""}, "namespace",
+        "$1", "ingress_namespace", "(.*)"))))[10m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${backend}
+    comparator: GT
+    threshold: 3
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:service/${backend}
+    titleTemplate: SRE · Traefik p95 response above 3s · 10m · ${cluster_name} · ${namespace}
+      · ${backend}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Compare slow and successful/error requests, backend latency, host/Pod
+    saturation and dependencies. Exclude or separately baseline streaming and long-polling
+    APIs when required. Compare the same time interval.
+  tags:
+  - sre-dashboards
+  - dashboard-traefik
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

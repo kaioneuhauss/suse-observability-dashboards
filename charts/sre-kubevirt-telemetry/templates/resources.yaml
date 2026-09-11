@@ -1,0 +1,139 @@
+{{- $name := .Release.Name -}}
+{{- if and (eq .Values.safety.profile "conservative") (lt (int (trimSuffix "s" .Values.scrapeInterval)) 30) -}}{{ fail "Perfil conservative exige scrapeInterval >= 30s" }}{{- end -}}
+{{- if gt (int (trimSuffix "s" .Values.scrapeTimeout)) (int (trimSuffix "s" .Values.scrapeInterval)) -}}{{ fail "scrapeTimeout deve ser <= scrapeInterval" }}{{- end -}}
+{{- if lt (int .Values.otel.batchMaxSize) (int .Values.otel.batchSize) -}}{{ fail "batchMaxSize deve ser >= batchSize" }}{{- end -}}
+{{- if ge (int .Values.otel.spikeLimitMiB) (int .Values.otel.memoryLimitMiB) -}}{{ fail "spikeLimitMiB deve ser menor que memoryLimitMiB" }}{{- end -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+automountServiceAccountToken: true
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ printf "%s-%s" $name .Release.Namespace | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Values.kubevirt.namespace }}
+rules:
+  - apiGroups: [""]
+    resources: [pods, services]
+    verbs: [get, list, watch]
+  - apiGroups: [discovery.k8s.io]
+    resources: [endpointslices]
+    verbs: [get, list, watch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ printf "%s-%s" $name .Release.Namespace | trunc 63 | trimSuffix "-" }}
+  namespace: {{ .Values.kubevirt.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ printf "%s-%s" $name .Release.Namespace | trunc 63 | trimSuffix "-" }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ $name }}
+    namespace: {{ .Release.Namespace }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+data:
+  config.yaml: |
+{{ include "kubevirt.config" . | indent 4 }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: sre-kubevirt-telemetry
+    app.kubernetes.io/instance: {{ $name }}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ $name }}
+      app.kubernetes.io/name: sre-kubevirt-telemetry
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ $name }}
+        app.kubernetes.io/name: sre-kubevirt-telemetry
+      annotations:
+        checksum/config: {{ include "kubevirt.config" . | sha256sum | quote }}
+        kubevirt-ca-revision: {{ .Values.kubevirt.ca.revision | quote }}
+    spec:
+      serviceAccountName: {{ $name }}
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        seccompProfile: {type: RuntimeDefault}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      containers:
+        - name: collector
+          image: {{ if .Values.image.digest }}{{ printf "%s@%s" .Values.image.repository .Values.image.digest | quote }}{{ else }}{{ printf "%s:%s" .Values.image.repository .Values.image.tag | quote }}{{ end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- with .Values.command }}
+          command:
+{{ toYaml . | indent 12 }}
+{{- end }}
+          args: ["--config=/conf/config.yaml"]
+          env:
+            - name: SUSE_INGEST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.otlp.existingSecret }}
+                  key: {{ .Values.otlp.secretKey }}
+            - name: POD_IP
+              valueFrom: {fieldRef: {fieldPath: status.podIP}}
+          ports:
+            - {name: health, containerPort: 13133}
+          readinessProbe:
+            httpGet: {path: /, port: health}
+            periodSeconds: 15
+          livenessProbe:
+            httpGet: {path: /, port: health}
+            initialDelaySeconds: 20
+            periodSeconds: 30
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - {name: config, mountPath: /conf, readOnly: true}
+            - {name: ca, mountPath: /kubevirt-ca, readOnly: true}
+{{- if .Values.otlp.caSecret }}
+            - {name: otlp-ca, mountPath: /otlp-ca, readOnly: true}
+{{- end }}
+      volumes:
+        - name: config
+          configMap: {name: {{ $name }}}
+        - name: ca
+          configMap:
+            name: {{ .Values.kubevirt.ca.existingConfigMap }}
+            items:
+              - {key: {{ .Values.kubevirt.ca.key }}, path: ca-bundle}
+{{- if .Values.otlp.caSecret }}
+        - name: otlp-ca
+          secret:
+            secretName: {{ .Values.otlp.caSecret }}
+            items:
+              - {key: {{ .Values.otlp.caKey }}, path: ca.crt}
+{{- end }}

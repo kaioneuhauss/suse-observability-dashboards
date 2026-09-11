@@ -1,0 +1,4 @@
+# So se a CA do receptor SUSE nao for confiada pelo container.
+remoteWrite:
+  caSecret: suse-receiver-ca
+  caKey: ca.crt

@@ -1,0 +1,13 @@
+# Install once on Harvester, in the Agent namespace.
+clusterName: harvester-example  # same integration as the Harvester platform profile
+otlp:
+  endpoint: otlp-observability.example.com:443  # gRPC TLS; no https:// or path
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+imagePullSecrets:
+  - name: application-collection
+kubevirt:
+  ca:
+    existingConfigMap: kubevirt-metrics-ca
+    key: ca-bundle
+    revision: '1'  # increment after refreshing the copied KubeVirt CA

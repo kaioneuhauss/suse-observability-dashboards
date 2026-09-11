@@ -1,0 +1,22 @@
+defaultNamespace: suse-observability
+helm:
+  chart: .
+  valuesFiles:
+  - values.yaml
+  - config/values.yaml
+  releaseName: suse-observability-content
+  timeoutSeconds: 1200
+  waitForJobs: true
+  disableDependencyUpdate: true
+  disablePreProcess: true
+  force: false
+  atomic: false
+  takeOwnership: false
+targetCustomizations:
+- name: observability-cluster
+  clusterSelector:
+    matchLabels:
+      observability.example.com/cluster: observability-cluster
+- name: nao-implantar-nos-demais
+  clusterSelector: {}
+  doNotDeploy: true

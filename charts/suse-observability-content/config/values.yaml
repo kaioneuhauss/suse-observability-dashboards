@@ -1,0 +1,19 @@
+# Install once in the central SUSE Observability namespace.
+observability:
+  url: https://observability.neuhauss.com.br
+auth:
+  dashboards:
+    existingSecret: suse-observability-dashboard-token
+    serviceTokenKey: serviceToken
+  monitors:
+    existingSecret: suse-observability-monitor-token
+    serviceTokenKey: serviceToken
+lifecycle:
+  action: apply
+  revision: '1'
+dashboards:
+  enabled: true
+  include: [applications, resources, platform, traefik, harvester]
+monitors:
+  enabled: true
+  include: []

@@ -1,0 +1,19 @@
+# Mesclar nos values MANTIDOS do servidor SUSE; nao substituir a release inteira.
+# Ajuste o hostname, serviceName se a release difere, e o Secret TLS do servidor.
+opentelemetry-collector:
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    hosts:
+    - host: otlp-observability.neuhauss.com.br
+      paths:
+      - path: /
+        pathType: Prefix
+        serviceName: suse-observability-otel-collector-grpc
+        port: 4317
+    tls:
+    - hosts:
+      - otlp-observability.neuhauss.com.br
+      secretName: PREENCHA-SECRET-TLS-OTLP

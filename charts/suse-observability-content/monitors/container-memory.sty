@@ -1,0 +1,35 @@
+nodes:
+- _type: Monitor
+  name: SRE · container working set above 95 percent limit · 5m
+  identifier: urn:custom:monitor:sre-dashboards:container-memory
+  description: Checks container working set above 95 percent limit · 5m. Values are
+    evaluated every 60 seconds. Windows apply to observed samples; inspect collection
+    health before interpreting a missing result. Thresholds are starting points to
+    review against the workload baseline.
+  arguments:
+    metric:
+      query: min_over_time((max by (cluster_name,namespace,pod_name,container) (container_memory_working_set{pod_name!~"virt-launcher-.*"})
+        / (max by (cluster_name,namespace,pod_name,container) (sre_pod_container_memory_limit)
+        > 0))[5m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${pod_name} · ${container}
+    comparator: GT
+    threshold: 0.95
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:pod/${pod_name}
+    titleTemplate: SRE · container working set above 95 percent limit · 5m · ${cluster_name}
+      · ${namespace} · ${pod_name} · ${container}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Locate the cluster and resource named in the alert. Compare
+    the reported metric with the guest OS or Kubernetes API.
+
+    2. Review the same time window for workload changes, limits, restarts and storage
+    or memory pressure.
+
+    3. Apply a workload-specific correction and verify recovery; do not delete data
+    or raise limits automatically.'
+  tags:
+  - sre-dashboards
+  - dashboard-resources
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

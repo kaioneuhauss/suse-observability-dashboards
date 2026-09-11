@@ -1,0 +1,6 @@
+Content publication uses finite Helm hook Jobs.
+  kubectl logs job/{{ .Release.Name }}-dashboards -n {{ .Release.Namespace }}
+  kubectl logs job/{{ .Release.Name }}-monitors -n {{ .Release.Namespace }}
+Use the explicit kubeconfig and context for your target cluster.
+Jobs must complete and report verified persisted content. A successful render alone is insufficient.
+Uninstall removes Kubernetes resources; SUSE objects are retained unless explicitly removed through the guarded lifecycle.

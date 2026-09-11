@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sre-kubevirt-telemetry
+version: 0.2.0
+appVersion: 0.156.0
+type: application
+description: Collector KubeVirt complementar com TLS e Secret de ingestao existente. Chart customizado.

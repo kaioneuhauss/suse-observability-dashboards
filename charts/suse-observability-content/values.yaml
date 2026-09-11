@@ -1,0 +1,50 @@
+observability:
+  url: ''
+lifecycle:
+  action: apply
+  confirmDelete: ''
+  revision: '1'
+publisher:
+  image: python:3.12-alpine
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+  cli:
+    path: ''
+    downloadUrl: https://dl.stackstate.com/stackstate-cli/v3.3.6/stackstate-cli-3.3.6.linux-x86_64.tar.gz
+    sha256: 12eb322d6670a677b21a29f645c929fb0f34d9009952deb95e7eb93cafbd8543
+  caSecret: ''
+  caKey: ca.crt
+  activeDeadlineSeconds: 900
+  ttlSecondsAfterFinished: 86400
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+      ephemeral-storage: 96Mi
+    limits:
+      cpu: 200m
+      memory: 192Mi
+      ephemeral-storage: 320Mi
+  nodeSelector:
+    kubernetes.io/os: linux
+    kubernetes.io/arch: amd64
+  tolerations: []
+auth:
+  dashboards:
+    existingSecret: suse-observability-dashboard-token
+    serviceTokenKey: serviceToken
+  monitors:
+    existingSecret: suse-observability-monitor-token
+    serviceTokenKey: serviceToken
+dashboards:
+  enabled: true
+  include:
+  - applications
+  - resources
+  - platform
+  - traefik
+  - harvester
+  updateStrategy: replace
+monitors:
+  enabled: true
+  include: []

@@ -1,0 +1,18 @@
+# This environment already isolates kube-system. Allow only the telemetry pods to scrape TCP/9100.
+clusterName: rancher-kaio
+remoteWrite:
+  url: https://observability.neuhauss.com.br/receiver/prometheus/api/v1/write
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+etcd:
+  enabled: true
+traefik:
+  enabled: true
+  allowMetricsNetworkPolicy: true
+  existingIsolationConfirmed: true
+nodeExporter:
+  pressureEnabled: false
+safety:
+  profile: conservative
+  cardinality:
+    mode: observe

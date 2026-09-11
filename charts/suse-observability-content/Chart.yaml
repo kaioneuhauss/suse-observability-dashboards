@@ -1,0 +1,6 @@
+apiVersion: v2
+name: suse-observability-content
+description: Selected SUSE Observability dashboards and native monitors, with shared publishing configuration.
+type: application
+version: 0.1.0
+appVersion: "3.3.6"

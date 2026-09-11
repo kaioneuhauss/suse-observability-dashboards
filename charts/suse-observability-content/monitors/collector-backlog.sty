@@ -1,0 +1,32 @@
+nodes:
+- _type: Monitor
+  name: SRE · metric collection backlog persists · 10m
+  identifier: urn:custom:monitor:sre-dashboards:collector-backlog
+  description: Checks metric collection backlog persists · 10m. Values are evaluated
+    every 60 seconds. Windows apply to observed samples; inspect collection health
+    before interpreting a missing result. Thresholds are starting points to review
+    against the workload baseline.
+  arguments:
+    metric:
+      query: min_over_time((max by (cluster_name,node,collector_kind) (vmagent_remotewrite_pending_data_bytes{job="sre-collector",node!=""}))[10m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node} · ${collector_kind}
+    comparator: GT
+    threshold: 0
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · metric collection backlog persists · 10m · ${cluster_name}
+      · ${node} · ${collector_kind}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Check the collector pod, readiness, recent and previous logs.
+
+    2. Verify DNS, TLS, NetworkPolicy, endpoint reachability, ingestion credentials
+    and remote-write responses.
+
+    3. Check queue growth and dropped samples. A running pod does not prove successful
+    delivery.'
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

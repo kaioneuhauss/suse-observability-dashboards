@@ -1,16 +1,35 @@
-clusterName: ""
+clusterName: ''
 remoteWrite:
-  url: ""
+  url: ''
   existingSecret: suse-observability-agent-secrets
   secretKey: STS_API_KEY
   username: apikey
-  # Leave empty for the system trust store. Never disable verification.
-  caSecret: ""
+  caSecret: ''
   caKey: ca.crt
-  # SUSE receiver expects Prometheus remote write; avoid protocol negotiation.
   forcePrometheusProtocol: true
 scrapeInterval: 30s
-# Native Prometheus collection: independent of annotations on the RKE2 chart.
+scrapeTimeout: 10s
+safety:
+  profile: conservative
+  metricAllowlist:
+    enabled: true
+    nodeRegex: (node_cpu_seconds_total|node_filesystem_avail_bytes|node_filesystem_files|node_filesystem_files_free|node_filesystem_free_bytes|node_filesystem_size_bytes|node_memory_MemAvailable_bytes|node_memory_MemTotal_bytes|node_network_receive_errs_total|node_network_transmit_errs_total|node_pressure_io_waiting_seconds_total|node_pressure_memory_waiting_seconds_total|node_scrape_collector_success|node_disk_(reads_completed_total|writes_completed_total|read_time_seconds_total|write_time_seconds_total|io_time_weighted_seconds_total|io_now)|node_vmstat_(pgmajfault|pswpin|pswpout))
+    etcdRegex: (etcd_disk_backend_commit_duration_seconds_bucket|etcd_disk_backend_commit_duration_seconds_count|etcd_disk_backend_commit_duration_seconds_sum|etcd_disk_wal_fsync_duration_seconds_bucket|etcd_disk_wal_fsync_duration_seconds_count|etcd_disk_wal_fsync_duration_seconds_sum|etcd_mvcc_db_total_size_in_bytes|etcd_network_peer_round_trip_time_seconds_bucket|etcd_network_peer_round_trip_time_seconds_count|etcd_network_peer_round_trip_time_seconds_sum|etcd_server_has_leader|etcd_server_leader_changes_seen_total|etcd_server_proposals_applied_total|etcd_server_proposals_committed_total|etcd_server_proposals_failed_total|etcd_server_proposals_pending|etcd_server_quota_backend_bytes|process_start_time_seconds)
+    traefikRegex: (traefik_open_connections|traefik_service_request_duration_seconds_bucket|traefik_service_request_duration_seconds_count|traefik_service_request_duration_seconds_sum|traefik_service_requests_bytes_total|traefik_service_requests_total|traefik_service_responses_bytes_total|traefik_tls_certs_not_after)
+  cardinality:
+    mode: observe
+    node:
+      sampleLimit: 5000
+      seriesLimit: 5000
+      labelLimit: 40
+    etcd:
+      sampleLimit: 5000
+      seriesLimit: 5000
+      labelLimit: 40
+    traefik:
+      sampleLimit: 10000
+      seriesLimit: 10000
+      labelLimit: 50
 traefik:
   enabled: false
   namespace: kube-system
@@ -18,40 +37,76 @@ traefik:
     app.kubernetes.io/name: rke2-traefik
   port: 9100
   targetPort: metrics
-  # Enable ONLY when existing policies already isolate Traefik and allow web traffic.
-  # Adds TCP metrics access from this collector, preserving other policies.
   allowMetricsNetworkPolicy: false
   inventoryImage: python:3.12-alpine
+  existingIsolationConfirmed: false
+  inventoryResources:
+    requests:
+      cpu: 5m
+      memory: 24Mi
+      ephemeral-storage: 16Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+      ephemeral-storage: 64Mi
 nodeExporter:
   enabled: true
-  # Requires /proc/pressure on the host. Disable when the kernel lacks PSI.
-  pressureEnabled: true
+  pressureEnabled: false
   image: quay.io/prometheus/node-exporter:v1.12.1
   port: 19100
   resources:
-    requests: {cpu: 10m, memory: 24Mi}
-    limits: {cpu: 100m, memory: 96Mi}
+    requests:
+      cpu: 10m
+      memory: 24Mi
+      ephemeral-storage: 16Mi
+    limits:
+      cpu: 100m
+      memory: 96Mi
+      ephemeral-storage: 64Mi
 etcd:
   enabled: false
-  # RKE2 exposes this on loopback. No TLS keys or remote etcd access needed.
   endpoint: http://127.0.0.1:2381/metrics
   nodeSelector:
-    node-role.kubernetes.io/etcd: "true"
+    node-role.kubernetes.io/etcd: 'true'
 vmagent:
   image: registry.rancher.com/suse-observability/vmagent:1.144.0-so6
   nodePort: 18429
   etcdPort: 18430
-  # Disk queue per collector. The volume adds 256 MiB of headroom automatically.
-  # emptyDir survives container restarts, but NOT pod replacement/node loss.
   queueMaxDiskMiB: 1024
   selfMonitoring: true
   resources:
-    requests: {cpu: 10m, memory: 32Mi}
-    limits: {cpu: 150m, memory: 128Mi}
+    requests:
+      cpu: 10m
+      memory: 32Mi
+      ephemeral-storage: 128Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
+      ephemeral-storage: 1536Mi
+  memoryAllowedBytes: 64MiB
+  maxScrapeSize: 16MiB
 imagePullSecrets: []
 nodeSelector:
   kubernetes.io/os: linux
 tolerations:
-  - {key: node-role.kubernetes.io/control-plane, operator: Exists, effect: NoSchedule}
-  - {key: node-role.kubernetes.io/master, operator: Exists, effect: NoSchedule}
-  - {key: node-role.kubernetes.io/etcd, operator: Exists, effect: NoExecute}
+- key: node-role.kubernetes.io/control-plane
+  operator: Exists
+  effect: NoSchedule
+- key: node-role.kubernetes.io/master
+  operator: Exists
+  effect: NoSchedule
+- key: node-role.kubernetes.io/etcd
+  operator: Exists
+  effect: NoExecute
+tests:
+  enabled: true
+podInventory:
+  enabled: true
+  image: python:3.12-alpine
+  resources:
+    requests:
+      cpu: 5m
+      memory: 48Mi
+    limits:
+      cpu: 100m
+      memory: 192Mi

@@ -1,0 +1,29 @@
+{{- if .Values.monitors.enabled }}
+{{- $catalog := .Files.Get "files/catalog.json" | fromJsonArray -}}
+{{- $selected := list -}}
+{{- range $rule := $catalog -}}
+{{- if or (empty $.Values.monitors.include) (has $rule.slug $.Values.monitors.include) -}}
+{{- $selected = append $selected $rule -}}
+{{- end -}}
+{{- end -}}
+{{- if and (not (empty .Values.monitors.include)) (ne (len $selected) (len .Values.monitors.include)) -}}
+{{- fail "monitors.include contem slug desconhecido; consulte files/catalog.json" -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-monitors-definitions
+  namespace: {{ .Release.Namespace }}
+data:
+  legacy-identifiers.json: |
+{{ .Files.Get "files/legacy-identifiers.json" | indent 4 }}
+  publisher.py: |
+{{ .Files.Get "files/publisher.py" | indent 4 }}
+  catalog.json: |
+{{ toPrettyJson $selected | indent 4 }}
+{{- range $rule := $selected }}
+  {{ $rule.slug }}.sty: |
+{{ $.Files.Get (printf "monitors/%s.sty" $rule.slug) | indent 4 }}
+{{- end }}
+
+{{- end }}

@@ -1,0 +1,20 @@
+{{- if .Values.dashboards.enabled }}
+{{- if empty .Values.dashboards.include }}{{ fail "dashboards.include must select at least one dashboard when enabled" }}{{ end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dashboards-definitions
+  namespace: {{ .Release.Namespace }}
+data:
+  publisher.py: |
+{{ .Files.Get "files/publisher.py" | indent 4 }}
+  dashboards.json: |
+    {"dashboards":[
+{{- range $index, $name := .Values.dashboards.include }}
+{{- if $index }}
+    ,
+{{- end }}
+{{ $.Files.Get (printf "dashboards/%s.json" $name) | indent 4 }}
+{{- end }}
+    ]}
+{{- end }}

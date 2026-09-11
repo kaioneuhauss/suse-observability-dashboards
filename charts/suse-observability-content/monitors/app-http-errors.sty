@@ -1,0 +1,33 @@
+nodes:
+- _type: Monitor
+  name: SRE · instrumented app HTTP 5xx above 5 percent · 5m
+  identifier: urn:custom:monitor:sre-dashboards:app-http-errors
+  description: 'Uses application counters: 5xx exceeds 5% with at least 100 calls
+    per five-minute window, over observed samples for five minutes. Health attaches
+    to the Kubernetes namespace because the instrumented service name may differ from
+    its Kubernetes Service name.'
+  arguments:
+    metric:
+      query: min_over_time((((sum by(cluster_name,namespace,service_name) (increase(http_server_requests_total{status_class="5xx",http_route!~"(?i).*(health|ready|live|metrics).*"}[5m])))
+        or on(cluster_name,namespace,service_name) (0 * (sum by(cluster_name,namespace,service_name)
+        (increase(http_server_requests_total{http_route!~"(?i).*(health|ready|live|metrics).*"}[5m])))))/(sum
+        by(cluster_name,namespace,service_name) (increase(http_server_requests_total{http_route!~"(?i).*(health|ready|live|metrics).*"}[5m]))
+        >= 100))[5m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${service_name}
+    comparator: GT
+    threshold: 0.05
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:namespace/${namespace}
+    titleTemplate: SRE · instrumented app HTTP 5xx above 5 percent · 5m · ${cluster_name}
+      · ${namespace} · ${service_name}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Identify the application and route in Instrumented apps. Correlate
+    the spike with application exceptions and dependency traces. Review the service
+    objective and avoid duplicate notification routes when native HTTP/span monitors
+    already cover the same incident.
+  tags:
+  - sre-dashboards
+  - dashboard-applications
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

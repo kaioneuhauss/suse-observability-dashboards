@@ -1,0 +1,36 @@
+nodes:
+- _type: Monitor
+  name: SRE · PVC filesystem projected full within 12h
+  identifier: urn:custom:monitor:sre-dashboards:pvc-trend-12
+  description: Checks PVC filesystem projected full within 12h. Values are evaluated
+    every 60 seconds. Windows apply to observed samples; inspect collection health
+    before interpreting a missing result. Thresholds are starting points to review
+    against the workload baseline.
+  arguments:
+    metric:
+      query: max_over_time((predict_linear((max by (cluster_name,namespace,persistentvolumeclaim)
+        (kubernetes_kubelet_volume_stats_available_bytes))[6h:5m], 43200) and on (cluster_name,namespace,persistentvolumeclaim)
+        (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes)
+        > 0))[30m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${persistentvolumeclaim}
+    comparator: LT
+    threshold: 0
+    failureState: CRITICAL
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:persistent-volume-claim/${persistentvolumeclaim}
+    titleTemplate: SRE · PVC filesystem projected full within 12h · ${cluster_name}
+      · ${namespace} · ${persistentvolumeclaim}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Locate the named cluster, namespace and PVC. Check available
+    bytes and recent growth inside the mounted filesystem.
+
+    2. Verify snapshots, retention, application writes and StorageClass expansion
+    support.
+
+    3. Forecasts are trends, not guarantees; compare several time windows before resizing
+    or deleting data.'
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

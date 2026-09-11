@@ -1,0 +1,22 @@
+defaultNamespace: suse-observability
+helm:
+  chart: .
+  valuesFiles:
+  - values.yaml
+  - config/values.yaml
+  releaseName: kubevirt-otel-collector
+  timeoutSeconds: 600
+  waitForJobs: true
+  disableDependencyUpdate: true
+  disablePreProcess: true
+  force: false
+  atomic: false
+  takeOwnership: false
+targetCustomizations:
+- name: harvester
+  clusterSelector:
+    matchLabels:
+      observability.example.com/cluster: harvester
+- name: nao-implantar-nos-demais
+  clusterSelector: {}
+  doNotDeploy: true

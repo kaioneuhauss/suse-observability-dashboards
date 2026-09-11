@@ -1,0 +1,17 @@
+# Collector no namespace do Agent. CA publica e pull secret devem existir ali.
+# NAO executar em paralelo com outro collector KubeVirt para as mesmas origens.
+clusterName: harvester
+otlp:
+  endpoint: otlp-observability.neuhauss.com.br:443
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+imagePullSecrets:
+- name: application-collection
+kubevirt:
+  ca:
+    existingConfigMap: kubevirt-metrics-ca
+    key: ca-bundle
+    revision: '1'
+safety:
+  cardinality:
+    mode: observe
