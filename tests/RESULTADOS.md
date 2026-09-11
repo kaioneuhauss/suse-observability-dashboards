@@ -71,7 +71,7 @@ A criação e avaliação de monitores não comprovam entrega de notificações.
 ## Aceites ainda dependentes do destino
 
 1. Ajustar deduplicação e escalonamento no cliente: o laboratório recebeu os dois monitores, aplicação e Traefik, para a mesma falha controlada. Canal, abertura e recuperação foram confirmados.
-3. Publicar esta versão no Git e validar reconciliação GitRepo da branch real; o ZIP não atualiza GitHub.
+3. No cliente, ajustar e testar os seletores Fleet antes de direcionar o GitRepo aos clusters. A branch pública foi validada; o teste de leitura sem alvos não substitui rollout do cliente.
 4. Homologar numa instalação nova, com CA, registro privado, versões, storage drivers e políticas do cliente. A imagem opcional do publicador em Dockerfile não foi construída nem verificada em registro privado neste laboratório.
 5. Não foram provocados perda de quorum etcd, disco cheio, OOM ou falhas de produção para disparar cada alerta. A avaliação real e os testes controlados de aplicação não substituem um exercício de falhas aprovado.
 
@@ -132,3 +132,9 @@ A revisão 29 separou a contagem e os nomes dos Pods acima de 80% do limite dos 
 A auditoria final executou 3.452 consultas/filtros: zero erros, 715 resultados vazios e zero casos não finitos. As cinco definições persistidas coincidiram integralmente com os JSONs locais. Os 29 testes e os checks Helm passaram. Nos últimos cinco minutos de logs conferidos, 42 containers/publicadores/testes tiveram zero linhas de erro, zero falhas de leitura e nenhum container Running sem prontidão.
 
 O link relativo dos painéis precisou usar `./#/metrics?...`: a navegação interna `/#/metrics?...` descartava a consulta. O link corrigido foi aberto no Chrome com filtro Observability, e a tabela trouxe somente os Pods desse cluster. A altura das listas foi conferida para evitar sobreposição com os títulos. Consulte UI-VALIDATION.md para a abrangência visual e as limitações.
+
+## Publicação pública e leitura Fleet
+
+Branch `helm-fleet-v6` publicada em `kaioneuhauss/suse-observability-dashboards`. O commit de conteúdo `faa5fc312536dbfcc20d0090b610da61f5284d88` passou no GitHub Actions com Helm 3.19.0 e 4.1.1 (run 34643767587). Uma clonagem HTTPS pública, sem a deploy key, coincidiu com os 114 hashes do manifesto.
+
+O GitRepo temporário `suse-v6-public-fetch-canary` leu esse mesmo commit, atingiu Ready=True/GitJob Current e gerou um Bundle com 48 arquivos. Seu seletor não correspondia a nenhum cluster: 0/0 destinos, sem instalar release concorrente. O GitRepo foi removido após o teste. Essa evidência complementa o Bundle canário anterior em modo plan; não representa uma instalação limpa de toda a plataforma em um novo cliente.

@@ -49,7 +49,7 @@ Esta matriz acompanha os pedidos desde a primeira revisão. “Validado” signi
 | README/dashboards em inglês; conversa em português | Textos dos dashboards e README em inglês claro | Mantido |
 | Documento de cliente com passos copiáveis | Procedimento separado do material de estudo | Documento Markdown e PDF entregue |
 | Documento de estudo detalhado | Estrutura Helm, criar charts/dashboards/monitores, princípios, fontes e decisões | Documento Markdown e PDF entregue |
-| Publicar no GitHub público autorizado | Repositório existente; v6 ainda não publicada | Pendente para v6; Fleet GitRepo precisa da branch real |
+| Publicar no GitHub público autorizado | Branch helm-fleet-v6 publicada; clonagem pública e 114 hashes conferidos; GitHub Actions Helm 3/4 passou | Validado; GitRepo leu a branch com zero clusters alvo e foi removido |
 | Segurança e impacto nos clusters/SUSE | RBAC, mounts, TLS, imagem, recursos, filas, séries e carga observada | Relatório IMPACTO-E-SEGURANCA.md com consumo observado, limites e cenários; não promete impacto zero |
 | Validação gráfica de cada painel/filtro | Matriz separada distingue API de interface e versões de layout | Todos os painéis percorridos; API em 117 caminhos e filtros GUI representativos; ver UI-VALIDATION.md |
 | Usar só Chrome Kaio/neukaiosantos | Perfil conectado confirmado pelo usuário | Respeitado; sem navegador integrado para o aceite |
