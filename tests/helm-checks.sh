@@ -16,6 +16,18 @@ for values in charts/*/config/*.yaml; do
   test -s "$TMP/$name"
 done
 
+# Beginner profiles inherit the same complete chart defaults.
+for profile in cluster harvester virtual-machines central; do
+  case "$profile" in
+    cluster|harvester) chart=charts/sre-platform-telemetry ;;
+    virtual-machines) chart=charts/sre-kubevirt-telemetry ;;
+    central) chart=charts/suse-observability-content ;;
+  esac
+  helm lint "$chart" --strict -f "deploy/$profile/values.yaml"
+  helm template test "$chart" -f "deploy/$profile/values.yaml" > "$TMP/simple-$profile.yaml"
+done
+helm template test charts/sre-platform-telemetry -f deploy/cluster/values.yaml --set etcd.enabled=true --set traefik.enabled=true > "$TMP/simple-enabled.yaml"
+
 reject() {
   if "$@" >"$TMP/negative.out" 2>&1; then
     echo "ERRO: configuracao insegura aceita: $*" >&2; exit 1

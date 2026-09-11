@@ -1,0 +1,17 @@
+# Publish content once in the SUSE Observability server cluster.
+observability:
+  url: https://observability.example.com
+# New installation: one publisher token can serve both Jobs.
+# Existing installation: preserve the Secret/token that owns each dashboard.
+auth:
+  dashboards:
+    existingSecret: suse-observability-publisher-token
+    serviceTokenKey: serviceToken
+  monitors:
+    existingSecret: suse-observability-publisher-token
+    serviceTokenKey: serviceToken
+dashboards:
+  include: [applications, resources, platform, traefik, harvester]
+monitors:
+  include: []  # all 33 project monitors; select catalog slugs for a subset
+# Credentials themselves must never be placed in this file.

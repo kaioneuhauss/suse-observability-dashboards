@@ -1,5 +1,7 @@
 # sre-platform-telemetry
 
+For a new installation, start with the [simple repository procedure](../../README.md) and [short values profile](../../deploy/cluster/values.yaml). The detailed configuration below remains available for customization.
+
 Chart customizado de coleta complementar. Configuracao em `values.yaml`, exemplos em `deploy/`. Instale uma release por origem/cluster, no namespace do Agent, reutilizando somente referencias de Secret.
 
 Coleta host/etcd/Traefik e envia via Prometheus remote write. Habilite metricas do Traefik ANTES; o chart nao altera o rke2-traefik. `helm test` verifica Traefik pela rede dos pods.

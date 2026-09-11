@@ -1,5 +1,9 @@
 # Version 6 — 11 September 2026
 
+- Simplify installation to short `deploy/*/values.yaml` profiles, one central publisher Secret for approved new installations, and separate prerequisites/uninstall steps.
+- Add concise customer/study guides, a short impact report, Fleet instructions and a technical-details directory; preserve the existing lab's restricted credentials.
+- Verify short profiles and shared-Secret apply/delete rendering with Helm 3/4; default-role permissions are documentation-verified, not a new live credential rollout.
+
 - Consolidate five dashboard publishers and monitor definitions into one content chart; keep platform and KubeVirt collection in two separate charts.
 - Preserve raw JSON layout coordinates, verify persisted definitions, and avoid saving temporary filter selections.
 - Use self-contained Fleet paths with explicit default/profile values; validate packaged targets and a live plan canary.

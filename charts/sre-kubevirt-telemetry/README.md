@@ -1,5 +1,7 @@
 # sre-kubevirt-telemetry
 
+For a new installation, start with the [simple repository procedure](../../README.md) and [short values profile](../../deploy/virtual-machines/values.yaml). The detailed configuration below remains available for customization.
+
 Chart customizado de coleta complementar. Configuracao em `values.yaml`, exemplos em `deploy/`. Instale uma release por origem/cluster, no namespace do Agent, reutilizando somente referencias de Secret.
 
 Executa um unico OTel Collector para KubeVirt e envia OTLP gRPC. Nao e o chart oficial upstream. Antes crie a copia publica da CA no namespace do Agent e tenha o imagePullSecret. Nao instale outro Collector equivalente em paralelo.

@@ -1,0 +1,10 @@
+# Host/platform collectors for Harvester. KubeVirt uses a separate profile.
+clusterName: harvester-example
+remoteWrite:
+  url: https://observability.example.com/receiver/prometheus/api/v1/write
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+etcd:
+  enabled: false  # set true after verifying the local endpoint on etcd nodes
+traefik:
+  enabled: false  # keep false when Harvester uses NGINX
