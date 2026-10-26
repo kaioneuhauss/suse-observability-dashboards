@@ -1,0 +1,904 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mode",
+    "clusterName",
+    "observability",
+    "ingestion",
+    "auth",
+    "lifecycle",
+    "slo",
+    "content",
+    "telemetry"
+  ],
+  "properties": {
+    "observability": {
+      "type": "object",
+      "required": [
+        "url"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^https://[^ /]+(/.*)?$"
+        },
+        "remoteWriteUrl": {
+          "type": "string",
+          "pattern": "^(https://[^ ]+)?$"
+        },
+        "otlpEndpoint": {
+          "type": "string"
+        }
+      }
+    },
+    "ingestion": {
+      "type": "object"
+    },
+    "auth": {
+      "type": "object",
+      "required": [
+        "dashboards",
+        "monitors"
+      ],
+      "properties": {
+        "dashboards": {
+          "type": "object",
+          "required": [
+            "existingSecret",
+            "serviceTokenKey"
+          ],
+          "properties": {
+            "existingSecret": {
+              "type": "string",
+              "minLength": 1
+            },
+            "serviceTokenKey": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "monitors": {
+          "type": "object",
+          "required": [
+            "existingSecret",
+            "serviceTokenKey"
+          ],
+          "properties": {
+            "existingSecret": {
+              "type": "string",
+              "minLength": 1
+            },
+            "serviceTokenKey": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "enum": [
+            "apply",
+            "plan",
+            "delete"
+          ]
+        },
+        "confirmDelete": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "string"
+        }
+      }
+    },
+    "slo": {
+      "type": "object",
+      "properties": {
+        "availabilityTarget": {
+          "type": "number",
+          "minimum": 1,
+          "exclusiveMaximum": 100
+        }
+      },
+      "required": [
+        "availabilityTarget"
+      ]
+    },
+    "content": {
+      "type": "object",
+      "required": [
+        "publisher"
+      ],
+      "properties": {
+        "publisher": {
+          "type": "object",
+          "properties": {
+            "cli": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "downloadUrl": {
+                  "type": "string",
+                  "pattern": "^https://"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^([a-fA-F0-9]{64})?$"
+                }
+              }
+            },
+            "activeDeadlineSeconds": {
+              "type": "integer",
+              "minimum": 60
+            },
+            "ttlSecondsAfterFinished": {
+              "type": "integer",
+              "minimum": 60
+            },
+            "resources": {
+              "type": "object",
+              "required": [
+                "requests",
+                "limits"
+              ],
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "resources"
+          ]
+        },
+        "dashboards": {
+          "type": "object",
+          "required": [
+            "enabled",
+            "include",
+            "updateStrategy"
+          ],
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "include": {
+              "const": [
+                "platform",
+                "resources"
+              ]
+            },
+            "updateStrategy": {
+              "enum": [
+                "patch",
+                "replace"
+              ]
+            }
+          }
+        },
+        "monitors": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "include": {
+              "const": [
+                "etcd-no-leader",
+                "etcd-elections",
+                "etcd-failed",
+                "etcd-pending",
+                "etcd-lag",
+                "etcd-fsync",
+                "etcd-commit",
+                "etcd-quota",
+                "etcd-scrape",
+                "node-space",
+                "node-inodes",
+                "node-memory",
+                "node-telemetry",
+                "pvc-space",
+                "container-memory",
+                "pvc-trend-12",
+                "pvc-trend-96",
+                "collector-backlog",
+                "collector-dropped",
+                "etcd-telemetry-missing",
+                "host-disk-latency"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "telemetry": {
+      "type": "object",
+      "required": [
+        "remoteWrite",
+        "etcd",
+        "scrapeInterval",
+        "scrapeTimeout",
+        "safety",
+        "nodeExporter",
+        "vmagent",
+        "traefik",
+        "podInventory"
+      ],
+      "properties": {
+        "remoteWrite": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "forcePrometheusProtocol": {
+              "type": "boolean"
+            }
+          }
+        },
+        "scrapeInterval": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*s$"
+        },
+        "scrapeTimeout": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*s$"
+        },
+        "safety": {
+          "type": "object",
+          "required": [
+            "profile",
+            "metricAllowlist",
+            "cardinality"
+          ],
+          "properties": {
+            "profile": {
+              "type": "string",
+              "enum": [
+                "conservative",
+                "custom"
+              ]
+            },
+            "metricAllowlist": {
+              "type": "object",
+              "required": [
+                "enabled",
+                "nodeRegex",
+                "etcdRegex",
+                "traefikRegex"
+              ],
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "nodeRegex": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "etcdRegex": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "traefikRegex": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "cardinality": {
+              "type": "object",
+              "required": [
+                "mode",
+                "node",
+                "etcd",
+                "traefik"
+              ],
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "enum": [
+                    "observe",
+                    "enforce"
+                  ]
+                },
+                "node": {
+                  "type": "object",
+                  "required": [
+                    "sampleLimit",
+                    "seriesLimit",
+                    "labelLimit"
+                  ],
+                  "properties": {
+                    "sampleLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "seriesLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "labelLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                },
+                "etcd": {
+                  "type": "object",
+                  "required": [
+                    "sampleLimit",
+                    "seriesLimit",
+                    "labelLimit"
+                  ],
+                  "properties": {
+                    "sampleLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "seriesLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "labelLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                },
+                "traefik": {
+                  "type": "object",
+                  "required": [
+                    "sampleLimit",
+                    "seriesLimit",
+                    "labelLimit"
+                  ],
+                  "properties": {
+                    "sampleLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "seriesLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "labelLimit": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "etcd": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "endpoint": {
+              "type": "string",
+              "pattern": "^http://127[.]0[.]0[.]1:[0-9]+/metrics$"
+            },
+            "nodeSelector": {
+              "type": "object",
+              "minProperties": 1
+            }
+          }
+        },
+        "vmagent": {
+          "type": "object",
+          "required": [
+            "queueMaxDiskMiB",
+            "selfMonitoring",
+            "resources"
+          ],
+          "properties": {
+            "queueMaxDiskMiB": {
+              "type": "integer",
+              "minimum": 513
+            },
+            "selfMonitoring": {
+              "type": "boolean"
+            },
+            "maxScrapeSize": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]*(KiB|MiB)$"
+            },
+            "resources": {
+              "type": "object",
+              "required": [
+                "requests",
+                "limits"
+              ],
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "traefik": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "const": false
+            },
+            "allowMetricsNetworkPolicy": {
+              "type": "boolean"
+            },
+            "existingIsolationConfirmed": {
+              "type": "boolean"
+            },
+            "port": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "targetPort": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "string",
+                  "minLength": 1
+                }
+              ]
+            },
+            "inventoryResources": {
+              "type": "object",
+              "required": [
+                "requests",
+                "limits"
+              ],
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "inventoryResources"
+          ]
+        },
+        "nodeExporter": {
+          "type": "object",
+          "required": [
+            "resources"
+          ],
+          "properties": {
+            "resources": {
+              "type": "object",
+              "required": [
+                "requests",
+                "limits"
+              ],
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "podInventory": {
+          "type": "object",
+          "required": [
+            "resources"
+          ],
+          "properties": {
+            "resources": {
+              "type": "object",
+              "required": [
+                "requests",
+                "limits"
+              ],
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "required": [
+                    "cpu",
+                    "memory"
+                  ],
+                  "properties": {
+                    "cpu": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    },
+                    "memory": {
+                      "anyOf": [
+                        {
+                          "type": "number",
+                          "exclusiveMinimum": 0
+                        },
+                        {
+                          "type": "string",
+                          "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                          "not": {
+                            "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "mode": {
+      "enum": [
+        "all",
+        "content",
+        "telemetry"
+      ]
+    },
+    "clusterName": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,199 @@
+{{- if ne .Values.mode "content" }}
+{{- $root := . }}
+{{- $v := deepCopy .Values.telemetry }}
+{{- $_ := set $v "clusterName" (required "clusterName: use the exact SUSE integration name" .Values.clusterName) }}
+{{- $_ := set $v.remoteWrite "url" (default (printf "%s/receiver/prometheus/api/v1/write" (trimSuffix "/" .Values.observability.url)) .Values.observability.remoteWriteUrl) }}
+{{- $_ := set $v.remoteWrite "existingSecret" .Values.ingestion.existingSecret }}
+{{- $_ := set $v.remoteWrite "secretKey" .Values.ingestion.secretKey }}
+{{- with (dict "Values" $v "Release" .Release "Chart" .Chart "Files" .Files "Capabilities" .Capabilities "Template" .Template) }}
+{{- $ := . }}
+{{- $root := . -}}
+{{- if lt (int .Values.vmagent.queueMaxDiskMiB) 513 -}}
+{{- fail "vmagent.queueMaxDiskMiB must be at least 513; vmagent rounds smaller queues above 512 MiB" -}}
+{{- end -}}
+{{- range $kind := list "node" "etcd" -}}
+{{- $enabled := ternary $root.Values.nodeExporter.enabled $root.Values.etcd.enabled (eq $kind "node") -}}
+{{- if $enabled }}
+{{- $name := printf "%s-%s" $root.Release.Name $kind | trunc 63 | trimSuffix "-" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}
+data:
+  scrape.yaml: |
+    global:
+      scrape_interval: {{ $root.Values.scrapeInterval }}
+      scrape_timeout: {{ $root.Values.scrapeTimeout }}
+      external_labels:
+        cluster_name: {{ required "clusterName is required" $root.Values.clusterName | quote }}
+        node: "%{NODE_NAME}"
+        telemetry_source: sre-platform-telemetry
+        collector_kind: {{ $kind }}
+    scrape_configs:
+      - job_name: sre-{{ $kind }}
+        {{ if eq $root.Values.safety.cardinality.mode "enforce" }}
+        {{ $limits := ternary $root.Values.safety.cardinality.node $root.Values.safety.cardinality.etcd (eq $kind "node") }}
+        sample_limit: {{ $limits.sampleLimit }}
+        series_limit: {{ $limits.seriesLimit }}
+        label_limit: {{ $limits.labelLimit }}
+        {{ end }}
+        static_configs:
+          - targets:
+            {{- if eq $kind "node" }}
+              - "127.0.0.1:{{ $root.Values.nodeExporter.port }}"
+            {{- else }}
+              - {{ trimPrefix "http://" ($root.Values.etcd.endpoint | trimSuffix "/metrics") | quote }}
+            {{- end }}
+        {{ if $root.Values.safety.metricAllowlist.enabled }}
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: {{ ternary $root.Values.safety.metricAllowlist.nodeRegex $root.Values.safety.metricAllowlist.etcdRegex (eq $kind "node") | quote }}
+            action: keep
+        {{ end }}
+      {{- if $root.Values.vmagent.selfMonitoring }}
+      - job_name: sre-collector
+        static_configs:
+          - targets: ["127.0.0.1:{{ ternary $root.Values.vmagent.nodePort $root.Values.vmagent.etcdPort (eq $kind "node") }}"]
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: 'vmagent_remotewrite_(pending_data_bytes|requests_total|retries_count_total|samples_dropped_total|blocks_sent_total)|vm_persistentqueue_bytes_dropped_total|vm_promscrape_config_last_reload_successful'
+            action: keep
+          - regex: 'url|path'
+            action: labeldrop
+      {{- end }}
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ $name }}
+  labels: {app.kubernetes.io/name: sre-platform-telemetry, app.kubernetes.io/component: {{ $kind }}}
+spec:
+  selector:
+    matchLabels: {app: {{ $name }}}
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 1}
+  template:
+    metadata:
+      labels: {app: {{ $name }}, app.kubernetes.io/name: sre-platform-telemetry, app.kubernetes.io/component: {{ $kind }}}
+      annotations:
+        telemetry/config-hash: {{ toJson $root.Values | sha256sum | quote }}
+    spec:
+      hostNetwork: true
+      hostPID: false
+      dnsPolicy: ClusterFirstWithHostNet
+      automountServiceAccountToken: false
+      nodeSelector:
+        {{- toYaml (mergeOverwrite (deepCopy $root.Values.nodeSelector) (ternary (dict) $root.Values.etcd.nodeSelector (eq $kind "node"))) | nindent 8 }}
+      tolerations:
+        {{- toYaml $root.Values.tolerations | nindent 8 }}
+      {{- with $root.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        {{- if eq $kind "node" }}
+        - name: node-exporter
+          image: {{ $root.Values.nodeExporter.image | quote }}
+          args:
+            - --web.listen-address=127.0.0.1:{{ $root.Values.nodeExporter.port }}
+            - --path.procfs=/host/proc
+            - --path.sysfs=/host/sys
+            - --path.rootfs=/host/root
+            - --path.udev.data=/host/root/run/udev/data
+            - --collector.disable-defaults
+            - --collector.cpu
+            - --collector.meminfo
+            - --collector.filesystem
+            - --collector.diskstats
+            - --collector.netdev
+            - --collector.vmstat
+            {{- if $root.Values.nodeExporter.pressureEnabled }}
+            - --collector.pressure
+            {{- end }}
+            - --collector.filesystem.mount-points-exclude=^/(dev|proc|sys|run/(containerd|k3s)|var/lib/(kubelet|docker))($|/)
+            - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|efivarfs|fusectl|hugetlbfs|mqueue|nsfs|overlay|proc|pstore|rpc_pipefs|securityfs|squashfs|sysfs|tracefs|tmpfs)$
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            {{- toYaml $root.Values.nodeExporter.resources | nindent 12 }}
+          readinessProbe:
+            # Kubelet stops reading HTTP probe bodies after 10 KiB. /metrics
+            # exceeds that limit and logs broken pipe/reset on every probe.
+            # The small landing page checks HTTP readiness; vmagent's up and
+            # node_scrape_collector_success check actual metric collection.
+            httpGet: {host: 127.0.0.1, path: /, port: {{ $root.Values.nodeExporter.port }}}
+            periodSeconds: 30
+            timeoutSeconds: 10
+          volumeMounts:
+            - {name: host-proc, mountPath: /host/proc, readOnly: true}
+            - {name: host-sys, mountPath: /host/sys, readOnly: true}
+            - {name: host-root, mountPath: /host/root, readOnly: true, mountPropagation: HostToContainer}
+        {{- end }}
+        - name: vmagent
+          image: {{ $root.Values.vmagent.image | quote }}
+          args:
+            - -promscrape.config=/config/scrape.yaml
+            - -promscrape.maxScrapeSize={{ $root.Values.vmagent.maxScrapeSize }}
+            - -remoteWrite.url={{ required "remoteWrite.url is required" $root.Values.remoteWrite.url }}
+            - -remoteWrite.basicAuth.username={{ $root.Values.remoteWrite.username }}
+            - -remoteWrite.basicAuth.passwordFile=/auth/{{ $root.Values.remoteWrite.secretKey }}
+            {{- if $root.Values.remoteWrite.forcePrometheusProtocol }}
+            - -remoteWrite.forcePromProto=true
+            {{- end }}
+            {{- if $root.Values.remoteWrite.caSecret }}
+            - -remoteWrite.tlsCAFile=/ca/{{ $root.Values.remoteWrite.caKey }}
+            {{- end }}
+            - -remoteWrite.tmpDataPath=/queue
+            - -remoteWrite.maxDiskUsagePerURL={{ $root.Values.vmagent.queueMaxDiskMiB }}MiB
+            - -httpListenAddr=127.0.0.1:{{ ternary $root.Values.vmagent.nodePort $root.Values.vmagent.etcdPort (eq $kind "node") }}
+            - -memory.allowedBytes={{ $root.Values.vmagent.memoryAllowedBytes }}
+          env:
+            - name: NODE_NAME
+              valueFrom: {fieldRef: {fieldPath: spec.nodeName}}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            {{- toYaml $root.Values.vmagent.resources | nindent 12 }}
+          readinessProbe:
+            httpGet: {host: 127.0.0.1, path: /health, port: {{ ternary $root.Values.vmagent.nodePort $root.Values.vmagent.etcdPort (eq $kind "node") }}}
+            periodSeconds: 15
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: auth, mountPath: /auth, readOnly: true}
+            - {name: queue, mountPath: /queue}
+            {{- if $root.Values.remoteWrite.caSecret }}
+            - {name: ca, mountPath: /ca, readOnly: true}
+            {{- end }}
+      volumes:
+        - name: config
+          configMap: {name: {{ $name }}}
+        - name: auth
+          secret:
+            secretName: {{ $root.Values.remoteWrite.existingSecret }}
+            items:
+              - {key: {{ $root.Values.remoteWrite.secretKey }}, path: {{ $root.Values.remoteWrite.secretKey }}}
+        - name: queue
+          emptyDir: {sizeLimit: {{ add (int $root.Values.vmagent.queueMaxDiskMiB) 256 }}Mi}
+        {{- if $root.Values.remoteWrite.caSecret }}
+        - name: ca
+          secret: {secretName: {{ $root.Values.remoteWrite.caSecret }}}
+        {{- end }}
+        {{- if eq $kind "node" }}
+        - name: host-proc
+          hostPath: {path: /proc, type: Directory}
+        - name: host-sys
+          hostPath: {path: /sys, type: Directory}
+        - name: host-root
+          hostPath: {path: /, type: Directory}
+        {{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}
+{{- end }}

@@ -1,0 +1,5 @@
+{
+  "vm-guest-memory": [
+    "urn:custom:monitor:sre-vm-guest-os-below-10-percent-available-ram-15-m"
+  ]
+}

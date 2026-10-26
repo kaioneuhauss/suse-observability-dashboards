@@ -8,7 +8,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-SPEC = importlib.util.spec_from_file_location('publisher', ROOT/'charts/suse-observability-content/files/publisher.py')
+SPEC = importlib.util.spec_from_file_location('publisher', ROOT/'components/suse-observability-content/files/publisher.py')
 p = importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(p)
 
 DESIRED = {'name':'Test dashboard','description':'testing','scope':'publicDashboard','dashboard':{'metadata':{'project':'{"saveVariables":false}'},'spec':{'panels':{'note':{'spec':{'queries':[]}}}}}}
@@ -80,20 +80,20 @@ class PublisherTests(unittest.TestCase):
         with patch.dict('os.environ',{'PUBLISH_ACTION':'delete','CONFIRM_DELETE':''}):
             with self.assertRaisesRegex(p.PublishError,'confirmacao'):p.main()
     def test_monitor_plan_and_duplicates(self):
-        catalog=json.loads((ROOT/'charts/suse-observability-content/files/catalog.json').read_text())
+        catalog=json.loads((ROOT/'components/suse-observability-content/files/catalog.json').read_text())
         class Empty:
             def run(self,*a):assert a==('monitor','list');return {'monitors':[]}
-        with patch.object(p,'ROOT',ROOT/'charts/suse-observability-content/monitors'):
+        with patch.object(p,'ROOT',ROOT/'components/suse-observability-content/monitors'):
             p.sync_monitors(Empty(),catalog,'plan')
             with self.assertRaises(p.PublishError):p.sync_monitors(Empty(),[catalog[0],catalog[0]],'plan')
     def test_monitor_wrong_identity_no_writes(self):
-        rules=json.loads((ROOT/'charts/suse-observability-content/files/catalog.json').read_text())[:1]
+        rules=json.loads((ROOT/'components/suse-observability-content/files/catalog.json').read_text())[:1]
         class Wrong:
             def run(self,*a):assert a==('monitor','list');return {'monitors':[{'id':123,'name':rules[0]['name'],'identifier':'urn:stackpack:monitor:native','tags':['sre-dashboards','platform']}]}
-        with patch.object(p,'ROOT',ROOT/'charts/suse-observability-content/monitors'):
+        with patch.object(p,'ROOT',ROOT/'components/suse-observability-content/monitors'):
             with self.assertRaises(p.PublishError):p.sync_monitors(Wrong(),rules,'delete')
     def test_monitor_tag_migration_and_idempotence(self):
-        rule=json.loads((ROOT/'charts/suse-observability-content/files/catalog.json').read_text())[0]
+        rule=json.loads((ROOT/'components/suse-observability-content/files/catalog.json').read_text())[0]
         identifier='urn:custom:monitor:sre-dashboards:'+rule['slug']
         actual={'id':123,'name':rule['name'],'identifier':identifier,'tags':['sre-dashboards','platform'],
                 'description':rule['description'],'remediationHint':rule['remediation'],'status':'ENABLED','intervalSeconds':60,
@@ -114,7 +114,7 @@ class PublisherTests(unittest.TestCase):
                 raise AssertionError(args)
         cli=MonitorCLI()
         self.assertFalse(p.verify_monitor(actual,rule,identifier))
-        with patch.object(p,'ROOT',ROOT/'charts/suse-observability-content/monitors'):
+        with patch.object(p,'ROOT',ROOT/'components/suse-observability-content/monitors'):
             p.sync_monitors(cli,[rule],'apply')
             self.assertEqual(cli.writes,1)
             self.assertIn('identifier: '+identifier,cli.source)
@@ -126,7 +126,7 @@ class PublisherTests(unittest.TestCase):
             with self.assertRaises(p.PublishError):p.sync_monitors(cli,[rule],'delete')
 
     def test_publisher_copies_identical(self):
-        src=(ROOT/'charts/suse-observability-content/files/publisher.py').read_bytes()
-        for f in (ROOT/'charts').glob('*/files/publisher.py'):self.assertEqual(src,f.read_bytes(),f)
+        src=(ROOT/'components/suse-observability-content/files/publisher.py').read_bytes()
+        for f in (ROOT/'components').glob('*/files/publisher.py'):self.assertEqual(src,f.read_bytes(),f)
 
 if __name__=='__main__':unittest.main()

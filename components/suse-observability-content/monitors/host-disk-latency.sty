@@ -1,0 +1,29 @@
+nodes:
+- _type: Monitor
+  name: SRE · host disk response above 20ms · 10m
+  identifier: urn:custom:monitor:sre-dashboards:host-disk-latency
+  description: Average disk response exceeds 20 ms throughout observed samples in
+    a 10-minute window, while the five-minute average activity is at least 1 operation/s.
+    This is an initial investigation threshold, not a universal storage SLA.
+  arguments:
+    metric:
+      query: min_over_time((max by(cluster_name,node,device) (((rate(node_disk_read_time_seconds_total{job="sre-node",device!~"loop[0-9]+|ram[0-9]+|sr[0-9]+"}[5m])+rate(node_disk_write_time_seconds_total{job="sre-node",device!~"loop[0-9]+|ram[0-9]+|sr[0-9]+"}[5m]))/((rate(node_disk_reads_completed_total{job="sre-node",device!~"loop[0-9]+|ram[0-9]+|sr[0-9]+"}[5m])+rate(node_disk_writes_completed_total{job="sre-node",device!~"loop[0-9]+|ram[0-9]+|sr[0-9]+"}[5m]))
+        >= 1))*1000))[10m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node} · ${device}
+    comparator: GT
+    threshold: 20
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · host disk response above 20ms · 10m · ${cluster_name} · ${node}
+      · ${device}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Identify node and device. Compare disk response, operations in
+    progress, workload IOPS and storage backend health. Check the same time window
+    for application latency. Do not reboot, replace a disk or delete data based only
+    on this threshold.
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

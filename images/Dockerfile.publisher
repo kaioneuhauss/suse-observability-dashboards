@@ -4,5 +4,5 @@ FROM ${CLI_IMAGE} AS cli
 FROM ${PYTHON_IMAGE}
 COPY --from=cli /usr/bin/sts /usr/local/bin/sts
 USER 65532:65532
-# Set publisher.cli.path=/usr/local/bin/sts and publisher.image to your built image.
+# Set content.publisher.cli.path=/usr/local/bin/sts and content.publisher.image to your built image.
 # Pin both build inputs and the resulting image by digest in the client pipeline.

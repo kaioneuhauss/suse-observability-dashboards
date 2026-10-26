@@ -1,0 +1,13 @@
+{{- if ne .Values.mode "content" }}
+{{- $root := . }}
+{{- $v := deepCopy .Values.telemetry }}
+{{- $_ := set $v "clusterName" (required "clusterName: use the exact SUSE integration name" .Values.clusterName) }}
+{{- $_ := set $v.remoteWrite "url" (default (printf "%s/receiver/prometheus/api/v1/write" (trimSuffix "/" .Values.observability.url)) .Values.observability.remoteWriteUrl) }}
+{{- $_ := set $v.remoteWrite "existingSecret" .Values.ingestion.existingSecret }}
+{{- $_ := set $v.remoteWrite "secretKey" .Values.ingestion.secretKey }}
+{{- with (dict "Values" $v "Release" .Release "Chart" .Chart "Files" .Files "Capabilities" .Capabilities "Template" .Template) }}
+{{- $ := . }}
+{{- include "sre.validate" . -}}
+
+{{- end }}
+{{- end }}

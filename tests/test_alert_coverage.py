@@ -1,6 +1,6 @@
 """Keep operator guidance, published monitor rules and chart data consistent."""
 import json,pathlib,unittest,yaml
-ROOT=pathlib.Path(__file__).resolve().parents[1]/'charts/suse-observability-content'
+ROOT=pathlib.Path(__file__).resolve().parents[1]/'components/suse-observability-content'
 class AlertCoverageTests(unittest.TestCase):
  def test_monitor_catalog_matches_sty(self):
   for m in json.loads((ROOT/'files/catalog.json').read_text()):

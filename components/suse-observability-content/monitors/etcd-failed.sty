@@ -1,0 +1,32 @@
+nodes:
+- _type: Monitor
+  name: SRE · etcd failed proposals in 15m
+  identifier: urn:custom:monitor:sre-dashboards:etcd-failed
+  description: Checks etcd failed proposals in 15m. Values are evaluated every 60
+    seconds. Windows apply to observed samples; inspect collection health before interpreting
+    a missing result. Thresholds are starting points to review against the workload
+    baseline.
+  arguments:
+    metric:
+      query: min_over_time((max by (cluster_name,node) (increase(etcd_server_proposals_failed_total{job="sre-etcd"}[15m])))[5m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node}
+    comparator: GT
+    threshold: 0
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · etcd failed proposals in 15m · ${cluster_name} · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Identify the cluster and node in the title. Check etcd quorum
+    and peer connectivity.
+
+    2. Compare leader changes, WAL writes, database commits, peer round trips, pod
+    restarts and previous logs at the same time.
+
+    3. Preserve snapshots before recovery. Never remove a member or restore a snapshot
+    based on this alert alone.'
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

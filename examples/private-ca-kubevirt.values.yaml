@@ -1,4 +1,0 @@
-# CA do SUSE OTLP, NAO a CA interna do KubeVirt.
-otlp:
-  caSecret: suse-otlp-ca
-  caKey: ca.crt

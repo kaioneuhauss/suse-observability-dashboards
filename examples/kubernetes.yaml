@@ -1,0 +1,3 @@
+clusterName: my-cluster
+observability:
+  url: https://observability.example.com

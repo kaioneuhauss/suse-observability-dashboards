@@ -1,0 +1,3 @@
+Module: virtualization ({{ .Values.mode }})
+Check collector readiness, publisher Job logs and fresh metrics in SUSE Observability.
+See docs/virtualization.md for prerequisites, acceptance and removal.

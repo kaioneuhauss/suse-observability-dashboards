@@ -1,0 +1,4 @@
+clusterName: my-cluster
+observability:
+  url: https://observability.example.com
+  otlpEndpoint: otlp-observability.example.com:443

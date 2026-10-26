@@ -1,0 +1,3 @@
+Module: kubernetes ({{ .Values.mode }})
+Check collector readiness, publisher Job logs and fresh metrics in SUSE Observability.
+See docs/kubernetes.md for prerequisites, acceptance and removal.

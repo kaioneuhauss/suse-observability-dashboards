@@ -1,0 +1,33 @@
+{{- if ne .Values.mode "content" }}
+{{- $root := . }}
+{{- $v := deepCopy .Values.virtualization }}
+{{- $_ := set $v "clusterName" (required "clusterName: use the exact SUSE integration name" .Values.clusterName) }}
+{{- $_ := set $v.otlp "endpoint" (required "observability.otlpEndpoint is required for VM telemetry" .Values.observability.otlpEndpoint) }}
+{{- $_ := set $v.otlp "existingSecret" .Values.ingestion.existingSecret }}
+{{- $_ := set $v.otlp "secretKey" .Values.ingestion.secretKey }}
+{{- with (dict "Values" $v "Release" .Release "Chart" .Chart "Files" .Files "Capabilities" .Capabilities "Template" .Template) }}
+{{- $ := . }}
+{{- if and .Values.longhorn.enabled .Values.longhorn.allowMetricsNetworkPolicy }}
+{{- if not .Values.longhorn.existingIsolationConfirmed }}{{ fail "Confirm existing Longhorn isolation with virtualization.longhorn.existingIsolationConfirmed=true before adding the metrics rule" }}{{ end }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-longhorn-metrics
+  namespace: {{ .Values.longhorn.namespace }}
+spec:
+  podSelector:
+    matchLabels: {app: longhorn-manager}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ .Release.Namespace | quote }}}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/name: sre-kubevirt-telemetry
+      ports: [{protocol: TCP, port: 9500}]
+{{- end }}
+
+{{- end }}
+{{- end }}

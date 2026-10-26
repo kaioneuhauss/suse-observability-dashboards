@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 class ResourceTests(unittest.TestCase):
     def test_all_rendered_containers_have_cpu_and_memory_budgets(self):
         count = 0
-        for profile in (ROOT / 'charts').glob('*/config/*.yaml'):
+        for profile in (ROOT / 'components').glob('*/config/*.yaml'):
             chart = profile.parent.parent
             raw = subprocess.check_output(['helm', 'template', 'test', str(chart), '-f', str(profile)], text=True)
             for obj in yaml.safe_load_all(raw):
@@ -42,7 +42,7 @@ class ResourceTests(unittest.TestCase):
         ]
         for chart, profile, setting in cases:
             with self.subTest(chart=chart, setting=setting):
-                result = subprocess.run(['helm', 'template', 'test', str(ROOT/'charts'/chart), '-f', str(ROOT/'charts'/chart/'config'/profile), '--set', setting], capture_output=True, text=True)
+                result = subprocess.run(['helm', 'template', 'test', str(ROOT/'components'/chart), '-f', str(ROOT/'components'/chart/'config'/profile), '--set', setting], capture_output=True, text=True)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn('schema', result.stderr.lower())
 

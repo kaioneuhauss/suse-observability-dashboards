@@ -1,0 +1,32 @@
+nodes:
+- _type: Monitor
+  name: SRE · etcd without leader · 1m
+  identifier: urn:custom:monitor:sre-dashboards:etcd-no-leader
+  description: Checks etcd without leader · 1m. Values are evaluated every 60 seconds.
+    Windows apply to observed samples; inspect collection health before interpreting
+    a missing result. Thresholds are starting points to review against the workload
+    baseline.
+  arguments:
+    metric:
+      query: max_over_time((max by (cluster_name,node) (etcd_server_has_leader{job="sre-etcd"}))[1m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node}
+    comparator: LT
+    threshold: 1
+    failureState: CRITICAL
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · etcd without leader · 1m · ${cluster_name} · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Identify the cluster and node in the title. Check etcd quorum
+    and peer connectivity.
+
+    2. Compare leader changes, WAL writes, database commits, peer round trips, pod
+    restarts and previous logs at the same time.
+
+    3. Preserve snapshots before recovery. Never remove a member or restore a snapshot
+    based on this alert alone.'
+  tags:
+  - sre-dashboards
+  - dashboard-platform
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

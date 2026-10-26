@@ -9,8 +9,8 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 
 def render(profile, chart, *extra):
     output = subprocess.check_output([
-        'helm', 'template', 'test', str(ROOT/'charts'/chart),
-        '-f', str(ROOT/'deploy'/profile/'values.yaml'), *extra,
+        'helm', 'template', 'test', str(ROOT/'components'/chart),
+        '-f', str(ROOT/'tests/fixtures/legacy-profiles'/profile/'values.yaml'), *extra,
     ], text=True)
     return [obj for obj in yaml.safe_load_all(output) if obj]
 

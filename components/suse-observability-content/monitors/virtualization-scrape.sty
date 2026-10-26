@@ -1,0 +1,27 @@
+nodes:
+- _type: Monitor
+  name: SRE · Virtualization metrics scrape failing · 3m
+  identifier: urn:custom:monitor:sre-dashboards:virtualization-scrape
+  description: An observed KubeVirt or Longhorn target has no successful scrape in
+    the last three minutes. Check target discovery separately when a target disappears.
+  arguments:
+    metric:
+      query: label_replace(label_replace(max_over_time((min by (k8s_cluster_name,k8s_node_name)
+        (up{job=~"(.*/)?(kubevirt-metrics|longhorn)"}))[3m:30s]), "cluster_name",
+        "$1", "k8s_cluster_name", "(.*)"), "node", "$1", "k8s_node_name", "(.*)")
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node}
+    comparator: LT
+    threshold: 1
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · Virtualization scrape failing · ${cluster_name} · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Check collector logs, current KubeVirt CA, target TLS names, API
+    discovery RBAC and internal endpoint access. Refresh the copied public CA after
+    rotation and upgrade the module. Never disable certificate validation.
+  tags:
+  - sre-dashboards
+  - dashboard-harvester
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

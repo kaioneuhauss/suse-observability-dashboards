@@ -1,0 +1,42 @@
+{{- if ne .Values.mode "telemetry" }}
+{{- $root := . }}
+{{- $v := deepCopy .Values.content }}
+{{- if hasKey .Values "applicationMetrics" }}{{- $_ := set $v "applicationMetrics" .Values.applicationMetrics }}{{- end }}
+{{- $_ := set $v "observability" .Values.observability }}
+{{- $_ := set $v "auth" .Values.auth }}
+{{- $_ := set $v "lifecycle" .Values.lifecycle }}
+{{- $_ := set $v "slo" .Values.slo }}
+{{- with (dict "Values" $v "Release" .Release "Chart" .Chart "Files" .Files "Capabilities" .Capabilities "Template" .Template) }}
+{{- $ := . }}
+{{- if .Values.monitors.enabled }}
+{{- $catalog := include "content.metricAliases" (dict "text" (.Files.Get "files/catalog.json") "values" .Values) | fromJsonArray -}}
+{{- $selected := list -}}
+{{- range $rule := $catalog -}}
+{{- if or (empty $.Values.monitors.include) (has $rule.slug $.Values.monitors.include) -}}
+{{- $selected = append $selected $rule -}}
+{{- end -}}
+{{- end -}}
+{{- if and (not (empty .Values.monitors.include)) (ne (len $selected) (len .Values.monitors.include)) -}}
+{{- fail "monitors.include contem slug desconhecido; consulte files/catalog.json" -}}
+{{- end -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-monitors-definitions
+  namespace: {{ .Release.Namespace }}
+data:
+  legacy-identifiers.json: |
+{{ .Files.Get "files/legacy-identifiers.json" | indent 4 }}
+  publisher.py: |
+{{ .Files.Get "files/publisher.py" | indent 4 }}
+  catalog.json: |
+{{ toPrettyJson $selected | indent 4 }}
+{{- range $rule := $selected }}
+  {{ $rule.slug }}.sty: |
+{{ include "content.metricAliases" (dict "text" ($.Files.Get (printf "monitors/%s.sty" $rule.slug)) "values" $.Values) | indent 4 }}
+{{- end }}
+
+{{- end }}
+
+{{- end }}
+{{- end }}

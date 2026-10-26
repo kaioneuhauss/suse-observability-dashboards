@@ -1,0 +1,67 @@
+mode: content
+clusterName: ''
+observability:
+  url: ''
+  remoteWriteUrl: ''
+  otlpEndpoint: ''
+ingestion:
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+auth:
+  dashboards:
+    existingSecret: suse-observability-publisher-token
+    serviceTokenKey: serviceToken
+  monitors:
+    existingSecret: suse-observability-publisher-token
+    serviceTokenKey: serviceToken
+lifecycle:
+  action: apply
+  confirmDelete: ''
+  revision: '1'
+slo:
+  availabilityTarget: 99.9
+content:
+  publisher:
+    image: python:3.12-alpine
+    imagePullPolicy: IfNotPresent
+    imagePullSecrets: []
+    cli:
+      path: ''
+      downloadUrl: https://dl.stackstate.com/stackstate-cli/v3.3.6/stackstate-cli-3.3.6.linux-x86_64.tar.gz
+      sha256: 12eb322d6670a677b21a29f645c929fb0f34d9009952deb95e7eb93cafbd8543
+    caSecret: ''
+    caKey: ca.crt
+    activeDeadlineSeconds: 900
+    ttlSecondsAfterFinished: 86400
+    resources:
+      requests:
+        cpu: 20m
+        memory: 64Mi
+        ephemeral-storage: 96Mi
+      limits:
+        cpu: 200m
+        memory: 192Mi
+        ephemeral-storage: 320Mi
+    nodeSelector:
+      kubernetes.io/os: linux
+      kubernetes.io/arch: amd64
+    tolerations: []
+  dashboards:
+    enabled: true
+    include:
+    - applications
+    updateStrategy: replace
+  monitors:
+    enabled: true
+    include:
+    - app-http-errors
+    - app-http-latency
+  slo:
+    availabilityTarget: 99.9
+applicationMetrics:
+  requestCounter: http_server_requests_total
+  durationHistogram: http_server_request_duration_seconds
+  clusterLabel: cluster_name
+  serviceLabel: service_name
+  statusLabel: http_response_status_code
+  routeLabel: http_route

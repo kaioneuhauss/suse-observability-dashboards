@@ -1,0 +1,3 @@
+Module: applications ({{ .Values.mode }})
+Check collector readiness, publisher Job logs and fresh metrics in SUSE Observability.
+See docs/applications.md for prerequisites, acceptance and removal.

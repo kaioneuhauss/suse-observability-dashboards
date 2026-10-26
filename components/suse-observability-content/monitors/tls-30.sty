@@ -1,0 +1,34 @@
+nodes:
+- _type: Monitor
+  name: SRE · Traefik certificate expires within 30 days
+  identifier: urn:custom:monitor:sre-dashboards:tls-30
+  description: Checks Traefik certificate expires within 30 days. Values are evaluated
+    every 60 seconds. Windows apply to observed samples; inspect collection health
+    before interpreting a missing result. Thresholds are starting points to review
+    against the workload baseline.
+  arguments:
+    metric:
+      query: ((min by (cluster_name,sans,serial) ({__name__=~"traefik_tls_certs_not_after|_traefik_tls_certs_not_after"})
+        - time()) / 86400) * on (cluster_name) group_left(namespace,daemonset) (max
+        by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_desired{daemonset=~".*traefik.*"})
+        * 0 + 1)
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${sans} · ${serial}
+    comparator: LT
+    threshold: 30
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:daemonset/${daemonset}
+    titleTemplate: SRE · Traefik certificate expires within 30 days · ${cluster_name}
+      · ${namespace} · ${sans} · ${serial}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: '1. Read the certificate SANs and serial number in the title. The
+    observed value is days remaining; a negative value means expired.
+
+    2. Check the issuing controller, Ingress Secret and renewal errors.
+
+    3. Confirm the renewed certificate is actually served by every Traefik replica.'
+  tags:
+  - sre-dashboards
+  - dashboard-traefik
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

@@ -1,0 +1,402 @@
+[
+  {
+    "slug": "etcd-no-leader",
+    "name": "SRE · etcd without leader · 1m",
+    "query": "max_over_time((max by (cluster_name,node) (etcd_server_has_leader{job=\"sre-etcd\"}))[1m:30s])",
+    "comparator": "LT",
+    "threshold": 1,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd without leader · 1m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd without leader · 1m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-elections",
+    "name": "SRE · etcd leader changes above 3 in 15m",
+    "query": "min_over_time((max by (cluster_name,node) (increase(etcd_server_leader_changes_seen_total{job=\"sre-etcd\"}[15m])))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 3,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd leader changes above 3 in 15m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd leader changes above 3 in 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-failed",
+    "name": "SRE · etcd failed proposals in 15m",
+    "query": "min_over_time((max by (cluster_name,node) (increase(etcd_server_proposals_failed_total{job=\"sre-etcd\"}[15m])))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd failed proposals in 15m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd failed proposals in 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-pending",
+    "name": "SRE · etcd pending proposals above 100",
+    "query": "min_over_time((max by (cluster_name,node) (etcd_server_proposals_pending{job=\"sre-etcd\"}))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 100,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd pending proposals above 100 · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd pending proposals above 100. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-lag",
+    "name": "SRE · etcd apply backlog above 1000",
+    "query": "min_over_time((clamp_min(max by (cluster_name,node) (etcd_server_proposals_committed_total{job=\"sre-etcd\"}) - max by (cluster_name,node) (etcd_server_proposals_applied_total{job=\"sre-etcd\"}),0))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 1000,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd apply backlog above 1000 · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd apply backlog above 1000. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-fsync",
+    "name": "SRE · etcd WAL p99 above 10ms",
+    "query": "min_over_time((histogram_quantile(0.99,sum by (cluster_name,node,le) (rate(etcd_disk_wal_fsync_duration_seconds_bucket{job=\"sre-etcd\"}[5m]))))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0.01,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd WAL p99 above 10ms · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd WAL p99 above 10ms. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-commit",
+    "name": "SRE · etcd commit p99 above 25ms",
+    "query": "min_over_time((histogram_quantile(0.99,sum by (cluster_name,node,le) (rate(etcd_disk_backend_commit_duration_seconds_bucket{job=\"sre-etcd\"}[5m]))))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0.025,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd commit p99 above 25ms · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd commit p99 above 25ms. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-quota",
+    "name": "SRE · etcd database above 80 percent quota",
+    "query": "min_over_time((max by (cluster_name,node) (etcd_mvcc_db_total_size_in_bytes{job=\"sre-etcd\"}) / max by (cluster_name,node) (etcd_server_quota_backend_bytes{job=\"sre-etcd\"}))[10m:30s])",
+    "comparator": "GT",
+    "threshold": 0.8,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd database above 80 percent quota · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd database above 80 percent quota. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-scrape",
+    "name": "SRE · etcd scrape failing · 3m",
+    "query": "max_over_time((min by (cluster_name,node) (up{job=\"sre-etcd\"}))[3m:30s])",
+    "comparator": "LT",
+    "threshold": 1,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd scrape failing · 3m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd scrape failing · 3m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "node-space",
+    "name": "SRE · filesystem below 10 percent available · 15m",
+    "query": "max_over_time((max by (cluster_name,node,device) (node_filesystem_avail_bytes{job=\"sre-node\",device!~\"/dev/loop[0-9]+\",mountpoint!~\"/var/lib/kubelet/.*\",fstype!~\"tmpfs|overlay|squashfs\"}) / max by (cluster_name,node,device) (node_filesystem_size_bytes{job=\"sre-node\",device!~\"/dev/loop[0-9]+\",mountpoint!~\"/var/lib/kubelet/.*\",fstype!~\"tmpfs|overlay|squashfs\"}))[15m:30s])",
+    "comparator": "LT",
+    "threshold": 0.1,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · filesystem below 10 percent available · 15m · ${cluster_name} · ${node} · ${device}",
+    "alias": "${cluster_name} · ${node} · ${device}",
+    "description": "Checks filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the cluster and resource named in the alert. Compare the reported metric with the guest OS or Kubernetes API.\n2. Review the same time window for workload changes, limits, restarts and storage or memory pressure.\n3. Apply a workload-specific correction and verify recovery; do not delete data or raise limits automatically.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "node-inodes",
+    "name": "SRE · filesystem below 10 percent free inodes · 15m",
+    "query": "max_over_time((max by (cluster_name,node,device) (node_filesystem_files_free{job=\"sre-node\",device!~\"/dev/loop[0-9]+\",mountpoint!~\"/var/lib/kubelet/.*\",fstype!~\"tmpfs|overlay|squashfs\"}) / (max by (cluster_name,node,device) (node_filesystem_files{job=\"sre-node\",device!~\"/dev/loop[0-9]+\",mountpoint!~\"/var/lib/kubelet/.*\",fstype!~\"tmpfs|overlay|squashfs\"}) > 0))[15m:30s])",
+    "comparator": "LT",
+    "threshold": 0.1,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · filesystem below 10 percent free inodes · 15m · ${cluster_name} · ${node} · ${device}",
+    "alias": "${cluster_name} · ${node} · ${device}",
+    "description": "Checks filesystem below 10 percent free inodes · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the cluster and resource named in the alert. Compare the reported metric with the guest OS or Kubernetes API.\n2. Review the same time window for workload changes, limits, restarts and storage or memory pressure.\n3. Apply a workload-specific correction and verify recovery; do not delete data or raise limits automatically.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "node-memory",
+    "name": "SRE · host OS below 10 percent available RAM · 15m",
+    "query": "max_over_time((max by (cluster_name,node) (node_memory_MemAvailable_bytes{job=\"sre-node\"}) / max by (cluster_name,node) (node_memory_MemTotal_bytes{job=\"sre-node\"}))[15m:30s])",
+    "comparator": "LT",
+    "threshold": 0.1,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · host OS below 10 percent available RAM · 15m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the cluster and resource named in the alert. Compare the reported metric with the guest OS or Kubernetes API.\n2. Review the same time window for workload changes, limits, restarts and storage or memory pressure.\n3. Apply a workload-specific correction and verify recovery; do not delete data or raise limits automatically.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-harvester",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "node-telemetry",
+    "name": "SRE · missing node OS telemetry · 5m",
+    "query": "min_over_time((((max by (cluster_name,node) (kubernetes_state_node_age) * 0 + 1) unless on (cluster_name,node) (max by (cluster_name,node) (up{job=\"sre-node\"} == 1))) or on (cluster_name,node) (max by (cluster_name,node) (kubernetes_state_node_age) * 0))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · missing node OS telemetry · 5m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks missing node OS telemetry · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Check the collector pod, readiness, recent and previous logs.\n2. Verify DNS, TLS, NetworkPolicy, endpoint reachability, ingestion credentials and remote-write responses.\n3. Check queue growth and dropped samples. A running pod does not prove successful delivery.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "pvc-space",
+    "name": "SRE · PVC filesystem below 10 percent available · 15m",
+    "query": "max_over_time(((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_available_bytes) / max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes)) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes) > 0))[15m:30s])",
+    "comparator": "LT",
+    "threshold": 0.1,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:${namespace}:persistent-volume-claim/${persistentvolumeclaim}",
+    "titleTemplate": "SRE · PVC filesystem below 10 percent available · 15m · ${cluster_name} · ${namespace} · ${persistentvolumeclaim}",
+    "alias": "${cluster_name} · ${namespace} · ${persistentvolumeclaim}",
+    "description": "Checks PVC filesystem below 10 percent available · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the named cluster, namespace and PVC. Check available bytes and recent growth inside the mounted filesystem.\n2. Verify snapshots, retention, application writes and StorageClass expansion support.\n3. Forecasts are trends, not guarantees; compare several time windows before resizing or deleting data.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "container-memory",
+    "name": "SRE · container working set above 95 percent limit · 5m",
+    "query": "min_over_time((max by (cluster_name,namespace,pod_name,container) (container_memory_working_set{pod_name!~\"virt-launcher-.*\"}) / (max by (cluster_name,namespace,pod_name,container) (sre_pod_container_memory_limit) > 0))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0.95,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:${namespace}:pod/${pod_name}",
+    "titleTemplate": "SRE · container working set above 95 percent limit · 5m · ${cluster_name} · ${namespace} · ${pod_name} · ${container}",
+    "alias": "${cluster_name} · ${namespace} · ${pod_name} · ${container}",
+    "description": "Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the cluster and resource named in the alert. Compare the reported metric with the guest OS or Kubernetes API.\n2. Review the same time window for workload changes, limits, restarts and storage or memory pressure.\n3. Apply a workload-specific correction and verify recovery; do not delete data or raise limits automatically.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-resources"
+    ]
+  },
+  {
+    "slug": "pvc-trend-12",
+    "name": "SRE · PVC filesystem projected full within 12h",
+    "query": "max_over_time((predict_linear((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_available_bytes))[6h:5m], 43200) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes) > 0))[30m:30s])",
+    "comparator": "LT",
+    "threshold": 0,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:${namespace}:persistent-volume-claim/${persistentvolumeclaim}",
+    "titleTemplate": "SRE · PVC filesystem projected full within 12h · ${cluster_name} · ${namespace} · ${persistentvolumeclaim}",
+    "alias": "${cluster_name} · ${namespace} · ${persistentvolumeclaim}",
+    "description": "Checks PVC filesystem projected full within 12h. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the named cluster, namespace and PVC. Check available bytes and recent growth inside the mounted filesystem.\n2. Verify snapshots, retention, application writes and StorageClass expansion support.\n3. Forecasts are trends, not guarantees; compare several time windows before resizing or deleting data.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "pvc-trend-96",
+    "name": "SRE · PVC filesystem projected full within 96h",
+    "query": "max_over_time((predict_linear((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_available_bytes))[6h:5m], 345600) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes) > 0))[30m:30s])",
+    "comparator": "LT",
+    "threshold": 0,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:${namespace}:persistent-volume-claim/${persistentvolumeclaim}",
+    "titleTemplate": "SRE · PVC filesystem projected full within 96h · ${cluster_name} · ${namespace} · ${persistentvolumeclaim}",
+    "alias": "${cluster_name} · ${namespace} · ${persistentvolumeclaim}",
+    "description": "Checks PVC filesystem projected full within 96h. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Locate the named cluster, namespace and PVC. Check available bytes and recent growth inside the mounted filesystem.\n2. Verify snapshots, retention, application writes and StorageClass expansion support.\n3. Forecasts are trends, not guarantees; compare several time windows before resizing or deleting data.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "collector-backlog",
+    "name": "SRE · metric collection backlog persists · 10m",
+    "query": "min_over_time((max by (cluster_name,node,collector_kind) (vmagent_remotewrite_pending_data_bytes{job=\"sre-collector\",node!=\"\"}))[10m:30s])",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · metric collection backlog persists · 10m · ${cluster_name} · ${node} · ${collector_kind}",
+    "alias": "${cluster_name} · ${node} · ${collector_kind}",
+    "description": "Checks metric collection backlog persists · 10m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Check the collector pod, readiness, recent and previous logs.\n2. Verify DNS, TLS, NetworkPolicy, endpoint reachability, ingestion credentials and remote-write responses.\n3. Check queue growth and dropped samples. A running pod does not prove successful delivery.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "collector-dropped",
+    "name": "SRE · metric collector discarded data · 15m",
+    "query": "max by (cluster_name,node,collector_kind) ((increase(vmagent_remotewrite_samples_dropped_total{job=\"sre-collector\",node!=\"\"}[15m]) > bool 0) or (increase(vm_persistentqueue_bytes_dropped_total{job=\"sre-collector\",node!=\"\"}[15m]) > bool 0))",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · metric collector discarded data · 15m · ${cluster_name} · ${node} · ${collector_kind}",
+    "alias": "${cluster_name} · ${node} · ${collector_kind}",
+    "description": "1 means the collector discarded samples or queued bytes during the last 15 minutes. 0 means neither counter increased. The two different units are not added together.",
+    "remediation": "1. Check the collector pod, readiness, recent and previous logs.\n2. Verify DNS, TLS, NetworkPolicy, endpoint reachability, ingestion credentials and remote-write responses.\n3. Check queue growth and dropped samples. A running pod does not prove successful delivery.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "etcd-telemetry-missing",
+    "name": "SRE · etcd telemetry disappeared · 5m",
+    "query": "min_over_time((((max by (cluster_name,node) (last_over_time(up{job=\"sre-etcd\"}[24h])) * 0 + 1) unless on (cluster_name,node) (max by (cluster_name,node) (up{job=\"sre-etcd\"} == 1))) or on (cluster_name,node) ((max by (cluster_name,node) (last_over_time(up{job=\"sre-etcd\"}[24h])) * 0 + 1) * 0))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · etcd telemetry disappeared · 5m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "Checks etcd telemetry disappeared · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.",
+    "remediation": "1. Identify the cluster and node in the title. Check etcd quorum and peer connectivity.\n2. Compare leader changes, WAL writes, database commits, peer round trips, pod restarts and previous logs at the same time.\n3. Preserve snapshots before recovery. Never remove a member or restore a snapshot based on this alert alone.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  },
+  {
+    "slug": "host-disk-latency",
+    "name": "SRE · host disk response above 20ms · 10m",
+    "query": "min_over_time((max by(cluster_name,node,device) (((rate(node_disk_read_time_seconds_total{job=\"sre-node\",device!~\"loop[0-9]+|ram[0-9]+|sr[0-9]+\"}[5m])+rate(node_disk_write_time_seconds_total{job=\"sre-node\",device!~\"loop[0-9]+|ram[0-9]+|sr[0-9]+\"}[5m]))/((rate(node_disk_reads_completed_total{job=\"sre-node\",device!~\"loop[0-9]+|ram[0-9]+|sr[0-9]+\"}[5m])+rate(node_disk_writes_completed_total{job=\"sre-node\",device!~\"loop[0-9]+|ram[0-9]+|sr[0-9]+\"}[5m])) >= 1))*1000))[10m:30s])",
+    "comparator": "GT",
+    "threshold": 20,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · host disk response above 20ms · 10m · ${cluster_name} · ${node} · ${device}",
+    "alias": "${cluster_name} · ${node} · ${device}",
+    "description": "Average disk response exceeds 20 ms throughout observed samples in a 10-minute window, while the five-minute average activity is at least 1 operation/s. This is an initial investigation threshold, not a universal storage SLA.",
+    "remediation": "Identify node and device. Compare disk response, operations in progress, workload IOPS and storage backend health. Check the same time window for application latency. Do not reboot, replace a disk or delete data based only on this threshold.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-platform"
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "tls-30": [
+    "urn:custom:monitor:sre-traefik-certificate-expires-within-30-days"
+  ],
+  "tls-7": [
+    "urn:custom:monitor:sre-traefik-certificate-expires-within-7-days"
+  ],
+  "ingress-inventory": [
+    "urn:custom:monitor:sre-ingress-inventory-collection-failing-3-m"
+  ]
+}

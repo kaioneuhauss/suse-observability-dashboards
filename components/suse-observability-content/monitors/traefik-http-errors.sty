@@ -1,0 +1,33 @@
+nodes:
+- _type: Monitor
+  name: SRE · Traefik HTTP 5xx above 5 percent · 5m
+  identifier: urn:custom:monitor:sre-dashboards:traefik-http-errors
+  description: More than 5% of completed requests fail with HTTP 5xx, with at least
+    100 requests in each observed five-minute calculation window. The condition must
+    persist over observed samples for five minutes. Uses Traefik counters, not span
+    sampling.
+  arguments:
+    metric:
+      query: min_over_time(((((sum by(cluster_name,service) (increase(traefik_service_requests_total{protocol="http",code=~"5.."}[5m])))
+        or on(cluster_name,service) (0 * (sum by(cluster_name,service) (increase(traefik_service_requests_total{protocol="http"}[5m])))))/(sum
+        by(cluster_name,service) (increase(traefik_service_requests_total{protocol="http"}[5m]))
+        >= 100)) * on(cluster_name,service) group_left(namespace,backend) (max by(cluster_name,namespace,service,backend)
+        (label_replace(sre_ingress_backend_info{ingress_namespace!=""}, "namespace",
+        "$1", "ingress_namespace", "(.*)"))))[5m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace} · ${backend}
+    comparator: GT
+    threshold: 0.05
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:${namespace}:service/${backend}
+    titleTemplate: SRE · Traefik HTTP 5xx above 5 percent · 5m · ${cluster_name} ·
+      ${namespace} · ${backend}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Open the HTTP 5xx timeline and identify application, code and time.
+    Correlate Traefik access logs and application traces/logs. Check readiness, dependencies
+    and recent deployments. Do not treat expected 4xx responses as server failures.
+  tags:
+  - sre-dashboards
+  - dashboard-traefik
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

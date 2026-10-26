@@ -1,7 +1,7 @@
 import importlib.util,pathlib,unittest,json,io
 from unittest.mock import patch
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-spec=importlib.util.spec_from_file_location('inventory',ROOT/'charts/sre-platform-telemetry/files/pod_inventory.py')
+spec=importlib.util.spec_from_file_location('inventory',ROOT/'components/sre-platform-telemetry/files/pod_inventory.py')
 inventory=importlib.util.module_from_spec(spec);spec.loader.exec_module(inventory)
 class InventoryTests(unittest.TestCase):
  def test_kubernetes_quantities(self):
