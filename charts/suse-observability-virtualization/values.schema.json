@@ -83,6 +83,9 @@
     "lifecycle": {
       "type": "object",
       "properties": {
+        "deleteOnUninstall": {
+          "type": "boolean"
+        },
         "action": {
           "enum": [
             "apply",

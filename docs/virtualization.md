@@ -4,7 +4,9 @@ Use this module for VM performance, host capacity, Longhorn storage and backup r
 
 This is a community lab integration, **not recommended for production**.
 
-## Before installing
+<a id="before-installing"></a>
+
+## 1. Check the requirements
 
 Complete the [common setup](prerequisites.md). Install this module on **Harvester, in the Agent's namespace**. Three extra items are needed:
 
@@ -41,7 +43,7 @@ The chart reads and refreshes the public KubeVirt CA automatically. No manual ce
 
 If existing NetworkPolicies block Longhorn metrics, see the optional setting below. Do not enable it just because no policies exist.
 
-## Install
+## 2. Add the repository
 
 Add the repository if you have not done it yet:
 
@@ -49,6 +51,10 @@ Add the repository if you have not done it yet:
 helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
 helm repo update obs-dashboards
 ```
+
+**Expected result:** Helm confirms the repository is available.
+
+## 3. Fill in your settings
 
 Save this as `virtualization.yaml`, replacing the three values:
 
@@ -61,14 +67,20 @@ observability:
 
 `clusterName` must match the Agent's integration name. Use your actual kubeconfig, context and Agent namespace below:
 
+## 4. Install the module
+
+This command installs the module and waits for it to finish. Keep the values file for updates and reinstalls.
+
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.2.1 --values virtualization.yaml \
+  --version 1.3.0 --values virtualization.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-## Check it
+**Expected result:** Helm reports `STATUS: deployed`. Successful publishing Jobs are removed automatically.
+
+## 5. Check the result
 
 ```sh
 kubectl get pods,jobs --kubeconfig /path/to/harvester.yaml --context harvester \
@@ -77,6 +89,8 @@ kubectl logs deployment/obs-virtualization --container collector --since=5m \
   --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
 kubectl get virtualmachineinstances --all-namespaces --kubeconfig /path/to/harvester.yaml --context harvester
 ```
+
+**Expected result:** collector Pods are ready. The publishing Jobs may already be gone; that is normal after success.
 
 Open **Virtualization · VM & Host Overview**. Select the cluster and compare **Running VMs** with the running instances returned by kubectl. Check that the collection status panels show `1` for the expected targets. Guest memory depends on balloon statistics; guest filesystem data needs QEMU Guest Agent. A stopped VM has no current resource usage.
 
@@ -107,3 +121,17 @@ kubectl get networkpolicy obs-virtualization-longhorn-metrics -o yaml \
 ## Optional: other dashboards on Harvester
 
 Install [Imports](imports.md) to follow VMware imports. To add the [Kubernetes dashboards](kubernetes.md), use `mode: content`; Virtualization already collects the host and Pod data. Do not install a second host collector on the same ports.
+
+## 6. Remove this module
+
+Keep the publishing Secret available. The following command removes this release and, in the default mode, its managed dashboards and monitors:
+
+```sh
+helm uninstall obs-virtualization \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
+  --namespace suse-observability --wait --timeout 15m
+```
+
+**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
+
+To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.

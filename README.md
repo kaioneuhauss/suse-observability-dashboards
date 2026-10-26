@@ -19,7 +19,7 @@ Installation uses **kubectl and Helm only**. You do not need to clone this repos
 
 Each module has its own chart. If you only have Harvester, install `virtualization`. You do not need Traefik or the applications module. Add `imports` to follow VMware imports. Coriolis is not included.
 
-## Before you start
+## 1. Prepare once
 
 You need:
 
@@ -31,18 +31,9 @@ You need:
 
 **First time doing this?** Follow [Prepare your environment](docs/prerequisites.md). It explains how to find the cluster name, check the Agent and create the required Secret. The charts add dashboards and collectors to an existing environment; they do not install the SUSE server or instrument your applications.
 
-## Install — Harvester example
+## 2. Fill in your settings — Harvester example
 
 This example installs the four Virtualization dashboards and their collectors. Use the namespace where the Agent is already installed. The examples use `suse-observability`; replace it if yours is different.
-
-### 1. Add the Helm repository
-
-```sh
-helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
-helm repo update obs-dashboards
-```
-
-### 2. Create your values file
 
 Save this as `virtualization.yaml` in your text editor:
 
@@ -63,65 +54,76 @@ Replace the three values:
 
 Before installing, finish the [Virtualization prerequisites](docs/virtualization.md#before-installing): OTLP, registry access and access to Longhorn metrics. The default Secret names are already set in the chart.
 
-### 3. Install
+## 3. Install
+
+### Add the repository
+
+```sh
+helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
+helm repo update obs-dashboards
+```
+
+**Expected result:** Helm confirms that the repository was added and updated. You only do this once on your computer.
 
 Replace `/path/to/harvester.yaml` and the context `harvester` with your own kubeconfig details:
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.2.1 --values virtualization.yaml \
+  --version 1.3.0 --values virtualization.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
 
+**Expected result:** Helm reports `STATUS: deployed`. It waits for the collectors and publishing Jobs.
+
 Keep this values file. Use the same command to apply changes later. If you already have this module installed, use its existing release name, namespace and values file.
 
-### 4. Check the result
+## 4. Open your dashboards
 
 ```sh
 kubectl get pods,jobs --kubeconfig /path/to/harvester.yaml --context harvester \
   --namespace suse-observability --selector app.kubernetes.io/instance=obs-virtualization
 ```
 
-Collectors should be ready and publishing Jobs should show `Complete`. Then open **Dashboards → Virtualization · VM & Host Overview** in SUSE Observability and select your cluster. Compare **Running VMs** with Harvester. Allow a few minutes for the first samples.
+**Expected result:** collector Pods are ready. Successful publishing Jobs disappear automatically. Then open **Dashboards → Virtualization · VM & Host Overview** in SUSE Observability and select your cluster. Compare **Running VMs** with Harvester. Allow a few minutes for the first samples.
 
 If a panel shows **No data**, check the [validation guide](docs/validation.md). It does not automatically mean zero or healthy.
 
-## Install another module
+## Add another module
 
 The same pattern applies: add the repository once, save a values file and run `helm upgrade --install`. Each module guide contains a complete example. Most only need `clusterName` and `observability.url`; applications only needs the URL.
 
 For more than one cluster, publish each module's dashboards **once** and add collectors to the other clusters with `mode: telemetry`. See [Multiple clusters](docs/multiple-clusters.md). If Virtualization already collects Harvester host metrics, install Kubernetes with `mode: content` to reuse them.
 
-## Remove a module
+## 5. Remove when you no longer need it
 
-For the Virtualization example, first delete its dashboards and monitors while the publishing token still works:
-
-```sh
-helm upgrade obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.2.1 --reuse-values \
-  --set lifecycle.action=delete --set lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS \
-  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
-  --namespace suse-observability --wait --timeout 15m
-```
-
-**Only continue if that command succeeds.** Then remove the release and its publishing Jobs:
+With version **1.3.0**, one command removes this module's collectors, dashboards and monitors. Keep the publishing Secret available until removal finishes:
 
 ```sh
 helm uninstall obs-virtualization \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
-  --namespace suse-observability --wait --timeout 10m
-kubectl delete job obs-virtualization-dashboards obs-virtualization-monitors --ignore-not-found \
-  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+  --namespace suse-observability --wait --timeout 15m
 ```
 
-Use the **same chart version as the installed release** for deletion. The commands above assume 1.2.1. A `telemetry` release only needs `helm uninstall`. SUSE Observability, its history, official Agents, applications, VMs, volumes and shared Secrets stay in place. See [Update, remove and reinstall](docs/lifecycle.md) for other modules and older versions.
+**Expected result:** Helm reports the release was uninstalled and the four Virtualization dashboards disappear from SUSE. Applications, VMs, volumes, official Agents, SUSE Observability and its metric history stay in place. Shared Secrets also stay in place. Do not delete the namespace.
+
+To install again, repeat step 3 with the same values file. For backups, older chart versions, removal errors or multiple clusters, follow [Update, remove and reinstall](docs/lifecycle.md).
+
+## Where to find things
+
+| Folder | Use it for |
+|---|---|
+| `docs/` | Step-by-step guides and troubleshooting |
+| `examples/` | Small values files to fill in |
+| `charts/` | Chart source, if you want to inspect the templates |
+| `helm/` | Packaged charts downloaded automatically by Helm |
+| `dev/` | Maintainer tools and tests; not needed for installation |
 
 ## More details
 
 - [Prepare your environment](docs/prerequisites.md) · [Check the installation](docs/validation.md)
 - [Understand the dashboards](docs/panel-guide.md) · [Virtualization dashboard guide](docs/virtualization-dashboards.md)
 - [Metric definitions and limits](docs/metric-contracts.md) · [Lab results and test boundaries](docs/lab-validation.md)
-- [Development](docs/development.md) · [Changelog](CHANGELOG.md)
+- [Development](dev/README.md) · [Changelog](docs/changelog.md)
 
 The Virtualization topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards). These charts use native SUSE dashboards. The 34 included monitors need thresholds and notification rules that fit your environment; installing them does not prove that alerts reach your team.

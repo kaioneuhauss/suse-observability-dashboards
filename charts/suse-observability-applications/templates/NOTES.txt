@@ -1,3 +1,6 @@
 Module: applications ({{ .Values.mode }})
-Check collector readiness, publisher Job logs and fresh metrics in SUSE Observability.
-See docs/applications.md for prerequisites, acceptance and removal.
+Helm completed. Check fresh metrics in SUSE Observability.
+Successful publishing Jobs are removed automatically; failed Jobs remain for inspection.
+{{ if and (ne .Values.mode "telemetry") .Values.lifecycle.deleteOnUninstall (ne .Values.lifecycle.action "plan") }}helm uninstall also deletes this module's managed dashboards and monitors. Keep its publishing token available.{{ end }}
+Community lab project: not recommended for production.
+See docs/applications.md for prerequisites, checks and removal.

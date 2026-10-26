@@ -18,6 +18,8 @@ kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
 
 In all examples, replace `/path/to/cluster.yaml` and `my-cluster` with those details. `--context` is for kubectl; `--kube-context` is the equivalent Helm option. Your account needs permission to install the chart's workloads and RBAC resources.
 
+**Expected result:** you can list the nodes in the intended cluster.
+
 ## 2. Check SUSE Observability and the Agent
 
 Open your SUSE Observability URL and confirm you can log in. If the server is not installed, complete the [official server installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/requirements.html) first. These dashboard charts do not size or install the server.
@@ -38,6 +40,8 @@ Use the returned name as `clusterName`. If the ConfigMap has a custom name, get 
 
 Use the Agent's existing namespace for the collectors. It may be `suse-observability-agent` instead of `suse-observability`. Replace the namespace in every command if needed. Wait until the cluster's nodes and Pods appear in SUSE before continuing.
 
+**Expected result:** the Agent is running, its cluster name is known and the cluster appears in SUSE.
+
 ## 3. Check the ingestion Secret
 
 The charts reuse the Agent's ingestion credential. The default is Secret `suse-observability-agent-secrets`, key `STS_API_KEY`. Check the key names without printing the credential:
@@ -57,6 +61,8 @@ ingestion:
 ```
 
 The applications module and `mode: content` do not need this Secret. Do not replace the Agent's credential just to install a dashboard.
+
+**Expected result:** the Secret contains `STS_API_KEY`, or you recorded its custom name and key.
 
 ## 4. Create the publishing Secret
 
@@ -83,6 +89,8 @@ auth:
 ```
 
 Both use key `serviceToken` by default. A different identity can receive 403 even with similar permissions because it does not own the existing dashboard.
+
+**Expected result:** the publishing Secret exists in the namespace where Helm will publish the dashboards. Skip this step for collector-only (`telemetry`) releases.
 
 ## 5. Check the requirements for your module
 
@@ -119,4 +127,4 @@ virtualization:
 
 Applications only uses `content.publisher`; Traefik and Kubernetes use `content.publisher` and `telemetry.remoteWrite`. Imports uses `content.publisher` and `imports.remoteWrite`. Keep certificate verification enabled.
 
-You are ready to follow the [installation example](../README.md#install--harvester-example) or the guide for your chosen module.
+You are ready to follow the [installation example](../README.md#2-fill-in-your-settings--harvester-example) or the guide for your chosen module.

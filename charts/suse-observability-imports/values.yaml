@@ -17,6 +17,7 @@ auth:
 lifecycle:
   action: apply
   confirmDelete: ''
+  deleteOnUninstall: true
   revision: '1'
 slo:
   availabilityTarget: 99.9

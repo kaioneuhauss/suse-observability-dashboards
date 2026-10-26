@@ -4,7 +4,9 @@ Use this module to see incoming traffic, HTTP errors, slow requests and certific
 
 This is a community lab integration, **not recommended for production**.
 
-## Before installing
+<a id="before-installing"></a>
+
+## 1. Check the requirements
 
 Complete the [common setup](prerequisites.md). Prometheus metrics must be enabled on your existing Traefik. For RKE2, first check who manages it:
 
@@ -53,12 +55,16 @@ Rancher-provisioned clusters may instead manage these values under `spec.rkeConf
 
 This change can restart Traefik. Check your applications' HTTP/HTTPS access after it completes. Metrics stay internal on port 9100. See [RKE2 Helm configuration](https://docs.rke2.io/helm/) and [Traefik metrics](https://doc.traefik.io/traefik/observability/metrics/prometheus/).
 
-## Install
+## 2. Add the repository
 
 ```sh
 helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
 helm repo update obs-dashboards
 ```
+
+**Expected result:** Helm confirms the repository is available.
+
+## 3. Fill in your settings
 
 Save as `traefik.yaml`, using your integration name and SUSE URL:
 
@@ -80,19 +86,27 @@ telemetry:
     targetPort: metrics
 ```
 
+## 4. Install the module
+
+This command installs the module and waits for it to finish. Keep the values file for updates and reinstalls.
+
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.2.1 --values traefik.yaml \
+  --version 1.3.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-## Check it
+**Expected result:** Helm reports `STATUS: deployed`. Successful publishing Jobs are removed automatically.
+
+## 5. Check the result
 
 ```sh
 kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-traefik \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
+
+**Expected result:** collector Pods are ready. The publishing Jobs may already be gone; that is normal after success.
 
 Open **Traefik · Incoming Traffic & Errors** and choose your cluster. Visit a known application and check that its traffic increases. In Metrics Explorer, check `up{job="traefik",cluster_name="my-cluster"}`: every expected replica should report `1`.
 
@@ -110,3 +124,17 @@ telemetry:
 ```
 
 Merge this with any other `telemetry.traefik` settings in the same YAML block. Do not create a first isolation policy without reviewing access to web/websecure. See [validation](validation.md) and [removal](lifecycle.md).
+
+## 6. Remove this module
+
+Keep the publishing Secret available. The following command removes this release and, in the default mode, its managed dashboards and monitors:
+
+```sh
+helm uninstall obs-traefik \
+  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
+  --namespace suse-observability --wait --timeout 15m
+```
+
+**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
+
+To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.

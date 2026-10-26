@@ -43,4 +43,4 @@ The implementation was checked against [KubeVirt v1.7.4 metrics](https://github.
 
 After a platform or Agent upgrade, check metric types, labels and values against the source API again. Lab validation does not automatically cover another version, workload or instrumentation contract.
 
-SUSE resolves `${__interval}` according to chart resolution; see its [query guidance](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). Acceptance by VictoriaMetrics alone does not prove acceptance by the SUSE API or UI. The [development guide](development.md) covers the optional native API audits.
+SUSE resolves `${__interval}` according to chart resolution; see its [query guidance](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). Acceptance by VictoriaMetrics alone does not prove acceptance by the SUSE API or UI. The [development guide](../dev/README.md) covers the optional native API audits.

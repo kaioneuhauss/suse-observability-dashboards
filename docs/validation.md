@@ -10,13 +10,18 @@ Example for Traefik; replace the release, kubeconfig, context and namespace for 
 helm status obs-traefik --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
 kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-traefik \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+```
+
+**Expected result:** the release is `deployed` and collector Pods are ready. Successful publishing Jobs are removed immediately. Applications and `mode: content` have no persistent Pods; `No resources found` is expected after successful publication. Failed Jobs stay available for inspection for up to 24 hours by default.
+
+If Helm reports a publishing error, read the failed Job (Imports has no monitor Job):
+
+```sh
 kubectl logs job/obs-traefik-dashboards \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 kubectl logs job/obs-traefik-monitors \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
-
-Collectors should be ready. Publishing Jobs finish with `Complete`; they do not stay running. Imports has no monitor Job. Collector-only releases have neither publishing Job. Successful Jobs expire after 24 hours by default, so later absence is expected.
 
 ## 2. Check recent data
 
@@ -46,7 +51,7 @@ Confirm monitors are enabled, have recent data and attach to the right component
 | Application has no data | Metric names, labels, histogram buckets and actual request traffic |
 | Host collector cannot start | Another collector on the same port, tolerations or host networking restrictions |
 | Deleted resources come back | Helm/Fleet ownership; update the source that reconciles them |
-| No publishing Job after a day | The Job TTL may have removed it; check the dashboard and release status |
+| No publishing Job after success | Expected: Helm removes successful Jobs; check the dashboard and release status |
 
 To inspect a failing Pod, replace its name here:
 
@@ -56,4 +61,4 @@ kubectl logs POD_NAME --all-containers --since=10m \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-Recorded lab checks are in [Lab validation](lab-validation.md). Maintainers can find optional API audit tools in [Development](development.md); they are not required for installation.
+Recorded lab checks are in [Lab validation](lab-validation.md). Maintainers can find optional API audit tools in [Development](../dev/README.md); they are not required for installation.

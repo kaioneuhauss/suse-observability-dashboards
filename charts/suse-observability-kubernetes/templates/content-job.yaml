@@ -9,24 +9,26 @@
 {{- with (dict "Values" $v "Release" .Release "Chart" .Chart "Files" .Files "Capabilities" .Capabilities "Template" .Template) }}
 {{- $ := . }}
 {{- if and (eq .Values.lifecycle.action "delete") (ne .Values.lifecycle.confirmDelete "DELETE_MANAGED_OBJECTS") -}}
-{{- fail "Delete exige lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS; limita-se aos objetos deste chart" -}}
+{{- fail "Explicit deletion requires lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS; only this chart's managed objects are targeted" -}}
 {{- end -}}
 {{- range $kind := list "dashboards" "monitors" }}
 {{- if (index $.Values $kind).enabled }}
+{{- range $uninstall := list false true }}
+{{- if or (not $uninstall) (and $.Values.lifecycle.deleteOnUninstall (ne $.Values.lifecycle.action "plan")) }}
 {{- with $ }}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-{{ $kind }}
+  name: {{ .Release.Name }}-{{ $kind }}{{ if $uninstall }}-delete{{ end }}
   namespace: {{ .Release.Namespace }}
   labels:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/name: {{ .Chart.Name }}
   annotations:
-    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook: {{ if $uninstall }}pre-delete{{ else }}post-install,post-upgrade{{ end }}
     helm.sh/hook-weight: {{ if eq $kind "dashboards" }}"10"{{ else }}"20"{{ end }}
-    helm.sh/hook-delete-policy: before-hook-creation
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
   backoffLimit: 0
   activeDeadlineSeconds: {{ .Values.publisher.activeDeadlineSeconds }}
@@ -65,8 +67,8 @@ spec:
                   name: {{ (index .Values.auth $kind).existingSecret }}
                   key: {{ (index .Values.auth $kind).serviceTokenKey }}
             - {name: PUBLISH_KIND, value: {{ if eq $kind "dashboards" }}dashboard-bundle{{ else }}monitor{{ end }}}
-            - {name: PUBLISH_ACTION, value: {{ .Values.lifecycle.action | quote }}}
-            - {name: CONFIRM_DELETE, value: {{ .Values.lifecycle.confirmDelete | quote }}}
+            - {name: PUBLISH_ACTION, value: {{ ternary "delete" .Values.lifecycle.action $uninstall | quote }}}
+            - {name: CONFIRM_DELETE, value: {{ ternary "DELETE_MANAGED_OBJECTS" .Values.lifecycle.confirmDelete $uninstall | quote }}}
             - {name: CLI_PATH, value: {{ .Values.publisher.cli.path | quote }}}
             - {name: CLI_DOWNLOAD_URL, value: {{ .Values.publisher.cli.downloadUrl | quote }}}
             - {name: CLI_SHA256, value: {{ .Values.publisher.cli.sha256 | quote }}}
@@ -98,6 +100,8 @@ spec:
             items: [{key: {{ .Values.publisher.caKey }}, path: ca.crt}]
 {{- end }}
 
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
