@@ -9,7 +9,7 @@ Uma consulta executar sem erro não comprova sua interpretação. O aceite verif
 | CPU KubeVirt | `rate(cpu_usage_seconds_total[5m])` = CPUs consumidas; porcentagem = 100 × consumo / (cores × sockets × threads), sem substituir topologia por CPU request |
 | Espera de vCPU | Counters em segundos; taxa por vCPU, deduplicação por VM/id e média dos vCPUs, vezes 100 |
 | RAM guest | `available` é a memória reportada pelo domínio; `usable` corresponde ao disponível recuperável do guest. Uso estimado = available − usable. RSS QEMU e memória configurada são medidas distintas |
-| Swap guest | KubeVirt expõe tráfego acumulado como gauge; delta positivo de 5 minutos / 300 (contenção) e inclinação positiva por regressão em 5 minutos (visão geral) são estimativas, vulnerável a reinício/reset. Não se aplica uma taxa de counter indiscriminadamente |
+| Swap guest | KubeVirt expõe tráfego acumulado como gauge; delta positivo de 5 minutos / 300 é uma estimativa vulnerável a reinício/reset. Não se aplica uma taxa de counter indiscriminadamente |
 | I/O guest | Tempo acumulado em segundos / operações acumuladas, usando taxas na mesma janela; × 1000 para ms. Operações zero deixam latência sem valor |
 | CPU host | Taxa do counter em segundos por modo/CPU; média entre CPUs. CPU ocupada = 1 − idle. Capacidade usa CPUs lógicas |
 | RAM host | MemTotal e MemAvailable em bytes; uso operacional = total − available, incluindo efeitos de cache recuperável |
@@ -20,7 +20,7 @@ Uma consulta executar sem erro não comprova sua interpretação. O aceite verif
 | Longhorn capacidade | Volume provisionado é lógico; node usage/capacity é físico gerenciado; scheduled é reserva lógica de réplicas. Thin provisioning pode deixar scheduled acima do físico |
 | Longhorn proteção | Last backup é timestamp Unix ou zero; idade apenas para timestamp positivo. Snapshot size não é espaço físico total replicado nem espaço recuperável garantido |
 | HTTP | Counters de requisições e buckets acumulados; taxas antes de agregar. Histogramas em segundos, quantis × 1000 = ms. Quantis são estimativas dependentes dos buckets |
-| HTTP no período | `range_sum(increase(counter[1i]) …)` soma incrementos não sobrepostos seguindo o step efetivo do backend MetricsQL. Não congelar o incremento em `@ end()` e não fixar 1 minuto quando o step pode aumentar |
+| HTTP no período | `range_sum(increase(counter[${__interval}]) …)` soma incrementos não sobrepostos seguindo o step efetivo resolvido pela API SUSE. `[1i]` é aceito pelo backend, mas rejeitado pelo parser SUSE 2.10.2. Não congelar o incremento em `@ end()` e não fixar 1 minuto quando o step pode aumentar |
 | Disponibilidade HTTP | 1 − fração de 5xx das requisições concluídas. Tráfego zero deixa o quociente indefinido. Não equivale a uptime; 4xx não consome esse orçamento específico |
 | VMIC | Inventário de CRs; diskSize em bytes lógicos. Intervalos calculados somente entre timestamps explícitos; não representam duração completa ou porcentagem global |
 
@@ -45,3 +45,5 @@ As métricas de estado/configuração são deduplicadas por identidade lógica a
 - [Métricas Traefik](https://doc.traefik.io/traefik/observe/metrics/overview/).
 
 Ao atualizar plataforma/Agent, confira HELP/TYPE no endpoint, labels no backend e valores na API de origem. Não estenda automaticamente a validação deste laboratório a outras versões, contratos de instrumentação ou cargas. `scripts/audit-queries.py` cobre execução/filtros; comparação semântica e teste do fluxo operacional também fazem parte do aceite.
+
+O parâmetro `${__interval}` é resolvido pelo SUSE conforme a resolução do gráfico. Referência: [queries representativas](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). A aceitação direta pelo VictoriaMetrics não comprova compatibilidade com a interface SUSE; execute também a auditoria nativa.

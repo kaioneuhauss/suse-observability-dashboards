@@ -1,7 +1,4 @@
 {
-  "name": "Virtualization · VM Contention",
-  "description": "CPU scheduling, guest memory pressure and VM disk response.",
-  "scope": "publicDashboard",
   "dashboard": {
     "metadata": {
       "project": "{\"saveVariables\":false}"
@@ -13,145 +10,195 @@
           "spec": {
             "items": [
               {
-                "x": 0,
-                "y": 0,
-                "width": 24,
-                "height": 1,
                 "content": {
                   "$ref": "#/spec/panels/guide"
-                }
+                },
+                "height": 1,
+                "width": 24,
+                "x": 0,
+                "y": 0
               },
               {
-                "x": 0,
-                "y": 1,
-                "width": 8,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/cpuReady"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 0,
+                "y": 1
               },
               {
-                "x": 8,
-                "y": 1,
-                "width": 8,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/cpuUsage"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 8,
+                "y": 1
               },
               {
-                "x": 16,
-                "y": 1,
-                "width": 8,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/memoryUse"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 16,
+                "y": 1
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/section_1"
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 3,
-                "width": 12,
-                "height": 3,
+                "y": 3
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/ready"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 4
               },
               {
-                "x": 12,
-                "y": 3,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/cpu"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 4
               },
               {
-                "x": 0,
-                "y": 6,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/ioWait"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 7
               },
               {
-                "x": 12,
-                "y": 6,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/memory"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 7
               },
               {
-                "x": 0,
-                "y": 9,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/faults"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 10
               },
               {
-                "x": 12,
-                "y": 9,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/swap"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 10
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/section_2"
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 12,
-                "width": 12,
-                "height": 3,
+                "y": 13
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/readLatency"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 14
               },
               {
-                "x": 12,
-                "y": 12,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/writeLatency"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 14
               }
             ]
           }
         }
       ],
       "panels": {
-        "guide": {
+        "cpu": {
           "spec": {
             "display": {
-              "name": "Read this dashboard",
-              "description": "The OS inside a VM, the VM resource configuration, and consumption on the Harvester server."
+              "description": "CPU demand as a percentage of configured virtual CPUs. High use can be productive work; CPU waiting time provides the contention context.\n\nMeasurement details:\nCPU demand relative to configured VM topology, not Kubernetes CPU request.",
+              "name": "CPU used by each VM"
             },
             "plugin": {
-              "kind": "Markdown",
+              "kind": "TimeSeriesChart",
               "spec": {
-                "text": "**Follow the bottleneck.** Compare CPU usage with scheduler wait, guest memory with swap/page faults, and VM disk latency with Longhorn latency. Windows are 5 minutes. Empty is not zero. VM statistics require a running VMI; guest memory statistics depend on the guest balloon driver and platform support. These panels do not change VM resources."
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "percent"
+                  },
+                  "show": true
+                }
               }
             },
-            "queries": []
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"cores\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"sockets\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"threads\"})) > 0)"
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         "cpuReady": {
           "spec": {
             "display": {
-              "name": "Worst CPU scheduler wait · %",
-              "description": "Mean run-queue delay across vCPUs, then worst selected VM. A scheduling-pressure analogue to CPU Ready; not VMware-identical accounting. No factor of 1000: KubeVirt exports seconds.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+              "description": "Highest average CPU scheduling wait among selected VMs. A sustained increase means virtual CPUs are waiting for processing time on the host.\n\nMeasurement details:\nMean run-queue delay across vCPUs, then worst selected VM. A scheduling-pressure analogue to CPU Ready; not VMware-identical accounting. No factor of 1000: KubeVirt exports seconds.",
+              "name": "Longest wait for CPU"
             },
             "plugin": {
               "kind": "StatChart",
               "spec": {
                 "calculation": "last",
                 "format": {
-                  "decimalPlaces": 2,
+                  "decimalPlaces": 1,
                   "unit": "percent"
                 },
                 "sparkline": false,
@@ -169,8 +216,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "max(100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))))",
-                      "alias": "Worst VM"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "last_over_time((topk(1,100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))))[1s:1s] @ end())"
                     }
                   }
                 }
@@ -181,15 +228,15 @@
         "cpuUsage": {
           "spec": {
             "display": {
-              "name": "Highest VM CPU use · %",
-              "description": "Domain CPU seconds per second divided by configured cores × sockets × threads. Includes hypervisor/domain CPU accounting; inspect the time series before resizing.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+              "description": "Highest CPU use relative to the VM's configured virtual CPUs. Compare with CPU waiting time before concluding that the host is overloaded.\n\nMeasurement details:\nDomain CPU seconds per second divided by configured cores × sockets × threads. Includes hypervisor/domain CPU accounting; inspect the time series before resizing.",
+              "name": "Busiest VM: CPU used"
             },
             "plugin": {
               "kind": "StatChart",
               "spec": {
                 "calculation": "last",
                 "format": {
-                  "decimalPlaces": 2,
+                  "decimalPlaces": 1,
                   "unit": "percent"
                 },
                 "sparkline": false,
@@ -207,234 +254,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "max(100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"cores\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"sockets\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"threads\"})) > 0))",
-                      "alias": "Highest VM"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "memoryUse": {
-          "spec": {
-            "display": {
-              "name": "Highest guest memory use · %",
-              "description": "100 × (available - usable) / available. Usable corresponds to guest MemAvailable; reclaimable cache is not counted as used. Missing statistics remain empty.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
-            },
-            "plugin": {
-              "kind": "StatChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "decimalPlaces": 2,
-                  "unit": "percent"
-                },
-                "sparkline": false,
-                "thresholds": {
-                  "defaultColor": "#1976B9",
-                  "steps": []
-                },
-                "valueFontSize": 40
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "max(100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) > 0))",
-                      "alias": "Highest VM"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "ready": {
-          "spec": {
-            "display": {
-              "name": "CPU scheduler wait by VM · %",
-              "description": "Average per-vCPU scheduling delay over 5 minutes, deduplicated by VM and vCPU ID.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percent"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "cpu": {
-          "spec": {
-            "display": {
-              "name": "CPU use by VM · %",
-              "description": "CPU demand relative to configured VM topology, not Kubernetes CPU request.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percent"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"cores\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"sockets\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"threads\"})) > 0)",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "ioWait": {
-          "spec": {
-            "display": {
-              "name": "vCPU I/O wait by VM · %",
-              "description": "Time blocked on I/O, distinct from runnable CPU scheduler delay.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percent"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_wait_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "memory": {
-          "spec": {
-            "display": {
-              "name": "Guest memory use by VM · %",
-              "description": "Guest MemAvailable-based use; different from QEMU RSS and host RAM.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percent"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) > 0)",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "last_over_time((topk(1,100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"cores\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"sockets\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"threads\"})) > 0)))[1s:1s] @ end())"
                     }
                   }
                 }
@@ -445,8 +266,8 @@
         "faults": {
           "spec": {
             "display": {
-              "name": "Guest major page faults/s",
-              "description": "Rate of major page faults; investigate together with swap activity and guest memory headroom.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+              "description": "Major page faults per second inside each VM. These reads can slow an application; compare with swap and available memory.\n\nMeasurement details:\nRate of major page faults; investigate together with swap activity and guest memory headroom.",
+              "name": "Memory pages fetched from disk (pages/s)"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -466,9 +287,10 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "decimal"
                   },
+                  "label": "Pages per second",
                   "show": true
                 }
               }
@@ -480,8 +302,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_memory_pgmajfault_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_memory_pgmajfault_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))"
                     }
                   }
                 }
@@ -489,11 +311,26 @@
             ]
           }
         },
-        "swap": {
+        "guide": {
           "spec": {
             "display": {
-              "name": "Guest swap activity · estimated bytes/s",
-              "description": "KubeVirt exposes cumulative swap traffic as gauges. Positive 5-minute delta / 300 estimates traffic; a guest reset may invalidate this window. Not a counter rate.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+              "description": "Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.",
+              "name": "What this dashboard tells you"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.** Select a VM and look for changes at the same time as the slowdown. High CPU use alone does not prove a problem: also check waiting time and disk response. Most rates use the last 5 minutes. **No data is not the same as zero.** Use the description icon for measurement details."
+              }
+            },
+            "queries": []
+          }
+        },
+        "ioWait": {
+          "spec": {
+            "display": {
+              "description": "Time virtual CPUs spend blocked on input/output. Compare with disk response time; it is different from waiting for a turn on the CPU.\n\nMeasurement details:\nTime blocked on I/O, distinct from runnable CPU scheduler delay.",
+              "name": "Time VMs spend waiting for disk I/O"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -513,8 +350,8 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes/sec"
+                    "decimalPlaces": 1,
+                    "unit": "percent"
                   },
                   "show": true
                 }
@@ -527,20 +364,93 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "max by (k8s_cluster_name,namespace,name) (clamp_min(delta(kubevirt_vmi_memory_swap_in_traffic_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]),0) / 300)",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · in"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_wait_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))"
                     }
                   }
                 }
-              },
+              }
+            ]
+          }
+        },
+        "memory": {
+          "spec": {
+            "display": {
+              "description": "Guest memory use after allowing for reclaimable memory. A rising value together with swap or page reads can indicate memory pressure.\n\nMeasurement details:\nGuest MemAvailable-based use; different from QEMU RSS and host RAM.",
+              "name": "Memory used inside each VM"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "percent"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
               {
                 "kind": "TimeSeriesQuery",
                 "spec": {
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "max by (k8s_cluster_name,namespace,name) (clamp_min(delta(kubevirt_vmi_memory_swap_out_traffic_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]),0) / 300)",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · out"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) > 0)"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "memoryUse": {
+          "spec": {
+            "display": {
+              "description": "Highest guest memory-use percentage. Compare with swap activity and page reads to see whether memory pressure is affecting performance.\n\nMeasurement details:\n100 × (available - usable) / available. Usable corresponds to guest MemAvailable; reclaimable cache is not counted as used. Missing statistics remain empty.",
+              "name": "Busiest VM: memory used"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 1,
+                  "unit": "percent"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "last_over_time((topk(1,100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) > 0)))[1s:1s] @ end())"
                     }
                   }
                 }
@@ -551,8 +461,8 @@
         "readLatency": {
           "spec": {
             "display": {
-              "name": "VM disk read latency · ms",
-              "description": "Mean seconds spent on I/O divided by completed I/Os, converted to milliseconds. One series per VM disk. Idle disks have no mean latency and remain empty.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+              "description": "Average milliseconds per completed disk read. Lower is faster. Idle disks have no measured average and remain empty.\n\nMeasurement details:\nMean seconds spent on I/O divided by completed I/Os, converted to milliseconds. One series per VM disk. Idle disks have no mean latency and remain empty.",
+              "name": "Time to read from a VM disk (ms)"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -572,8 +482,56 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "milliseconds"
+                  },
+                  "label": "Milliseconds",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · ${drive}",
+                      "query": "1000 * max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_read_times_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) / (max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_read_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) > 0)"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "ready": {
+          "spec": {
+            "display": {
+              "description": "Average percentage of time each VM's virtual CPUs wait to be scheduled. Look for increases that coincide with a slowdown.\n\nMeasurement details:\nAverage per-vCPU scheduling delay over 5 minutes, deduplicated by VM and vCPU ID.",
+              "name": "Time VMs spend waiting for CPU"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "percent"
                   },
                   "show": true
                 }
@@ -586,8 +544,98 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "1000 * max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_read_times_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) / (max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_read_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) > 0)",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · ${drive}"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "section_1": {
+          "spec": {
+            "display": {
+              "description": "CPU and memory: find the bottleneck",
+              "name": "CPU and memory: find the bottleneck"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Compare changes at the time of a slowdown. CPU use, CPU waiting and memory pressure answer different questions."
+              }
+            },
+            "queries": []
+          }
+        },
+        "section_2": {
+          "spec": {
+            "display": {
+              "description": "Disk response time",
+              "name": "Disk response time"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Compare read and write response times. Idle disks have no measured average; an empty latency chart alone is not a failure."
+              }
+            },
+            "queries": []
+          }
+        },
+        "swap": {
+          "spec": {
+            "display": {
+              "description": "Estimated bytes per second moved into or out of swap. Repeated activity can indicate insufficient guest memory; a guest reset can distort the estimate.\n\nMeasurement details:\nKubeVirt exposes cumulative swap traffic as gauges. Positive 5-minute delta / 300 estimates traffic; a guest reset may invalidate this window. Not a counter rate.",
+              "name": "VM swap traffic (bytes/s)"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes/sec"
+                  },
+                  "label": "Bytes per second",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · in",
+                      "query": "max by (k8s_cluster_name,namespace,name) (clamp_min(delta(kubevirt_vmi_memory_swap_in_traffic_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]),0) / 300)"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · out",
+                      "query": "max by (k8s_cluster_name,namespace,name) (clamp_min(delta(kubevirt_vmi_memory_swap_out_traffic_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]),0) / 300)"
                     }
                   }
                 }
@@ -598,8 +646,8 @@
         "writeLatency": {
           "spec": {
             "display": {
-              "name": "VM disk write latency · ms",
-              "description": "Mean seconds spent on I/O divided by completed I/Os, converted to milliseconds. One series per VM disk. Idle disks have no mean latency and remain empty.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+              "description": "Average milliseconds per completed disk write. Compare a rise with I/O wait and Longhorn storage latency.\n\nMeasurement details:\nMean seconds spent on I/O divided by completed I/Os, converted to milliseconds. One series per VM disk. Idle disks have no mean latency and remain empty.",
+              "name": "Time to write to a VM disk (ms)"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -619,9 +667,10 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "milliseconds"
                   },
+                  "label": "Milliseconds",
                   "show": true
                 }
               }
@@ -633,8 +682,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "1000 * max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_write_times_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) / (max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_write_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) > 0)",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · ${drive}"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name} · ${drive}",
+                      "query": "1000 * max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_write_times_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) / (max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_write_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) > 0)"
                     }
                   }
                 }
@@ -648,15 +697,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "vm_cluster",
-              "display": {
-                "name": "Cluster",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -664,6 +707,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "Cluster"
+              },
+              "name": "vm_cluster",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -672,7 +720,8 @@
                     "kubevirt_vmi_info"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
@@ -681,15 +730,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "vm_namespace",
-              "display": {
-                "name": "Namespace",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -697,6 +740,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "Namespace"
+              },
+              "name": "vm_namespace",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -705,7 +753,8 @@
                     "kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
@@ -714,15 +763,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "vm_name",
-              "display": {
-                "name": "VM",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -730,6 +773,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "VM"
+              },
+              "name": "vm_name",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -738,12 +786,16 @@
                     "kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\"}"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
         }
       ]
     }
-  }
+  },
+  "description": "Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.",
+  "name": "Virtualization · VM Performance",
+  "scope": "publicDashboard"
 }

@@ -9,9 +9,11 @@ def add(d,key,title,description,queries,unit='decimal',stat=False):
  s=d['dashboard']['spec'];kind='StatChart' if stat else 'TimeSeriesChart'
  model=next((p for p in s['panels'].values() if p['spec']['plugin']['kind']==kind), load('applications')['dashboard']['spec']['panels']['rps'])
  p=copy.deepcopy(model);p['spec']['display']={'name':title,'description':description+'\n\nWhen to investigate / alert coverage: Investigate deviations with the associated request, resource or collection signals; this context panel does not independently page.'}
+ p['spec'].pop('links',None)
  plug=p['spec']['plugin']['spec']
+ if 'yAxis' in plug:plug['yAxis'].pop('label',None)
  if stat:plug['format']={'decimalPlaces':2,'unit':unit};plug['thresholds']={'defaultColor':'#1976B9','steps':[]}
- else:plug['yAxis']['format']={'decimalPlaces':2,'unit':unit};plug['thresholds']={'mode':'absolute','steps':[]}
+ else:plug['yAxis']['show']=True;plug['yAxis']['format']={'decimalPlaces':2,'unit':unit};plug['thresholds']={'mode':'absolute','steps':[]}
  p['spec']['queries']=[{'kind':'TimeSeriesQuery','spec':{'plugin':{'kind':'PrometheusTimeSeriesQuery','spec':{'query':q,'alias':a}}}} for a,q in queries]
  s['panels'][key]=p
  items=s['layouts'][0]['spec']['items']

@@ -4,6 +4,7 @@ import argparse
 import concurrent.futures
 import json
 import math
+import os
 from pathlib import Path
 import re
 import time
@@ -13,6 +14,8 @@ import urllib.request
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--url', default='http://127.0.0.1:18428')
 p.add_argument('--output', required=True)
+p.add_argument('--native', action='store_true', help='Validate using the native SUSE API and its interval expansion')
+p.add_argument('--service-token-env', default='')
 p.add_argument('--hours', type=int, default=6)
 a = p.parse_args()
 end = int(time.time()) // 900 * 900
@@ -25,13 +28,17 @@ for slug in ['applications', 'traefik']:
         for index, query in enumerate(panel['spec'].get('queries', [])):
             expr = query['spec']['plugin']['spec']['query']
             if 'range_sum(' in expr:
-                expr = re.sub(r'\$\{[^}]+\}', '.*', expr)
+                expr = re.sub(r'\$\{(?!__interval\})[^}]+\}', '.*', expr)
                 jobs.extend((slug, key, index, step, expr) for step in [60, 300, 900])
 
 def run(job):
     slug, key, index, step, expr = job
+    if not a.native: expr = expr.replace('${__interval}', f'{step}s')
     params = {'query': expr, 'start': start, 'end': end, 'step': step}
-    with urllib.request.urlopen(a.url.rstrip('/') + '/api/v1/query_range?' + urllib.parse.urlencode(params), timeout=90) as response:
+    prefix = '/api/metrics' if a.native else '/api/v1'
+    headers = {'X-API-Key': os.environ[a.service_token_env]} if a.service_token_env else {}
+    request = urllib.request.Request(a.url.rstrip('/') + prefix + '/query_range?' + urllib.parse.urlencode(params), headers=headers)
+    with urllib.request.urlopen(request, timeout=90) as response:
         data = json.load(response)
     if data.get('status') != 'success':
         raise RuntimeError(data)

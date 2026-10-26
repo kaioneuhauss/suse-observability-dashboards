@@ -1,5 +1,27 @@
 # Evidência do laboratório — 26/10/2026
 
+## Revisão 1.2.0 — instalação do zero pelo novo guia
+
+Esta seção é a evidência mais recente. Os números da migração anterior abaixo permanecem como histórico, não como resultados desta revisão.
+
+- 161 painéis de métricas revisados em nove dashboards: títulos e explicações em inglês, contagens inteiras, unidades explícitas e organização por pergunta operacional.
+- `scripts/pack.sh configure` e `check` executados para 11 destinos reais: cinco publicadores centrais e seis releases coletoras nas três origens.
+- Remoção pelo novo comando, usando os charts anteriores para localizar os nomes antigos. Antes da reinstalação, confirmado **zero** releases, dashboards, monitores e recursos Kubernetes pertencentes aos módulos.
+- Dashboard nativo mantido com o mesmo ID. **628 objetos protegidos mantiveram seus UIDs** durante remoção e reinstalação: workloads existentes, PVCs, VMs, VMIs e volumes Longhorn. As aplicações de demonstração foram preservadas e Coriolis permaneceu parado.
+- Reinstalação das 11 releases com os arquivos gerados, preservando as opções de ambiente aprovadas: proprietários de publicação, coleta etcd e políticas restritas já existentes.
+- **59 testes locais aprovados**, incluindo formatos inteiros, layouts sem sobreposição, geração repetível e interrupção segura quando a exclusão externa falha. Helm lint/renderização e admissão server-side aprovados.
+- **7.967 casos de consultas/filtros no backend** após a reinstalação: zero erros e valores não finitos; 2.930 vazios classificados separadamente. A seleção de cluster inexistente não retornou séries em nenhum painel.
+- **7.967 casos adicionais pela API nativa SUSE**: zero erros e valores não finitos; 2.940 vazios, incluindo filtros sem séries. As diferenças de vazios entre rodadas refletem o ambiente em movimento.
+- **779 casos históricos de seis horas pela API nativa SUSE**, após corrigir a compatibilidade: zero erros e valores não finitos; 195 vazios. Controles de Everything, cluster individual e multisseleção representativa.
+- **45 consultas / 18 invariantes de totais HTTP pela API nativa** aprovados em passos de 60, 300 e 900 segundos; **34 consultas de monitores** executadas com dados e sem erro.
+- Comparação com a origem: 10 VMIs em execução, 50 vCPUs, 100 GiB de RAM guest configurada, 32 CPUs lógicas, 184 volumes Longhorn e oito registros de importação. Fases, discos e intervalos registrados pelo VMIC coincidiram com a API.
+- **772 campos de requests/limits** comparados após estabilização: zero divergências ou campos atuais ausentes. Durante o rollout, o primeiro teste detectou Pods recém-criados ainda não coletados; após novos ciclos, a comparação passou. Séries de Pods terminados podem permanecer no lookback/histórico e não são tratadas como Pods atuais.
+- KubeVirt: cinco alvos `up=1`; Longhorn: um alvo `up=1`; inventário de importações saudável. Amostras posteriores à instalação e com idade inferior a 30 segundos na verificação.
+- Conferência visual dos nove dashboards; contagens inteiras completas, filtros de VM (10 no total, 1 selecionada), unidades e rótulos legíveis. Os erros Traefik ficaram em linhas, porque o gráfico de barras não desenhou corretamente os pontos na versão observada.
+- NetworkPolicy Longhorn conferida: somente TCP/9500, um peer com os seletores de namespace e Pod juntos, limitado ao coletor `obs-virtualization`. Políticas nativas preservadas.
+
+O teste do guia identificou e corrigiu a validação de recursos em namespaces diferentes (CA e Longhorn), diferenças de flags entre Helm 3 e 4 e a remoção de coletores de versões anteriores. A exclusão de conteúdo continua exigindo o chart da versão instalada. A conferência visual encontrou um problema que o backend não revelava: o parser SUSE rejeitava `[1i]` nos totais HTTP. A versão final usa `${__interval}`, resolvido pela API nativa, e os testes foram repetidos nesse caminho. Os totais de uma mesma janela de seis horas foram 31.895 requisições de aplicações e 384.384 no Traefik, iguais nos passos de 60, 300 e 900 segundos. São origens distintas, não totais que devam ser iguais entre si. As três estatísticas de performance agora preservam a identidade da VM selecionada pelo maior valor.
+
 ## Ambiente observado
 
 | Plataforma | Versão observada |
@@ -16,7 +38,7 @@
 
 Essas versões são evidência deste laboratório, não uma matriz de suporte. O servidor, Agents e plataformas existentes foram preservados.
 
-## O que foi executado
+## Migração anterior — histórico
 
 - Inventário inicial somente de leitura, propriedade Helm/Fleet e backups privados de values, manifests e conteúdo externo.
 - Exportação dos cinco dashboards do projeto, dashboard nativo e 33 monitores antigos.
@@ -29,7 +51,7 @@ Essas versões são evidência deste laboratório, não uma matriz de suporte. O
 
 O backend e seu histórico de métricas não foram apagados. As aplicações de demonstração `brasil-dados` e `request-lab` foram preservadas por decisão explícita do responsável; a limpeza abrange somente os componentes dos dashboards.
 
-## Validação concluída
+## Validação da migração anterior
 
 - 53 testes locais aprovados: isolamento dos módulos, schemas, layout e geração repetível, publicador, recursos, aliases HTTP, CA, NetworkPolicy e exporter VMIC (paginação, falha/staleness, campos ausentes, privacidade, fases e timestamps).
 - `helm lint` dos cinco charts, renderização e dry-run nos APIs de destino. Novos recursos de Virtualization/Imports passaram por dry-run no Harvester e central antes da aplicação.

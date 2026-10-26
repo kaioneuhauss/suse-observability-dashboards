@@ -1,5 +1,26 @@
 # Atualização, migração e remoção
 
+## Caminho simples
+
+Na raiz do projeto, confirme `KCFG`, `CTX` e `NS` e execute:
+
+```bash
+bash scripts/pack.sh status virtualization
+bash scripts/pack.sh remove virtualization
+```
+
+Troque `virtualization` por `imports`, `traefik`, `applications` ou `kubernetes`. O script usa os values da release instalada, salva um backup privado em `local/backups/`, exige a mesma versão local do chart, remove os dashboards/monitores daquela release e depois os recursos Helm e Jobs hooks. Se a exclusão externa falhar, ele para antes de desinstalar, permitindo corrigir o acesso e repetir.
+
+Para instalar novamente:
+
+```bash
+bash scripts/pack.sh install virtualization local/virtualization.yaml
+```
+
+Isso reinstala os componentes deste projeto. Não apaga histórico de métricas, plataformas, Agents oficiais, aplicações, VMs ou volumes. Os Secrets compartilhados ficam preservados para a reinstalação. Em vários clusters, execute a remoção para cada release coletora na origem e uma vez para a publicadora central.
+
+O backup Helm não exporta edições manuais feitas no SUSE. Se precisa preservá-las, exporte os dashboards antes da remoção. A reinstalação publica as definições do Git; IDs e links podem mudar. Conteúdo de versões anteriores com outros nomes deve ser removido com o chart daquela versão antes de instalar esta.
+
 ## Atualizar
 
 Preserve os arquivos de values, releases, namespaces e tokens proprietários. Confira o diff, renderize e execute novamente `helm upgrade --install` do módulo. O publicador compara a definição persistida com a desejada. Se não mudou, não recria o dashboard. Quando muda, a estratégia padrão `replace` pode alterar seu ID e substitui edições manuais. Não edite diretamente um dashboard gerenciado esperando que o chart preserve essas alterações.

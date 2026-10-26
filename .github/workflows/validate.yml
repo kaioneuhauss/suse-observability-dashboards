@@ -27,6 +27,7 @@ jobs:
         run: |
           python scripts/enhance-dashboards.py
           python scripts/build-virtualization-dashboards.py
+          python scripts/curate-dashboards.py
           python scripts/build-charts.py
           git diff --exit-code -- charts/ examples/ components/
       - name: Validate each independent module

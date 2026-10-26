@@ -52,7 +52,9 @@ class Dashboard:
     def add(self, key, title, description, queries, unit='decimal', stat=False, width=12):
         panel = copy.deepcopy(BASE['dashboard']['spec']['panels']['runningCount' if stat else 'vmSampleAge'])
         panel['spec']['display'] = {'name': title, 'description': description + '\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting.'}
+        panel['spec'].pop('links', None)
         plugin = panel['spec']['plugin']['spec']
+        if 'yAxis' in plugin: plugin['yAxis'].pop('label', None)
         if stat:
             plugin['format'] = {'decimalPlaces': 2, 'unit': unit}
         else:

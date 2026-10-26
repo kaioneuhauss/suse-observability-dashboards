@@ -1,7 +1,4 @@
 {
-  "name": "Workload Resource Efficiency",
-  "description": "Application resource use compared with configured requests and limits.",
-  "scope": "publicDashboard",
   "dashboard": {
     "metadata": {
       "project": "{\"saveVariables\":false}"
@@ -13,440 +10,258 @@
           "spec": {
             "items": [
               {
-                "x": 0,
-                "y": 0,
-                "width": 24,
-                "height": 1,
                 "content": {
                   "$ref": "#/spec/panels/guide"
-                }
+                },
+                "height": 1,
+                "width": 24,
+                "x": 0,
+                "y": 0
               },
               {
-                "x": 0,
-                "y": 1,
-                "width": 12,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/cpuUseGauge"
-                }
-              },
-              {
-                "x": 12,
-                "y": 1,
-                "width": 12,
+                },
                 "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/cpuOver80Count"
-                }
-              },
-              {
+                "width": 8,
                 "x": 0,
-                "y": 3,
-                "width": 24,
-                "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/cpuLimitReview"
-                }
+                "y": 1
               },
               {
-                "x": 0,
-                "y": 5,
-                "width": 12,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/memUseGauge"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 8,
+                "y": 1
               },
               {
-                "x": 12,
-                "y": 5,
-                "width": 12,
+                "content": {
+                  "$ref": "#/spec/panels/cpuOver80Count"
+                },
                 "height": 2,
+                "width": 8,
+                "x": 16,
+                "y": 1
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/memOver80Count"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 0,
+                "y": 3
               },
               {
-                "x": 0,
-                "y": 7,
-                "width": 24,
-                "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/memLimitReview"
-                }
-              },
-              {
-                "x": 0,
-                "y": 9,
-                "width": 12,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/cpuRequestMissingList"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 8,
+                "y": 3
               },
               {
-                "x": 12,
-                "y": 9,
-                "width": 12,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/cpuLimitMissingList"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 16,
+                "y": 3
               },
               {
-                "x": 0,
-                "y": 11,
-                "width": 12,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/memRequestMissingList"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 0,
+                "y": 5
               },
               {
-                "x": 12,
-                "y": 11,
-                "width": 12,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/memLimitMissingList"
-                }
-              },
-              {
-                "x": 0,
-                "y": 13,
-                "width": 24,
+                },
                 "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/missingSettingsPods"
-                }
+                "width": 8,
+                "x": 8,
+                "y": 5
               },
               {
-                "x": 0,
-                "y": 15,
+                "content": {
+                  "$ref": "#/spec/panels/section_1"
+                },
+                "height": 1,
                 "width": 24,
-                "height": 3,
+                "x": 0,
+                "y": 7
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/cpuUsageTop"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 8
               },
               {
-                "x": 0,
-                "y": 18,
-                "width": 24,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/cpuRequestTop"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 8
               },
               {
-                "x": 0,
-                "y": 21,
-                "width": 24,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/cpuLimitTop"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 11
               },
               {
-                "x": 0,
-                "y": 24,
+                "content": {
+                  "$ref": "#/spec/panels/section_2"
+                },
+                "height": 1,
                 "width": 24,
-                "height": 3,
+                "x": 0,
+                "y": 14
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/memUsageTop"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 15
               },
               {
-                "x": 0,
-                "y": 27,
-                "width": 24,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/memRequestTop"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 15
               },
               {
-                "x": 0,
-                "y": 30,
-                "width": 24,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/memLimitTop"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 18
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/section_3"
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 33,
-                "width": 12,
+                "y": 21
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/missingSettingsPods"
+                },
                 "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 22
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/cpuLimitReview"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 22
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/memLimitReview"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 25
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/memoryRisk"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 25
               },
               {
-                "x": 12,
-                "y": 33,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/cpuReservation"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 28
               },
               {
-                "x": 0,
-                "y": 36,
-                "width": 24,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/throttling"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 28
               },
               {
-                "x": 0,
-                "y": 39,
-                "width": 24,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/workingSetRSS"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 31
               },
               {
-                "x": 0,
-                "y": 42,
+                "content": {
+                  "$ref": "#/spec/panels/section_4"
+                },
+                "height": 1,
                 "width": 24,
-                "height": 3,
+                "x": 0,
+                "y": 34
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/inventoryHealth"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 35
               }
             ]
           }
         }
       ],
       "panels": {
-        "guide": {
-          "spec": {
-            "display": {
-              "name": "Understand usage, requests, and limits",
-              "description": "These values describe containers, not the total memory or CPU use of a VM or physical server."
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "**Usage, requests and limits are different.** Usage is measured consumption. A request reserves scheduling capacity; a limit caps a container. CPU uses mCPU: 1000 mCPU = 1 CPU core. Missing-setting counts count each running Pod once if any regular container lacks that setting. See the list below for the affected Pods and namespaces. Init containers and Pod overhead are excluded."
-              }
-            },
-            "queries": []
-          }
-        },
-        "cpuUsageTop": {
-          "spec": {
-            "display": {
-              "name": "CPU used · five busiest pods · mCPU",
-              "description": "The five pods with highest absolute CPU usage at the end of the selected period are selected once. The chart shows their measured five-minute-average usage over time. This is a consumption ranking, separate from the list above 80% of limits. 1000 mCPU means one CPU core.\n\nWhen to investigate / alert coverage: CPU Throttling (native)"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 1,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "(max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])) / 1000000)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) and on (sre_series) (max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")))"
-                    }
-                  }
-                }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22%28max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%29%29%20%2F%201000000%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20and%20on%20%28sre_series%29%20%28max%20by%20%28sre_series%29%20%28label_join%28%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "cpuRequestTop": {
-          "spec": {
-            "display": {
-              "name": "CPU requested by the same pods · mCPU",
-              "description": "Sum of CPU requests for regular containers. Reserved capacity is not measured usage. Missing settings are listed below.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 1,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
-                    }
-                  }
-                }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "cpuLimitTop": {
-          "spec": {
-            "display": {
-              "name": "CPU limits for the same pods · mCPU",
-              "description": "Sum of configured limits. A container without a limit does not have a zero ceiling, so the total can be partial.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 1,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
-                    }
-                  }
-                }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "cpuRequestMissingList": {
-          "spec": {
-            "display": {
-              "name": "Pods missing CPU requests",
-              "description": "Number of distinct pods with at least one running regular container without a positive CPU request. A pod with three affected containers counts as one pod. Zero means none found in the available running-container inventory; No data means this inventory is unavailable for the selection.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "StatChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "decimalPlaces": 0,
-                  "unit": "none"
-                },
-                "sparkline": false,
-                "valueFontSize": 40,
-                "thresholds": {
-                  "defaultColor": "#1976B9",
-                  "steps": []
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "Pods",
-                      "query": "last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
         "cpuLimitMissingList": {
           "spec": {
             "display": {
-              "name": "Pods missing CPU limits",
-              "description": "Number of distinct pods with at least one running regular container without a positive CPU limit. Each pod counts once. A missing CPU limit can be intentional and is not automatically an incident. Zero requires a valid running-container inventory.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+              "description": "Count of pods with at least one container missing a CPU limit. Whether a limit is needed depends on workload policy.\n\nMeasurement details:\nNumber of distinct pods with at least one running regular container without a positive CPU limit. Each pod counts once. A missing CPU limit can be intentional and is not automatically an incident. Zero requires a valid running-container inventory.",
+              "name": "Pods with no CPU limit"
             },
             "plugin": {
               "kind": "StatChart",
@@ -457,11 +272,11 @@
                   "unit": "none"
                 },
                 "sparkline": false,
-                "valueFontSize": 40,
                 "thresholds": {
                   "defaultColor": "#1976B9",
                   "steps": []
-                }
+                },
+                "valueFontSize": 40
               }
             },
             "queries": [
@@ -480,169 +295,20 @@
             ]
           }
         },
-        "cpuUseGauge": {
+        "cpuLimitReview": {
           "spec": {
             "display": {
-              "name": "Pod CPU use versus limit · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU used divided by the sum of CPU limits in the same pod. Every running regular container must have a positive limit and usage data; partially configured pods are excluded.\n\nWhen to investigate / alert coverage: CPU Throttling (native)"
+              "description": "List of pods above the review threshold. It is a starting point for investigation, not an automatic resizing recommendation.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.",
+              "name": "Which pods exceed 80% of their CPU limit?"
             },
-            "plugin": {
-              "kind": "GaugeChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
-                },
-                "max": 1,
-                "thresholds": {
-                  "mode": "absolute",
-                  "defaultColor": "#2E8540",
-                  "steps": [
-                    {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
-                      "color": "#D32F2F",
-                      "value": 0.9
-                    }
-                  ]
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "memUsageTop": {
-          "spec": {
-            "display": {
-              "name": "Memory used · five busiest pods",
-              "description": "The five pods with highest absolute memory usage at the end of the selected period are selected once. The chart shows their measured five-minute-average usage over time. This is a consumption ranking, separate from the list above 80% of limits. Memory working set includes active memory/cache; it is not Java heap or the memory used inside a VM.\n\nWhen to investigate / alert coverage: container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "(max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) and on (sre_series) (max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")))"
-                    }
-                  }
-                }
-              }
-            ],
             "links": [
               {
                 "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22%28max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20and%20on%20%28sre_series%29%20%28max%20by%20%28sre_series%29%20%28label_join%28%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
+                "targetBlank": true,
                 "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "memRequestTop": {
-          "spec": {
-            "display": {
-              "name": "Memory requested by the same pods",
-              "description": "Sum of memory requests for regular containers. This is reserved scheduling capacity, not memory already consumed.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
-                    }
-                  }
-                }
+                "url": "./#/metrics?metrics=%5B%5B%5B%22%28%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20%3E%200.8%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20eligible%20pods%20above%2080%25%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
               }
             ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "memLimitTop": {
-          "spec": {
-            "display": {
-              "name": "Memory limits for the same pods",
-              "description": "Sum of configured memory limits. Use the missing-limits list to identify pods where this total is partial.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -661,240 +327,7 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
-                    }
-                  }
-                }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "memRequestMissingList": {
-          "spec": {
-            "display": {
-              "name": "Pods missing memory requests",
-              "description": "Number of distinct pods with at least one running regular container without a positive memory request. Each pod counts once. A request reserves scheduling capacity; it is not measured consumption. Zero requires a valid running-container inventory.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "StatChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "decimalPlaces": 0,
-                  "unit": "none"
-                },
-                "sparkline": false,
-                "valueFontSize": 40,
-                "thresholds": {
-                  "defaultColor": "#1976B9",
-                  "steps": []
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "Pods",
-                      "query": "last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "memLimitMissingList": {
-          "spec": {
-            "display": {
-              "name": "Pods missing memory limits",
-              "description": "Number of distinct pods with at least one running regular container without a positive memory limit. Each pod counts once. Review the pod and its containers to assess uncontrolled memory growth. Zero requires a valid running-container inventory.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "StatChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "decimalPlaces": 0,
-                  "unit": "none"
-                },
-                "sparkline": false,
-                "valueFontSize": 40,
-                "thresholds": {
-                  "defaultColor": "#1976B9",
-                  "steps": []
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "Pods",
-                      "query": "last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "memUseGauge": {
-          "spec": {
-            "display": {
-              "name": "Pod memory use versus limit · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Working set divided by the sum of memory limits in the same pod. Every running regular container must have a positive limit and usage data. A single container can still run out of memory before the pod total reaches 100%.\n\nWhen to investigate / alert coverage: container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "GaugeChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
-                },
-                "max": 1,
-                "thresholds": {
-                  "mode": "absolute",
-                  "defaultColor": "#2E8540",
-                  "steps": [
-                    {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
-                      "color": "#D32F2F",
-                      "value": 0.9
-                    }
-                  ]
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "missingSettingsPods": {
-          "spec": {
-            "display": {
-              "name": "Pods with missing settings · current list",
-              "description": "One row per pod and missing setting: cluster, namespace, pod, and setting. The same pod may lack both CPU and memory settings. Counts above deduplicate within each category. Empty means no matching rows; check inventory coverage and filters. This checks running regular containers, not init containers, stopped pods, or optional pod-level resource budgets.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor\n\nThis is a compact status list, not a trend. Read the names below; expand + more if needed. Open the linked query and select Table view for separate columns. The link carries cluster/namespace filters but opens the current Metrics Explorer period; reselect a historical period when investigating the past."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 0,
-                    "unit": "none"
-                  },
-                  "show": false
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0))), \"missing_setting\", \"CPU request\", \"pod_name\", \".*\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0))), \"missing_setting\", \"CPU limit\", \"pod_name\", \".*\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))), \"missing_setting\", \"Memory request\", \"pod_name\", \".*\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))), \"missing_setting\", \"Memory limit\", \"pod_name\", \".*\"))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\", \"missing_setting\"))"
-                    }
-                  }
-                }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22CPU%20request%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%20or%20%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22CPU%20limit%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%20or%20%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22Memory%20request%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%20or%20%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22Memory%20limit%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22missing_setting%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "memoryRisk": {
-          "spec": {
-            "display": {
-              "name": "Memory close to its limit · ten highest percentages",
-              "description": "Highest working set in the last hour divided by the same container's positive limit. Near 100% means less room before an out-of-memory termination.\n\nWhen to investigate / alert coverage: container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "percentunit"
                   },
                   "show": true
@@ -909,7 +342,200 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((topk(10, (max by (cluster_name,namespace,pod_name,container) (max_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[1h] @ end())) / (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\", \"container\"))"
+                      "query": "((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) > 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")))), \"sre_series\", \"No eligible pods above 80%\", \"\", \"\")"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cpuLimitTop": {
+          "spec": {
+            "display": {
+              "description": "Configured CPU ceiling for the same five pods. A missing limit is different from a zero-CPU allowance.\n\nMeasurement details:\nSum of configured limits. A container without a limit does not have a zero ceiling, so the total can be partial.",
+              "name": "CPU limit for those same pods (mCPU)"
+            },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "none"
+                  },
+                  "label": "mCPU (1000 = 1 CPU)",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cpuOver80Count": {
+          "spec": {
+            "display": {
+              "description": "Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.",
+              "name": "Pods above 80% of their CPU limit"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 1
+                    }
+                  ]
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Pods",
+                      "query": "count(((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) > 0.8)) or on() (0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cpuRequestMissingList": {
+          "spec": {
+            "display": {
+              "description": "Count of pods with at least one container missing a CPU request. Review their scheduling requirements before setting values.\n\nMeasurement details:\nNumber of distinct pods with at least one running regular container without a positive CPU request. A pod with three affected containers counts as one pod. Zero means none found in the available running-container inventory; No data means this inventory is unavailable for the selection.",
+              "name": "Pods with no CPU reservation"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Pods",
+                      "query": "last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "cpuRequestTop": {
+          "spec": {
+            "display": {
+              "description": "Scheduling requests for the same five pods. Reserved CPU is not actual consumption; 1000 mCPU equals one CPU core.\n\nMeasurement details:\nSum of CPU requests for regular containers. Reserved capacity is not measured usage. Missing settings are listed below.",
+              "name": "CPU reserved for those same pods (mCPU)"
+            },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "none"
+                  },
+                  "label": "mCPU (1000 = 1 CPU)",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
                     }
                   }
                 }
@@ -920,8 +546,8 @@
         "cpuReservation": {
           "spec": {
             "display": {
-              "name": "CPU used versus requested · top 10 · %",
-              "description": "Five-minute average usage divided by the request. More than 100% is allowed and means usage exceeds the reserved amount.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+              "description": "CPU use divided by the scheduling request. More than 100% is possible and does not by itself mean a limit was exceeded.\n\nMeasurement details:\nFive-minute average usage divided by the request. More than 100% is allowed and means usage exceeds the reserved amount.",
+              "name": "CPU used compared with CPU reserved"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -964,12 +590,20 @@
             ]
           }
         },
-        "throttling": {
+        "cpuUsageTop": {
           "spec": {
             "display": {
-              "name": "CPU throttling · top 10 · %",
-              "description": "Share of CPU periods that were throttled, checked per container. The ten highest are selected at each point; the full-period legend can contain more than ten. Compare sustained high values with application slowness.\n\nWhen to investigate / alert coverage: CPU Throttling (native)"
+              "description": "Actual CPU use for the five pods selected as busiest at the end of the period. Compare the same names in reserved CPU and CPU limits.\n\nMeasurement details:\nThe five pods with highest absolute CPU usage at the end of the selected period are selected once. The chart shows their measured five-minute-average usage over time. This is a consumption ranking, separate from the list above 80% of limits. 1000 mCPU means one CPU core.",
+              "name": "CPU used by the five busiest pods (mCPU)"
             },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22%28max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%29%29%20%2F%201000000%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20and%20on%20%28sre_series%29%20%28max%20by%20%28sre_series%29%20%28label_join%28%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -988,9 +622,10 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percentunit"
+                    "decimalPlaces": 1,
+                    "unit": "none"
                   },
+                  "label": "mCPU (1000 = 1 CPU)",
                   "show": true
                 }
               }
@@ -1003,7 +638,7 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((topk(10, max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_throttled_periods{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])) / clamp_min(max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_elapsed_periods{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])), 0.001))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\", \"container\"))"
+                      "query": "(max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])) / 1000000)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) and on (sre_series) (max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")))"
                     }
                   }
                 }
@@ -1011,34 +646,34 @@
             ]
           }
         },
-        "workingSetRSS": {
+        "cpuUseGauge": {
           "spec": {
             "display": {
-              "name": "Two memory measurements for the five busiest pods",
-              "description": "Working set includes memory that is not easily reclaimed. RSS measures resident memory differently. Neither value is Java heap. The five busiest pods are selected at each point, so the full-period legend can contain more than five pods.\n\nWhen to investigate / alert coverage: container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+              "description": "Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU used divided by the sum of CPU limits in the same pod. Every running regular container must have a positive limit and usage data; partially configured pods are excluded.",
+              "name": "Pod closest to its CPU limit"
             },
             "plugin": {
-              "kind": "TimeSeriesChart",
+              "kind": "GaugeChart",
               "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
                 },
+                "max": 1,
                 "thresholds": {
+                  "defaultColor": "#2E8540",
                   "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
+                    },
+                    {
+                      "color": "#D32F2F",
+                      "value": 0.9
+                    }
+                  ]
                 }
               }
             },
@@ -1050,31 +685,34 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_replace((label_join((topk(5, sum by (cluster_name,namespace,pod_name) (container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")), \"sre_series\", \"Working set · $1\", \"sre_series\", \"(.*)\"))"
-                    }
-                  }
-                }
-              },
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_replace((label_join((sum by (cluster_name,namespace,pod_name) (container_memory_rss{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}) and on (cluster_name,namespace,pod_name) topk(5, sum by (cluster_name,namespace,pod_name) (container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")), \"sre_series\", \"RSS · $1\", \"sre_series\", \"(.*)\"))"
+                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
                     }
                   }
                 }
               }
             ]
+          }
+        },
+        "guide": {
+          "spec": {
+            "display": {
+              "description": "Are applications using the CPU and memory reserved for them, or approaching their limits?",
+              "name": "What this dashboard tells you"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**Are applications using the CPU and memory reserved for them, or approaching their limits?** A request reserves resources for scheduling. A limit sets a maximum. Actual use is a separate measurement. Compare the same five busiest pods across used, reserved and limit charts. 1000 mCPU equals one CPU core. **No data is not the same as zero.** Use the description icon for measurement details."
+              }
+            },
+            "queries": []
           }
         },
         "inventoryHealth": {
           "spec": {
             "display": {
-              "name": "Pod configuration collection · 1 working / 0 failed",
-              "description": "Checks whether the Pod API inventory succeeded. A failed inventory means requests, limits and missing-settings counts are unavailable. Namespace filters do not apply.\n\nWhen to investigate / alert coverage: Pod Ready State (native) for the pod inventory Deployment"
+              "description": "1 means pod configuration collection is working; 0 means it failed. Check this before trusting missing-setting counts.\n\nMeasurement details:\nChecks whether the Pod API inventory succeeded. A failed inventory means requests, limits and missing-settings counts are unavailable. Namespace filters do not apply.",
+              "name": "Can we read pod resource settings?"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -1095,7 +733,7 @@
                 "yAxis": {
                   "format": {
                     "decimalPlaces": 0,
-                    "unit": "none"
+                    "unit": "decimal"
                   },
                   "show": true
                 }
@@ -1117,35 +755,26 @@
             ]
           }
         },
-        "cpuLimitReview": {
+        "memLimitMissingList": {
           "spec": {
             "display": {
-              "name": "Pods above 80% of their CPU limit",
-              "description": "Only pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.\n\nWhen to investigate / alert coverage: CPU Throttling (native)\n\nThis is a compact status list, not a trend. Read the names below; expand + more if needed. Open the linked query and select Table view for separate columns. The link carries cluster/namespace filters but opens the current Metrics Explorer period; reselect a historical period when investigating the past."
+              "description": "Count of pods with at least one container missing a memory limit. Review workload policy and host capacity before choosing limits.\n\nMeasurement details:\nNumber of distinct pods with at least one running regular container without a positive memory limit. Each pod counts once. Review the pod and its containers to assess uncontrolled memory growth. Zero requires a valid running-container inventory.",
+              "name": "Pods with no memory limit"
             },
             "plugin": {
-              "kind": "TimeSeriesChart",
+              "kind": "StatChart",
               "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
                 },
+                "sparkline": false,
                 "thresholds": {
-                  "mode": "absolute",
+                  "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 1,
-                    "unit": "percentunit"
-                  },
-                  "show": true
-                }
+                "valueFontSize": 40
               }
             },
             "queries": [
@@ -1155,19 +784,11 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) > 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")))), \"sre_series\", \"No eligible pods above 80%\", \"\", \"\")"
+                      "alias": "Pods",
+                      "query": "last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())"
                     }
                   }
                 }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22%28%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20%3E%200.8%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_cpu_usage%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2F%201000000%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20eligible%20pods%20above%2080%25%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
               }
             ]
           }
@@ -1175,9 +796,17 @@
         "memLimitReview": {
           "spec": {
             "display": {
-              "name": "Pods above 80% of their memory limit",
-              "description": "Only pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.\n\nWhen to investigate / alert coverage: container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline.\n\nThis is a compact status list, not a trend. Read the names below; expand + more if needed. Open the linked query and select Table view for separate columns. The link carries cluster/namespace filters but opens the current Metrics Explorer period; reselect a historical period when investigating the past."
+              "description": "List of pods above the review threshold. Compare sustained usage and recent memory-related restarts.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.",
+              "name": "Which pods exceed 80% of their memory limit?"
             },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22%28%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20%3E%200.8%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20eligible%20pods%20above%2080%25%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1216,41 +845,45 @@
                   }
                 }
               }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22%28%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20%3E%200.8%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28max%20by%20%28sre_series%29%20%28label_join%28%28last_over_time%28%28%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%20%2F%20%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%29%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%20or%20max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%29%5B1s%3A1s%5D%20%40%20end%28%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20eligible%20pods%20above%2080%25%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
             ]
           }
         },
-        "cpuOver80Count": {
+        "memLimitTop": {
           "spec": {
             "display": {
-              "name": "Pods above 80% CPU limit · count",
-              "description": "Only pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.\n\nWhen to investigate / alert coverage: CPU Throttling (native)"
+              "description": "Configured memory ceiling for the same pods. Exceeding a container limit can cause an out-of-memory termination.\n\nMeasurement details:\nSum of configured memory limits. Use the missing-limits list to identify pods where this total is partial.",
+              "name": "Memory limit for those same pods"
             },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
             "plugin": {
-              "kind": "StatChart",
+              "kind": "TimeSeriesChart",
               "spec": {
-                "calculation": "last",
-                "format": {
-                  "decimalPlaces": 0,
-                  "unit": "none"
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
                 },
-                "sparkline": false,
-                "valueFontSize": 40,
                 "thresholds": {
-                  "defaultColor": "#2E8540",
-                  "steps": [
-                    {
-                      "color": "#E69F00",
-                      "value": 1
-                    }
-                  ]
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
                 }
               }
             },
@@ -1261,8 +894,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "Pods",
-                      "query": "count(((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) > 0.8)) or on() (0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))))"
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
                     }
                   }
                 }
@@ -1273,8 +906,8 @@
         "memOver80Count": {
           "spec": {
             "display": {
-              "name": "Pods above 80% memory limit · count",
-              "description": "Only pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.\n\nWhen to investigate / alert coverage: container working set above 95 percent limit · 5m. Checks container working set above 95 percent limit · 5m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+              "description": "Count of measured pods above the memory review threshold. See the detail list and inspect individual containers.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.",
+              "name": "Pods above 80% of their memory limit"
             },
             "plugin": {
               "kind": "StatChart",
@@ -1285,7 +918,6 @@
                   "unit": "none"
                 },
                 "sparkline": false,
-                "valueFontSize": 40,
                 "thresholds": {
                   "defaultColor": "#2E8540",
                   "steps": [
@@ -1294,7 +926,8 @@
                       "value": 1
                     }
                   ]
-                }
+                },
+                "valueFontSize": 40
               }
             },
             "queries": [
@@ -1312,6 +945,469 @@
               }
             ]
           }
+        },
+        "memRequestMissingList": {
+          "spec": {
+            "display": {
+              "description": "Count of pods with at least one container missing a memory request. Review sizing and scheduling requirements.\n\nMeasurement details:\nNumber of distinct pods with at least one running regular container without a positive memory request. Each pod counts once. A request reserves scheduling capacity; it is not measured consumption. Zero requires a valid running-container inventory.",
+              "name": "Pods with no memory reservation"
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "Pods",
+                      "query": "last_over_time((count(max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))) or ((count(max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) > 0) * 0))[1s:1s] @ end())"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "memRequestTop": {
+          "spec": {
+            "display": {
+              "description": "Scheduling memory requests for the same five pods. These reservations differ from actual memory use.\n\nMeasurement details:\nSum of memory requests for regular containers. This is reserved scheduling capacity, not memory already consumed.",
+              "name": "Memory reserved for those same pods"
+            },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%20and%20on%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "memUsageTop": {
+          "spec": {
+            "display": {
+              "description": "Working-set memory for the five pods selected as busiest at the end of the period. Compare the same names in reserved memory and limits.\n\nMeasurement details:\nThe five pods with highest absolute memory usage at the end of the selected period are selected once. The chart shows their measured five-minute-average usage over time. This is a consumption ranking, separate from the list above 80% of limits. Memory working set includes active memory/cache; it is not Java heap or the memory used inside a VM.",
+              "name": "Memory used by the five busiest pods"
+            },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22%28max%20by%20%28sre_series%29%20%28label_join%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%20and%20on%20%28sre_series%29%20%28max%20by%20%28sre_series%29%20%28label_join%28%28topk%285%2C%20sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28avg_over_time%28container_memory_working_set%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "(max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))) and on (sre_series) (max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "memUseGauge": {
+          "spec": {
+            "display": {
+              "description": "Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Working set divided by the sum of memory limits in the same pod. Every running regular container must have a positive limit and usage data. A single container can still run out of memory before the pod total reaches 100%.",
+              "name": "Pod closest to its memory limit"
+            },
+            "plugin": {
+              "kind": "GaugeChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
+                },
+                "max": 1,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
+                    },
+                    {
+                      "color": "#D32F2F",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "memoryRisk": {
+          "spec": {
+            "display": {
+              "description": "Ten highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers.\n\nMeasurement details:\nHighest working set in the last hour divided by the same container's positive limit. Near 100% means less room before an out-of-memory termination.",
+              "name": "Pods using the largest share of their memory limit"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "percentunit"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((topk(10, (max by (cluster_name,namespace,pod_name,container) (max_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[1h] @ end())) / (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\", \"container\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "missingSettingsPods": {
+          "spec": {
+            "display": {
+              "description": "The legend lists affected pods and missing settings. A line is an inventory marker, not a trend; use the details link for columns.\n\nMeasurement details:\nOne row per pod and missing setting: cluster, namespace, pod, and setting. The same pod may lack both CPU and memory settings. Counts above deduplicate within each category. Empty means no matching rows; check inventory coverage and filters. This checks running regular containers, not init containers, stopped pods, or optional pod-level resource budgets.",
+              "name": "Which pods have missing resource settings?"
+            },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22CPU%20request%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%20or%20%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_cpu_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%2A%201000%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22CPU%20limit%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%20or%20%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_requested%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22Memory%20request%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%20or%20%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_running%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28last_over_time%28sre_pod_container_memory_limit%7Bcluster_name%3D~%5C%22${workload_cluster}%5C%22%2Cnamespace%3D~%5C%22${workload_namespace}%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3E%200%29%29%29%2C%20%5C%22missing_setting%5C%22%2C%20%5C%22Memory%20limit%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22.%2A%5C%22%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22missing_setting%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "decimal"
+                  },
+                  "show": false
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join(((label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0))), \"missing_setting\", \"CPU request\", \"pod_name\", \".*\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0))), \"missing_setting\", \"CPU limit\", \"pod_name\", \".*\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))), \"missing_setting\", \"Memory request\", \"pod_name\", \".*\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0))), \"missing_setting\", \"Memory limit\", \"pod_name\", \".*\"))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\", \"missing_setting\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "section_1": {
+          "spec": {
+            "display": {
+              "description": "Compare the same five pods: CPU",
+              "name": "Compare the same five pods: CPU"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Read the same pod name across used CPU, reserved CPU and CPU limit. 1000 mCPU equals one CPU core. A missing limit does not mean a zero allowance."
+              }
+            },
+            "queries": []
+          }
+        },
+        "section_2": {
+          "spec": {
+            "display": {
+              "description": "Compare the same five pods: memory",
+              "name": "Compare the same five pods: memory"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Read the same pod name across working-set use, scheduling reservation and memory limit. These values have different meanings and must not be added together."
+              }
+            },
+            "queries": []
+          }
+        },
+        "section_3": {
+          "spec": {
+            "display": {
+              "description": "Investigate settings and resource pressure",
+              "name": "Investigate settings and resource pressure"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Lists identify affected pods; trends show how demand changed. Use application impact and container details before changing requests or limits."
+              }
+            },
+            "queries": []
+          }
+        },
+        "section_4": {
+          "spec": {
+            "display": {
+              "description": "Check the measurements",
+              "name": "Check the measurements"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Check collection and sample age before interpreting missing data. A running collector Pod alone does not prove that measurements are arriving."
+              }
+            },
+            "queries": []
+          }
+        },
+        "throttling": {
+          "spec": {
+            "display": {
+              "description": "Share of CPU scheduling periods in which containers were throttled. Compare with application response time before raising limits.\n\nMeasurement details:\nShare of CPU periods that were throttled, checked per container. The ten highest are selected at each point; the full-period legend can contain more than ten. Compare sustained high values with application slowness.",
+              "name": "CPU work delayed by configured limits"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "percentunit"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((topk(10, max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_throttled_periods{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])) / clamp_min(max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_elapsed_periods{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m])), 0.001))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\", \"container\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "workingSetRSS": {
+          "spec": {
+            "display": {
+              "description": "Two views of memory for the same busiest pods. Working set and resident memory overlap; do not add them together.\n\nMeasurement details:\nWorking set includes memory that is not easily reclaimed. RSS measures resident memory differently. Neither value is Java heap. The five busiest pods are selected at each point, so the full-period legend can contain more than five pods.",
+              "name": "Pod memory: working set and resident memory"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_replace((label_join((topk(5, sum by (cluster_name,namespace,pod_name) (container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")), \"sre_series\", \"Working set · $1\", \"sre_series\", \"(.*)\"))"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_replace((label_join((sum by (cluster_name,namespace,pod_name) (container_memory_rss{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}) and on (cluster_name,namespace,pod_name) topk(5, sum by (cluster_name,namespace,pod_name) (container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"pod_name\")), \"sre_series\", \"RSS · $1\", \"sre_series\", \"(.*)\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
         }
       },
       "variables": [
@@ -1319,15 +1415,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "workload_cluster",
-              "display": {
-                "name": "Cluster",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -1335,6 +1425,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "Cluster"
+              },
+              "name": "workload_cluster",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -1343,7 +1438,8 @@
                     "sre_pod_inventory_success"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
@@ -1352,15 +1448,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "workload_namespace",
-              "display": {
-                "name": "Namespace",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -1368,6 +1458,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "Namespace"
+              },
+              "name": "workload_namespace",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -1376,12 +1471,16 @@
                     "sre_pod_container_running{cluster_name=~\"${workload_cluster}\"}"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
         }
       ]
     }
-  }
+  },
+  "description": "Are applications using the CPU and memory reserved for them, or approaching their limits?",
+  "name": "Kubernetes · Application Resource Usage",
+  "scope": "publicDashboard"
 }

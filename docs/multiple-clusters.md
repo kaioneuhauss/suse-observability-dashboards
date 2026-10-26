@@ -65,3 +65,19 @@ helm:
 ```
 
 Ajuste o caminho à raiz real do bundle. Use selectors/targets explícitos para impedir publicação em mais de um cluster. Antes de migrar uma release Helm manual para Fleet, confira adoção e propriedade; não crie outra release coletando os mesmos alvos. O teste deste trabalho usou Helm direto; o novo desenho Fleet precisa de aceite no destino.
+
+## Mesmo procedimento usando o assistente
+
+Depois de definir KCFG/CTX/NS para cada destino e OBS_URL:
+
+```bash
+# Em cada origem: usa o Secret de ingestao do Agent
+bash scripts/pack.sh configure traefik local/traefik-origem.yaml telemetry
+bash scripts/pack.sh install traefik local/traefik-origem.yaml
+
+# Troque KCFG/CTX/NS para o central antes destes comandos
+bash scripts/pack.sh configure traefik local/traefik-central.yaml content
+bash scripts/pack.sh install traefik local/traefik-central.yaml
+```
+
+O arquivo `content` precisa do Secret de publicação no namespace central. Se os nomes diferem do padrão, acrescente `auth.dashboards.existingSecret` e `auth.monitors.existingSecret`, como nos pré-requisitos. Para repetir em outro cluster, use outro arquivo local e altere explicitamente as variáveis de destino. Para remover, execute `bash scripts/pack.sh remove traefik` em cada destino onde instalou a release. Não apague o Secret de publicação antes de remover o conteúdo.

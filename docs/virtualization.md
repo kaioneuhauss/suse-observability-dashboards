@@ -18,6 +18,15 @@ kubectl get networkpolicy --kubeconfig "$KCFG" --context "$CTX" -n longhorn-syst
 O chart lê a CA pública diretamente do ConfigMap `kubevirt-ca`, prepara o arquivo antes do Collector iniciar e sincroniza mudanças a cada 60 segundos. A permissão limita-se a `get` desse ConfigMap. Não lê chaves privadas e não modifica KubeVirt. A coleta mantém TLS e valida quatro nomes de servidor distintos. Um CA inválido nunca substitui a última cópia válida. Para uma instalação com CA preparada externamente, use `virtualization.kubevirt.ca.autoSync: false` e configure `existingConfigMap`.
 
 4. Crie/reutilize o Secret de registry `application-collection` no namespace do Agent para baixar a imagem OTel de `dp.apps.rancher.io`. Use as credenciais da organização no Rancher/Harvester; não as grave em values. O chart também usa imagens públicas de node-exporter, vmagent e Python; verifique acesso ou espelhamento.
+
+   No gerenciador de Secrets do cluster, selecione o namespace do Agent e crie um Secret do tipo **Registry / dockerconfigjson**, com nome `application-collection`, servidor `dp.apps.rancher.io` e usuário/token da Application Collection. Se o Secret existe em outro namespace, ele não é automaticamente acessível aqui: peça ao administrador para disponibilizá-lo neste namespace. Verifique somente o tipo, sem imprimir credenciais:
+
+   ```bash
+   kubectl get secret application-collection --kubeconfig "$KCFG" --context "$CTX" -n "$NS" \
+     -o jsonpath='{.type}{"\n"}'
+   ```
+
+   Resultado esperado: `kubernetes.io/dockerconfigjson`. Se a organização usa espelho, ajuste `virtualization.image.repository`, `tag` e `imagePullSecrets` para a imagem equivalente validada pela organização. Um Secret presente não prova que as credenciais funcionam: o Pod precisa conseguir baixar a imagem.
 5. Confirme que o coletor pode acessar os endpoints KubeVirt e Longhorn. Em ambientes com NetworkPolicies isolando os managers Longhorn, é necessária permissão de entrada TCP/9500 a partir do coletor.
 
 ## Instalar

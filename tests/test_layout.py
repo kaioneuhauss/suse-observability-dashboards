@@ -13,11 +13,14 @@ class LayoutTests(unittest.TestCase):
    (temporary/'scripts').mkdir()
    shutil.copy2(ROOT/'scripts/enhance-dashboards.py',temporary/'scripts')
    shutil.copy2(ROOT/'scripts/build-virtualization-dashboards.py',temporary/'scripts')
+   shutil.copy2(ROOT/'scripts/curate-dashboards.py',temporary/'scripts')
+   (temporary/'docs').mkdir()
    def snapshot():return {str(p.relative_to(temporary)):p.read_bytes() for p in component.rglob('*.json')}
    expected=snapshot()
    for _ in range(2):
     subprocess.run([sys.executable,str(temporary/'scripts/enhance-dashboards.py')],check=True)
     subprocess.run([sys.executable,str(temporary/'scripts/build-virtualization-dashboards.py')],check=True)
+    subprocess.run([sys.executable,str(temporary/'scripts/curate-dashboards.py')],check=True)
     self.assertEqual(expected,snapshot())
  def test_rendered_payload_preserves_layout(self):
   raw=subprocess.check_output(['helm','template','test',str(ROOT/'components/suse-observability-content'),'-f',str(ROOT/'components/suse-observability-content/config/values.yaml')],text=True)
@@ -40,9 +43,10 @@ class LayoutTests(unittest.TestCase):
      spec=q['spec']['plugin']['spec'];expr=spec['query']
      if 'range_sum(' in expr:
       self.assertEqual(spec.get('minStep'),'1m')
-      self.assertIn('[1i]',expr)
+      self.assertIn('[${__interval}]',expr)
+      self.assertNotIn('[1i]',expr)
       self.assertNotIn('[1m]',expr)
-      self.assertNotIn('[1i] @ end()',expr)
+      self.assertNotIn('[${__interval}] @ end()',expr)
       self.assertNotIn('${__range}',expr)
       self.assertIn('@ start()',expr)
  def test_legend_avoids_misaligned_summary_values(self):
@@ -53,5 +57,29 @@ class LayoutTests(unittest.TestCase):
     plugin=panel['spec']['plugin']
     if plugin['kind']=='TimeSeriesChart':
      self.assertFalse(plugin['spec'].get('legend',{}).get('values',[]))
+ def test_discrete_counts_are_displayed_as_integers(self):
+  examples={'harvester':['runningCount'],'virtualization-capacity':['allocatedCpu','coverage'],
+   'virtualization-storage':['unhealthy','neverBackup','staleBackup','volumeHealth','attachment','backupState'],
+   'imports':['registered','succeeded','failed','active','disks'],
+   'platform':['nonRunning','missingCopies','restartCount'],
+   'resources':['cpuOver80Count','memOver80Count','cpuRequestMissingList','memRequestMissingList']}
+  for slug,keys in examples.items():
+   panels=json.loads((ROOT/'components/suse-observability-content/dashboards'/(slug+'.json')).read_text())['dashboard']['spec']['panels']
+   for key in keys:
+    p=panels[key]['spec']['plugin']['spec']
+    self.assertEqual(p.get('format',p.get('yAxis',{}).get('format',{}))['decimalPlaces'],0,(slug,key))
+ def test_running_vm_count_excludes_other_phases(self):
+  d=json.loads((ROOT/'components/suse-observability-content/dashboards/harvester.json').read_text())
+  q=d['dashboard']['spec']['panels']['runningCount']['spec']['queries'][0]['spec']['plugin']['spec']['query']
+  self.assertIn('phase="running"',q)
+ def test_every_panel_is_laid_out_once_without_overlap(self):
+  for path in (ROOT/'components/suse-observability-content/dashboards').glob('*.json'):
+   spec=json.loads(path.read_text())['dashboard']['spec'];items=spec['layouts'][0]['spec']['items']
+   self.assertEqual(len(items),len(spec['panels']))
+   for i,a in enumerate(items):
+    self.assertLessEqual(a['x']+a['width'],24)
+    for b in items[i+1:]:
+     overlaps=a['x']<b['x']+b['width'] and b['x']<a['x']+a['width'] and a['y']<b['y']+b['height'] and b['y']<a['y']+a['height']
+     self.assertFalse(overlaps,(path.name,a['content'],b['content']))
 if __name__=='__main__':unittest.main()
 

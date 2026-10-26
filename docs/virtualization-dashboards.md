@@ -6,9 +6,9 @@ O chart Virtualization publica quatro dashboards. O módulo opcional Imports acr
 
 Comece pela saúde e atualidade da coleta, quantidade de instâncias observadas e utilização de CPU, memória e filesystem. Compare o guest com o host antes de atribuir um problema à VM. Memória disponível no guest, RSS do QEMU, memória configurada e memória disponível no host respondem a perguntas diferentes.
 
-Use os filtros de cluster, namespace e VM para investigar uma instância. Painéis de host e Longhorn estão explicitamente identificados como escopo de cluster: selecionar uma VM não transforma uma medida do host em consumo daquela VM.
+Use os filtros de cluster, namespace e VM para investigar uma instância. Painéis de host estão explicitamente identificados como escopo de cluster: selecionar uma VM não transforma uma medida do host em consumo daquela VM.
 
-## VM Contention
+## VM Performance
 
 Responde: **a VM está demandando recursos ou esperando por eles?**
 
@@ -18,7 +18,7 @@ Responde: **a VM está demandando recursos ou esperando por eles?**
 
 Não habilita PSI nem muda configuração do kernel. As métricas disponíveis no KubeVirt instalado são suficientes para esse conjunto inicial.
 
-## Capacity & Sizing
+## Capacity Planning
 
 Responde: **quanto está alocado e qual demanda foi observada?**
 
@@ -31,19 +31,19 @@ Responde: **quanto está alocado e qual demanda foi observada?**
 
 Faça recomendações de tamanho somente após observar ciclos representativos e requisitos da aplicação. O projeto não redimensiona VMs automaticamente.
 
-## Storage & Protection
+## Storage & Backups
 
 Responde: **o armazenamento está saudável e existem evidências de proteção?**
 
-- Robustness e attachment são estados rotulados 0/1, não códigos de severidade. `unknown` em volume detached não equivale a volume saudável nem a falha confirmada.
+- Os gráficos resumem quantos volumes estão em cada estado de saúde e conexão, somando os estados ativos após deduplicação. `unknown` em volume detached não equivale a volume saudável nem a falha confirmada.
 - Latência Longhorn chega em nanossegundos e é exibida em milissegundos; IOPS já chega como taxa. A latência do guest pode incluir esperas adicionais e não precisa coincidir com a do Longhorn.
 - Capacidade provisionada, uso físico, capacidade lógica agendada de réplicas e tamanho de snapshots são mostrados separadamente. Não devem ser somados como se fossem a mesma medida.
 - Último backup, ausência de backup e idade superior a sete dias são sinais de revisão. Sete dias é uma janela explícita do painel, não um RPO acordado.
-- O estado do backup usa os códigos do Longhorn 1.11.2 documentados no painel. Timestamps e estados não comprovam acesso ao destino, consistência da aplicação ou restauração testada.
+- O gráfico de backups traduz os códigos Longhorn 1.11.2 em nomes: New, Pending, In progress, Completed, Error e Unknown. Timestamps e estados não comprovam acesso ao destino, consistência da aplicação ou restauração testada.
 
 O filtro é por volume Longhorn e inclui PVCs que não são discos de VMs. O dashboard não calcula automaticamente uma cobertura de backup por aplicação e não apresenta snapshots como espaço seguramente recuperável.
 
-## VMware Imports (opcional)
+## VMware Import Progress (opcional)
 
 Use o [módulo Imports](imports.md) para fases, falhas, discos prontos e intervalos registrados pelo VM Import Controller. Ele acompanha importação de VMware para Harvester, separadamente das métricas de live migration entre hosts.
 

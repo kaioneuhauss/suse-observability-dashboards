@@ -20,5 +20,6 @@ class AlertCoverageTests(unittest.TestCase):
     if panel['spec']['plugin']['kind']=='Markdown':continue
     self.assertIn((p.stem,key),seen)
     self.assertEqual(next(c['title'] for c in coverage if (c['dashboard'],c['panel'])==(p.stem,key)),panel['spec']['display']['name'])
-    self.assertIn('When to investigate / alert coverage:',panel['spec']['display']['description'])
+    self.assertIn('Measurement details:',panel['spec']['display']['description'])
+    self.assertGreater(len(panel['spec']['display']['description'].split('Measurement details:')[0]),60)
 if __name__=='__main__':unittest.main()

@@ -1,7 +1,4 @@
 {
-  "name": "Harvester VM & Host Health",
-  "description": "Memory and CPU inside VMs, configured VM resources, and Harvester host consumption.",
-  "scope": "publicDashboard",
   "dashboard": {
     "metadata": {
       "project": "{\"saveVariables\":false}"
@@ -13,598 +10,213 @@
           "spec": {
             "items": [
               {
-                "x": 0,
-                "y": 0,
-                "width": 24,
-                "height": 1,
                 "content": {
                   "$ref": "#/spec/panels/guide"
-                }
-              },
-              {
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 1,
-                "width": 8,
-                "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/guestCpuGauge"
-                }
+                "y": 0
               },
               {
-                "x": 8,
-                "y": 1,
-                "width": 8,
-                "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/guestMemoryGauge"
-                }
-              },
-              {
-                "x": 16,
-                "y": 1,
-                "width": 8,
-                "height": 2,
-                "content": {
-                  "$ref": "#/spec/panels/guestDiskGauge"
-                }
-              },
-              {
-                "x": 0,
-                "y": 3,
-                "width": 6,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/runningCount"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 0,
+                "y": 1
               },
               {
-                "x": 6,
-                "y": 3,
-                "width": 9,
+                "content": {
+                  "$ref": "#/spec/panels/guestCpuGauge"
+                },
                 "height": 2,
+                "width": 8,
+                "x": 8,
+                "y": 1
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/guestMemoryGauge"
+                },
+                "height": 2,
+                "width": 8,
+                "x": 16,
+                "y": 1
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/guestDiskGauge"
+                },
+                "height": 2,
+                "width": 8,
+                "x": 0,
+                "y": 3
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/hostCpuGauge"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 8,
+                "y": 3
               },
               {
-                "x": 15,
-                "y": 3,
-                "width": 9,
-                "height": 2,
                 "content": {
                   "$ref": "#/spec/panels/hostMemoryGauge"
-                }
+                },
+                "height": 2,
+                "width": 8,
+                "x": 16,
+                "y": 3
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/section_1"
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 5,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/scrapeHealth"
-                }
+                "y": 5
               },
               {
-                "x": 12,
-                "y": 5,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/vmSampleAge"
-                }
-              },
-              {
-                "x": 0,
-                "y": 8,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/storageHealth"
-                }
-              },
-              {
-                "x": 12,
-                "y": 8,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/storageUsage"
-                }
-              },
-              {
-                "x": 0,
-                "y": 11,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/guestUsed"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 6
               },
               {
-                "x": 12,
-                "y": 11,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/guestAvailable"
-                }
-              },
-              {
-                "x": 0,
-                "y": 14,
-                "width": 12,
+                },
                 "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/guestTotal"
-                }
-              },
-              {
+                "width": 12,
                 "x": 12,
-                "y": 14,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/domainRequest"
-                }
+                "y": 6
               },
               {
-                "x": 0,
-                "y": 17,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/domainLimit"
-                }
-              },
-              {
-                "x": 12,
-                "y": 17,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/configuredGuest"
-                }
-              },
-              {
+                },
+                "height": 3,
+                "width": 12,
                 "x": 0,
-                "y": 20,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/vcpuUse"
-                }
+                "y": 9
               },
               {
-                "x": 12,
-                "y": 20,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/vcpuRequest"
-                }
-              },
-              {
-                "x": 0,
-                "y": 23,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/vcpuLimit"
-                }
-              },
-              {
-                "x": 12,
-                "y": 23,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/resident"
-                }
-              },
-              {
-                "x": 0,
-                "y": 26,
-                "width": 12,
+                },
                 "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/guestMissing"
-                }
-              },
-              {
+                "width": 12,
                 "x": 12,
-                "y": 26,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/hostUsed"
-                }
+                "y": 9
               },
               {
-                "x": 0,
-                "y": 29,
-                "width": 12,
+                "content": {
+                  "$ref": "#/spec/panels/vcpuUse"
+                },
                 "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 12
+              },
+              {
                 "content": {
                   "$ref": "#/spec/panels/hostAvailable"
-                }
-              },
-              {
-                "x": 12,
-                "y": 29,
-                "width": 12,
+                },
                 "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/hostRequests"
-                }
+                "width": 12,
+                "x": 12,
+                "y": 12
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/section_2"
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 32,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/hostLimits"
-                }
+                "y": 15
               },
               {
-                "x": 12,
-                "y": 32,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/guestDiskRatio"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 16
               },
               {
-                "x": 0,
-                "y": 35,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/guestDiskUsed"
-                }
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 16
               },
               {
-                "x": 12,
-                "y": 35,
-                "width": 12,
-                "height": 3,
                 "content": {
                   "$ref": "#/spec/panels/guestDiskCapacity"
-                }
-              },
-              {
+                },
+                "height": 3,
+                "width": 12,
                 "x": 0,
-                "y": 38,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/cpuReady"
-                }
+                "y": 19
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/guestMissing"
+                },
+                "height": 3,
+                "width": 12,
                 "x": 12,
-                "y": 38,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/cpuWait"
-                }
+                "y": 19
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/section_3"
+                },
+                "height": 1,
+                "width": 24,
                 "x": 0,
-                "y": 41,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/majorFaults"
-                }
+                "y": 22
               },
               {
-                "x": 12,
-                "y": 41,
-                "width": 12,
-                "height": 3,
                 "content": {
-                  "$ref": "#/spec/panels/swapin"
-                }
-              },
-              {
+                  "$ref": "#/spec/panels/scrapeHealth"
+                },
+                "height": 3,
+                "width": 12,
                 "x": 0,
-                "y": 44,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/swapout"
-                }
+                "y": 23
               },
               {
+                "content": {
+                  "$ref": "#/spec/panels/vmSampleAge"
+                },
+                "height": 3,
+                "width": 12,
                 "x": 12,
-                "y": 44,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/diskread"
-                }
-              },
-              {
-                "x": 0,
-                "y": 47,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/diskwrite"
-                }
-              },
-              {
-                "x": 12,
-                "y": 47,
-                "width": 12,
-                "height": 3,
-                "content": {
-                  "$ref": "#/spec/panels/diskIOPS"
-                }
+                "y": 23
               }
             ]
           }
         }
       ],
       "panels": {
-        "guide": {
-          "spec": {
-            "display": {
-              "name": "Understand the three measurement layers",
-              "description": "The OS inside a VM, the VM resource configuration, and consumption on the Harvester server."
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "**VM, container and host are different layers.** Guest memory describes the operating system inside the VM. QEMU process memory describes its host process. Harvester host panels cover the whole cluster even when a VM is selected. CPU wait and disk response time help investigate contention. Idle disks have no response-time average. Question-mark descriptions explain units and prerequisites."
-              }
-            },
-            "queries": []
-          }
-        },
-        "guestUsed": {
-          "spec": {
-            "display": {
-              "name": "Memory used inside the VM",
-              "description": "Guest OS total minus available memory, from KubeVirt balloon statistics. This differs from QEMU memory resident on the host.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((clamp_min((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))) - (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), 0)), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "guestAvailable": {
-          "spec": {
-            "display": {
-              "name": "Memory still available inside the VM",
-              "description": "Memory the guest expects to use without swapping. This comes from the KubeVirt usable_bytes metric.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "guestTotal": {
-          "spec": {
-            "display": {
-              "name": "Total memory seen by the VM operating system",
-              "description": "Total reported by the guest. Reserved regions can make it smaller than the configured guest memory.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "domainRequest": {
-          "spec": {
-            "display": {
-              "name": "Memory requested by the VM",
-              "description": "The VM domain memory request is used for scheduling. It is not measured memory consumption.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"memory\",unit=\"bytes\",source=\"domain\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "domainLimit": {
-          "spec": {
-            "display": {
-              "name": "Configured VM memory limit",
-              "description": "The VM domain memory limit. It differs from the virt-launcher container limit, which can include overhead.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_limits{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"memory\",unit=\"bytes\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
         "configuredGuest": {
           "spec": {
             "display": {
-              "name": "Memory configured for the guest OS",
-              "description": "Memory assigned to the guest. It is not automatically the same as the scheduling request.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+              "description": "RAM configured for the guest operating system. This is the assigned amount, not how much the application is using.\n\nMeasurement details:\nMemory assigned to the guest. It is not automatically the same as the scheduling request.",
+              "name": "Memory assigned to each VM"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -624,7 +236,7 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "bytes(IEC)"
                   },
                   "show": true
@@ -647,105 +259,11 @@
             ]
           }
         },
-        "resident": {
+        "guestAvailable": {
           "spec": {
             "display": {
-              "name": "VM process memory on the host · QEMU",
-              "description": "Resident memory of the process running the VM. It does not directly measure application memory inside the guest.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_resident_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "vcpuUse": {
-          "spec": {
-            "display": {
-              "name": "CPU used by the VM · vCPU cores",
-              "description": "Five-minute average. A value of 1 means one core used continuously; this value is not in millicores.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 3,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "vcpuRequest": {
-          "spec": {
-            "display": {
-              "name": "CPU requested by the VM · mCPU",
-              "description": "Scheduling reservation, not the number of configured virtual CPUs. For example, a VM can have four vCPUs and a request of 250 mCPU.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+              "description": "Memory that the guest can use without swapping, including reclaimable cache. A falling trend can explain application slowdown.\n\nMeasurement details:\nMemory the guest expects to use without swapping. This comes from the KubeVirt usable_bytes metric.",
+              "name": "Memory available inside each VM"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -766,100 +284,6 @@
                 "yAxis": {
                   "format": {
                     "decimalPlaces": 1,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"cores\",source=\"requests\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))) * 1000), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "vcpuLimit": {
-          "spec": {
-            "display": {
-              "name": "Configured VM CPU limit · vCPU cores",
-              "description": "Configured domain CPU ceiling. A missing series does not mean a zero limit.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_limits{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"cores\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "hostUsed": {
-          "spec": {
-            "display": {
-              "name": "Memory used on Harvester hosts · whole cluster",
-              "description": "Linux total minus available memory. Includes VMs and host services. This is not the sum of Kubernetes requests.\n\nWhen to investigate / alert coverage: host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
                     "unit": "bytes(IEC)"
                   },
                   "show": true
@@ -874,7 +298,7 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((max by (cluster_name,node) (node_memory_MemTotal_bytes{cluster_name=~\"${vm_cluster}\",job=\"sre-node\"}) and on (cluster_name) (max by (cluster_name) (label_replace(up{service_name=\"kubevirt-metrics\",k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\") or label_replace(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\")))) - (max by (cluster_name,node) (node_memory_MemAvailable_bytes{cluster_name=~\"${vm_cluster}\",job=\"sre-node\"}) and on (cluster_name) (max by (cluster_name) (label_replace(up{service_name=\"kubevirt-metrics\",k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\") or label_replace(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\"))))), \"sre_series\", \" · \", \"cluster_name\", \"node\"))"
+                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
                     }
                   }
                 }
@@ -882,35 +306,26 @@
             ]
           }
         },
-        "hostAvailable": {
+        "guestCpuGauge": {
           "spec": {
             "display": {
-              "name": "Memory available on Harvester hosts · whole cluster",
-              "description": "Memory the host considers available for use. VM and namespace filters do not apply.\n\nWhen to investigate / alert coverage: host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+              "description": "CPU use of the busiest selected VM compared with its configured virtual CPUs. If high, open VM Performance to check whether CPU is actually waiting.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU cores used divided by configured guest vCPUs, not the smaller scheduling request. The VM and namespace filters apply.",
+              "name": "Busiest VM: CPU used"
             },
             "plugin": {
-              "kind": "TimeSeriesChart",
+              "kind": "StatChart",
               "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
                 },
+                "sparkline": false,
                 "thresholds": {
-                  "mode": "absolute",
+                  "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
+                "valueFontSize": 40
               }
             },
             "queries": [
@@ -921,203 +336,7 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (cluster_name,node) (node_memory_MemAvailable_bytes{cluster_name=~\"${vm_cluster}\",job=\"sre-node\"}) and on (cluster_name) (max by (cluster_name) (label_replace(up{service_name=\"kubevirt-metrics\",k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\") or label_replace(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\")))), \"sre_series\", \" · \", \"cluster_name\", \"node\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "hostRequests": {
-          "spec": {
-            "display": {
-              "name": "Memory requested by Harvester pods · whole cluster",
-              "description": "Sum of requests for regular containers, including virt-launcher. Reserved capacity is not consumption and does not include every special scheduling rule.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((sum by (cluster_name) (sre_pod_container_memory_requested{cluster_name=~\"${vm_cluster}\"}) and on (cluster_name) (max by (cluster_name) (label_replace(up{service_name=\"kubevirt-metrics\",k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\") or label_replace(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\")))), \"sre_series\", \"\", \"cluster_name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "hostLimits": {
-          "spec": {
-            "display": {
-              "name": "Sum of Harvester pod memory limits · whole cluster",
-              "description": "Sum of configured limits. Missing limits make this view partial; the sum can exceed physical memory.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((sum by (cluster_name) (sre_pod_container_memory_limit{cluster_name=~\"${vm_cluster}\"}) and on (cluster_name) (max by (cluster_name) (label_replace(up{service_name=\"kubevirt-metrics\",k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\") or label_replace(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\")))), \"sre_series\", \"\", \"cluster_name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "guestMissing": {
-          "spec": {
-            "display": {
-              "name": "Running VMs without OS memory statistics",
-              "description": "Running VMs missing total or available memory measurements. Check balloon support. QEMU Guest Agent provides additional filesystem information.\n\nWhen to investigate / alert coverage: Collection applicability: inspect balloon statistics and guest-agent support\n\nThis is a compact status list, not a trend. Read the names below; expand + more if needed. Open the linked query and select Table view for separate columns. The link carries cluster/namespace filters but opens the current Metrics Explorer period; reselect a historical period when investigating the past."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 0,
-                    "unit": "none"
-                  },
-                  "show": false
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"})) unless on (k8s_cluster_name,namespace,name) ((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"})))), \"item\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\")) or on() label_replace((0 * count(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"})), \"item\", \"No running VMs missing OS memory statistics\", \"\", \"\")), \"sre_series\", \"\", \"item\"))"
-                    }
-                  }
-                }
-              }
-            ],
-            "links": [
-              {
-                "name": "Open details · select Table view",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28%28label_join%28%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%20unless%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_memory_available_bytes%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%7D%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_memory_usable_bytes%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%7D%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%29%29%2C%20%5C%22item%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22k8s_cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22name%5C%22%29%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%2C%20%5C%22item%5C%22%2C%20%5C%22No%20running%20VMs%20missing%20OS%20memory%20statistics%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22item%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D",
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "targetBlank": true
-              }
-            ]
-          }
-        },
-        "guestDiskUsed": {
-          "spec": {
-            "display": {
-              "name": "Space used inside each VM filesystem",
-              "description": "QEMU Guest Agent reports each mount. This is not PVC allocation or physical space occupied by Longhorn replicas. Loop-mounted OS images are excluded.\n\nWhen to investigate / alert coverage: VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once. Bind mounts of the same guest device are counted once; use the disk name to locate its mount points in the VM."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"})), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"disk_name\"))"
+                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"cores\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"sockets\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"threads\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
                     }
                   }
                 }
@@ -1128,8 +347,8 @@
         "guestDiskCapacity": {
           "spec": {
             "display": {
-              "name": "Capacity of each VM filesystem",
-              "description": "Capacity reported by the guest agent. Reserved blocks and metadata can differ from other disk measurements. Loop-mounted OS images are excluded.\n\nWhen to investigate / alert coverage: VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once. Bind mounts of the same guest device are counted once; use the disk name to locate its mount points in the VM."
+              "description": "Total capacity of each measured filesystem inside the VM. Compare the same VM and mount point with space used.\n\nMeasurement details:\nCapacity reported by the guest agent. Reserved blocks and metadata can differ from other disk measurements. Loop-mounted OS images are excluded.",
+              "name": "Size of VM filesystems"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -1149,7 +368,7 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "bytes(IEC)"
                   },
                   "show": true
@@ -1172,165 +391,24 @@
             ]
           }
         },
-        "guestDiskRatio": {
-          "spec": {
-            "display": {
-              "name": "VM filesystem space used · %",
-              "description": "Used space divided by capacity reported by the guest agent. This can differ from df Use%, which excludes reserved blocks. Loop-mounted OS images are excluded.\n\nWhen to investigate / alert coverage: VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once. Bind mounts of the same guest device are counted once; use the disk name to locate its mount points in the VM."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percentunit"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"})) / (max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (kubevirt_vmi_filesystem_capacity_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"disk_name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "guestCpuGauge": {
-          "spec": {
-            "display": {
-              "name": "VM CPU used · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU cores used divided by configured guest vCPUs, not the smaller scheduling request. The VM and namespace filters apply.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
-            },
-            "plugin": {
-              "kind": "GaugeChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
-                },
-                "max": 1,
-                "thresholds": {
-                  "mode": "absolute",
-                  "defaultColor": "#2E8540",
-                  "steps": [
-                    {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
-                      "color": "#D32F2F",
-                      "value": 0.9
-                    }
-                  ]
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"cores\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"sockets\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"threads\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "guestMemoryGauge": {
-          "spec": {
-            "display": {
-              "name": "VM memory used · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Guest OS total minus available memory, divided by guest OS total. Requires balloon statistics. The VM and namespace filters apply.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "GaugeChart",
-              "spec": {
-                "calculation": "last",
-                "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
-                },
-                "max": 1,
-                "thresholds": {
-                  "mode": "absolute",
-                  "defaultColor": "#2E8540",
-                  "steps": [
-                    {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
-                      "color": "#D32F2F",
-                      "value": 0.9
-                    }
-                  ]
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((clamp_min((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) - (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))), 0)) / (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m]))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
         "guestDiskGauge": {
           "spec": {
             "display": {
-              "name": "VM filesystem used · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by filesystem capacity from QEMU Guest Agent. Reserved blocks mean this may differ from df Use%. The VM and namespace filters apply. Loop-mounted OS images are excluded.\n\nWhen to investigate / alert coverage: VM filesystem above 90 percent used · 15m. A filesystem reported by the VM guest agent remains above 90% used throughout observed samples over 15 minutes. Excludes temporary, boot, runtime and loop filesystems. Missing guest data does not imply free space. Health attaches to the host; the title identifies the VM and disk. Bind mounts of the same guest device are counted once. Bind mounts of the same guest device are counted once; use the disk name to locate its mount points in the VM."
+              "description": "Highest measured filesystem use inside a VM. Review the named VM and mount point before it fills up. Requires QEMU Guest Agent statistics.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by filesystem capacity from QEMU Guest Agent. Reserved blocks mean this may differ from df Use%. The VM and namespace filters apply. Loop-mounted OS images are excluded.",
+              "name": "Fullest VM filesystem"
             },
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
                 "calculation": "last",
                 "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
                 },
                 "max": 1,
                 "thresholds": {
-                  "mode": "absolute",
                   "defaultColor": "#2E8540",
+                  "mode": "absolute",
                   "steps": [
                     {
                       "color": "#E69F00",
@@ -1360,24 +438,329 @@
             ]
           }
         },
-        "hostCpuGauge": {
+        "guestDiskRatio": {
           "spec": {
             "display": {
-              "name": "Harvester host CPU busy · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Five-minute CPU utilization on the virtualization host. It includes VMs and host services. VM and namespace filters do not apply.\n\nWhen to investigate / alert coverage: Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
+              "description": "Percentage used in each measured guest filesystem. A sustained rise toward full requires a guest filesystem review.\n\nMeasurement details:\nUsed space divided by capacity reported by the guest agent. This can differ from df Use%, which excludes reserved blocks. Loop-mounted OS images are excluded.",
+              "name": "VM filesystem space used"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "percentunit"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join(((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"})) / (max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (kubevirt_vmi_filesystem_capacity_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"disk_name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "guestDiskUsed": {
+          "spec": {
+            "display": {
+              "description": "Bytes used in each reported guest filesystem. The VM operating system sees this space; it differs from Longhorn physical disk usage.\n\nMeasurement details:\nQEMU Guest Agent reports each mount. This is not PVC allocation or physical space occupied by Longhorn replicas. Loop-mounted OS images are excluded.",
+              "name": "Space used inside VM filesystems"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"})), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"disk_name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "guestMemoryGauge": {
+          "spec": {
+            "display": {
+              "description": "Highest memory-use percentage inside a selected VM. This counts memory the guest cannot readily reclaim; check the VM trend before adding RAM.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Guest OS total minus available memory, divided by guest OS total. Requires balloon statistics. The VM and namespace filters apply.",
+              "name": "Busiest VM: memory used"
             },
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
                 "calculation": "last",
                 "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
                 },
                 "max": 1,
                 "thresholds": {
-                  "mode": "absolute",
                   "defaultColor": "#2E8540",
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
+                    },
+                    {
+                      "color": "#D32F2F",
+                      "value": 0.9
+                    }
+                  ]
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((clamp_min((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) - (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))), 0)) / (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m]))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "guestMissing": {
+          "spec": {
+            "display": {
+              "description": "Names of running VMs for which guest OS memory statistics were not received. Check guest support and the balloon driver before interpreting other memory charts.\n\nMeasurement details:\nRunning VMs missing total or available memory measurements. Check balloon support. QEMU Guest Agent provides additional filesystem information.",
+              "name": "VMs missing guest memory statistics"
+            },
+            "links": [
+              {
+                "name": "Open details · select Table view",
+                "targetBlank": true,
+                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
+                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28%28label_join%28%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%20unless%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_memory_available_bytes%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%7D%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_memory_usable_bytes%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%7D%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%29%29%2C%20%5C%22item%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22k8s_cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22name%5C%22%29%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%2C%20%5C%22item%5C%22%2C%20%5C%22No%20running%20VMs%20missing%20OS%20memory%20statistics%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22item%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+              }
+            ],
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 0,
+                    "unit": "decimal"
+                  },
+                  "show": false
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join(((label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"})) unless on (k8s_cluster_name,namespace,name) ((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"})))), \"item\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\")) or on() label_replace((0 * count(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"})), \"item\", \"No running VMs missing OS memory statistics\", \"\", \"\")), \"sre_series\", \"\", \"item\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "guestUsed": {
+          "spec": {
+            "display": {
+              "description": "Memory currently needed inside each selected VM. Compare with available memory; this differs from the VM process memory on the host.\n\nMeasurement details:\nGuest OS total minus available memory, from KubeVirt balloon statistics. This differs from QEMU memory resident on the host.",
+              "name": "Memory used inside each VM"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((clamp_min((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))) - (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), 0)), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "guide": {
+          "spec": {
+            "display": {
+              "description": "Are my virtual machines and their hosts running out of resources?",
+              "name": "What this dashboard tells you"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**Are my virtual machines and their hosts running out of resources?** Start with the summary, then select a VM to see its memory and disks. VM means the operating system inside the virtual machine; host means the physical Harvester server. Host panels always cover the selected cluster. **No data is not the same as zero.** Use the description icon for measurement details."
+              }
+            },
+            "queries": []
+          }
+        },
+        "hostAvailable": {
+          "spec": {
+            "display": {
+              "description": "RAM still available on Harvester servers, including reclaimable cache. Includes every workload on the host, regardless of the VM filter.\n\nMeasurement details:\nMemory the host considers available for use. VM and namespace filters do not apply.",
+              "name": "Memory available on each host"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((max by (cluster_name,node) (node_memory_MemAvailable_bytes{cluster_name=~\"${vm_cluster}\",job=\"sre-node\"}) and on (cluster_name) (max by (cluster_name) (label_replace(up{service_name=\"kubevirt-metrics\",k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\") or label_replace(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}, \"cluster_name\", \"$1\", \"k8s_cluster_name\", \"(.*)\")))), \"sre_series\", \" · \", \"cluster_name\", \"node\"))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "hostCpuGauge": {
+          "spec": {
+            "display": {
+              "description": "Highest CPU use on a Harvester server. Includes VMs and platform processes, even when a single VM is selected.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Five-minute CPU utilization on the virtualization host. It includes VMs and host services. VM and namespace filters do not apply.",
+              "name": "Busiest host: CPU used"
+            },
+            "plugin": {
+              "kind": "GaugeChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
+                },
+                "max": 1,
+                "thresholds": {
+                  "defaultColor": "#2E8540",
+                  "mode": "absolute",
                   "steps": [
                     {
                       "color": "#E69F00",
@@ -1410,21 +793,21 @@
         "hostMemoryGauge": {
           "spec": {
             "display": {
-              "name": "Harvester host memory used · highest · %",
-              "description": "Shows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Host OS total minus available memory, divided by host OS total. It includes VMs and host services. VM and namespace filters do not apply.\n\nWhen to investigate / alert coverage: host OS below 10 percent available RAM · 15m. Checks host OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
+              "description": "Highest memory use on a Harvester server. Review available memory before starting another VM; host use includes platform overhead.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Host OS total minus available memory, divided by host OS total. It includes VMs and host services. VM and namespace filters do not apply.",
+              "name": "Busiest host: memory used"
             },
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
                 "calculation": "last",
                 "format": {
-                  "unit": "percentunit",
-                  "decimalPlaces": 1
+                  "decimalPlaces": 1,
+                  "unit": "percentunit"
                 },
                 "max": 1,
                 "thresholds": {
-                  "mode": "absolute",
                   "defaultColor": "#2E8540",
+                  "mode": "absolute",
                   "steps": [
                     {
                       "color": "#E69F00",
@@ -1454,11 +837,11 @@
             ]
           }
         },
-        "cpuReady": {
+        "resident": {
           "spec": {
             "display": {
-              "name": "VM CPU waiting for a turn · %",
-              "description": "Average share of time each vCPU waits in the host scheduler queue. 10% means an average vCPU waited 0.1 seconds per second. This is KVM scheduling delay, not a VMware CPU Ready counter. A sustained rise with slower responses suggests CPU contention.\n\nWhen to investigate / alert coverage: VM CPU scheduler wait above 10 percent · 10m. Each virtual CPU spends more than 10% of wall time, on average, waiting to run on a host CPU throughout observed samples in 10 minutes. KubeVirt scheduler delay is not automatically the VMware CPU Ready counter. Health is attached to the Harvester host; the title identifies the VM."
+              "description": "Physical host memory used by the VM process, including virtualization overhead. Do not add this to guest memory: they describe different layers of the same VM.\n\nMeasurement details:\nResident memory of the process running the VM. It does not directly measure application memory inside the guest.",
+              "name": "VM process memory on the host"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -1478,8 +861,8 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percentunit"
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
                   },
                   "show": true
                 }
@@ -1493,336 +876,7 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((avg by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "cpuWait": {
-          "spec": {
-            "display": {
-              "name": "VM CPU waiting for I/O · %",
-              "description": "Time a vCPU waits for I/O, averaged across vCPUs. This is different from waiting to be scheduled on a physical CPU.\n\nWhen to investigate / alert coverage: VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "percentunit"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((avg by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_vcpu_wait_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "majorFaults": {
-          "spec": {
-            "display": {
-              "name": "VM pages fetched from disk · pages/s",
-              "description": "Major page faults require disk I/O. File-backed pages also count; this is not by itself proof that the VM ran out of memory. Compare with available memory, swap traffic, and application response time.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_memory_pgmajfault_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "swapin": {
-          "spec": {
-            "display": {
-              "name": "VM swap read from disk · bytes/s",
-              "description": "Five-minute change in cumulative guest swap bytes. KubeVirt exposes this cumulative value as a gauge; negative slopes after a reset are clamped to zero. Brief activity is smoothed. Compare sustained swapping with available RAM.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes/sec"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (clamp_min(deriv(kubevirt_vmi_memory_swap_in_traffic_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]),0))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "swapout": {
-          "spec": {
-            "display": {
-              "name": "VM swap written to disk · bytes/s",
-              "description": "Five-minute change in cumulative guest swap bytes. KubeVirt exposes this cumulative value as a gauge; negative slopes after a reset are clamped to zero. Brief activity is smoothed. Compare sustained swapping with available RAM.\n\nWhen to investigate / alert coverage: VM guest OS below 10 percent available RAM · 15m. Checks VM guest OS below 10 percent available RAM · 15m. Values are evaluated every 60 seconds. Windows apply to observed samples; inspect collection health before interpreting a missing result. Thresholds are starting points to review against the workload baseline."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes/sec"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (clamp_min(deriv(kubevirt_vmi_memory_swap_out_traffic_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]),0))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "diskread": {
-          "spec": {
-            "display": {
-              "name": "Virtual disk read response time · ms",
-              "description": "Average time per completed read. Includes time observed at the virtual disk layer; it is not a physical disk-only measurement. No data means no matching I/O in the window or missing collection. Cloud-init disks are excluded.\n\nWhen to investigate / alert coverage: VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_read_times_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",drive!~\".*(cloudinit|cdrom).*\"}[5m])) / (max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_read_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",drive!~\".*(cloudinit|cdrom).*\"}[5m])) > 0)) * 1000), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"drive\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "diskwrite": {
-          "spec": {
-            "display": {
-              "name": "Virtual disk write response time · ms",
-              "description": "Average time per completed write. Includes time observed at the virtual disk layer; it is not a physical disk-only measurement. No data means no matching I/O in the window or missing collection. Cloud-init disks are excluded.\n\nWhen to investigate / alert coverage: VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_write_times_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",drive!~\".*(cloudinit|cdrom).*\"}[5m])) / (max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_write_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",drive!~\".*(cloudinit|cdrom).*\"}[5m])) > 0)) * 1000), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"drive\"))"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "diskIOPS": {
-          "spec": {
-            "display": {
-              "name": "Virtual disk operations · IOPS",
-              "description": "Completed reads plus writes each second. Compare a rising rate with response time. This is not queue depth.\n\nWhen to investigate / alert coverage: VM disk response above 20ms · 10m. Combined virtual disk read/write response exceeds 20 ms over observed 10-minute samples with at least 1 operation/s. Idle and cloud-init disks are excluded. This initial threshold needs a workload baseline. Health is attached to the host; the title identifies VM and drive."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "none"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name,drive) (rate(kubevirt_vmi_storage_iops_read_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",drive!~\".*(cloudinit|cdrom).*\"}[5m]) + rate(kubevirt_vmi_storage_iops_write_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",drive!~\".*(cloudinit|cdrom).*\"}[5m]))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\", \"drive\"))"
+                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_resident_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
                     }
                   }
                 }
@@ -1833,16 +887,16 @@
         "runningCount": {
           "spec": {
             "display": {
-              "name": "Observed VM instances",
-              "description": "Count of VM instances currently exposing kubevirt_vmi_info; not a count of all defined or powered-off VMs. Compare with the Harvester inventory and collection-health panel.\n\nWhen to investigate / alert coverage: Investigate deviations with the associated request, resource or collection signals; this context panel does not independently page."
+              "description": "Number of running VM instances currently reported by KubeVirt. Powered-off VM definitions are not included; compare this with the running list in Harvester.\n\nMeasurement details:\nCount of unique cluster, namespace and VM names with kubevirt_vmi_info phase=\"running\". Missing input stays empty; it is not a count of stopped VM definitions.",
+              "name": "Running VMs"
             },
             "plugin": {
               "kind": "StatChart",
               "spec": {
                 "calculation": "last",
                 "format": {
-                  "decimalPlaces": 2,
-                  "unit": "decimal"
+                  "decimalPlaces": 0,
+                  "unit": "none"
                 },
                 "sparkline": false,
                 "thresholds": {
@@ -1859,8 +913,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "count(max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}))",
-                      "alias": "VM instances"
+                      "alias": "VM instances",
+                      "query": "count(max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}))"
                     }
                   }
                 }
@@ -1871,8 +925,8 @@
         "scrapeHealth": {
           "spec": {
             "display": {
-              "name": "Virtualization collection · 1 healthy / 0 failed",
-              "description": "Per-target KubeVirt and Longhorn scrape status. TLS errors, API discovery permissions, NetworkPolicies or stale CA bundles can break collection even when the collector Pod is Running. Cluster scope; VM filters do not apply.\n\nWhen to investigate / alert coverage: Investigate deviations with the associated request, resource or collection signals; this context panel does not independently page."
+              "description": "1 means the endpoint answered successfully; 0 means collection failed. Missing lines can mean discovery failed. Check this before trusting an empty chart.\n\nMeasurement details:\nPer-target KubeVirt and Longhorn scrape status. TLS errors, API discovery permissions, NetworkPolicies or stale CA bundles can break collection even when the collector Pod is Running. Cluster scope; VM filters do not apply.",
+              "name": "Can we collect VM and storage metrics?"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -1892,7 +946,7 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 0,
                     "unit": "decimal"
                   },
                   "show": true
@@ -1906,8 +960,101 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "min by (k8s_cluster_name,job,instance) (up{k8s_cluster_name=~\"${vm_cluster}\",job=~\"(.*/)?(kubevirt-metrics|longhorn)\"})",
-                      "alias": "${k8s_cluster_name} · ${job} · ${instance}"
+                      "alias": "${k8s_cluster_name} · ${job} · ${instance}",
+                      "query": "min by (k8s_cluster_name,job,instance) (up{k8s_cluster_name=~\"${vm_cluster}\",job=~\"(.*/)?(kubevirt-metrics|longhorn)\"})"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "section_1": {
+          "spec": {
+            "display": {
+              "description": "Memory and CPU inside the VMs",
+              "name": "Memory and CPU inside the VMs"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Compare used and available memory for the same VM. Assigned memory is configuration; VM process memory and host memory describe different layers."
+              }
+            },
+            "queries": []
+          }
+        },
+        "section_2": {
+          "spec": {
+            "display": {
+              "description": "Filesystems inside the VMs",
+              "name": "Filesystems inside the VMs"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Look at the VM and mount-point labels. Used bytes, total size and percentage describe the same guest filesystem; QEMU Guest Agent must provide these measurements."
+              }
+            },
+            "queries": []
+          }
+        },
+        "section_3": {
+          "spec": {
+            "display": {
+              "description": "Check the measurements",
+              "name": "Check the measurements"
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "Check collection and sample age before interpreting missing data. A running collector Pod alone does not prove that measurements are arriving."
+              }
+            },
+            "queries": []
+          }
+        },
+        "vcpuUse": {
+          "spec": {
+            "display": {
+              "description": "Average CPU demand in virtual CPU cores. A value of 1 means one core fully occupied over the measurement window, not one configured CPU.\n\nMeasurement details:\nFive-minute average. A value of 1 means one core used continuously; this value is not in millicores.",
+              "name": "CPU used by each VM (CPU cores)"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "decimal"
+                  },
+                  "label": "CPU cores",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${sre_series}",
+                      "query": "max by (sre_series) (label_join((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))), \"sre_series\", \" · \", \"k8s_cluster_name\", \"namespace\", \"name\"))"
                     }
                   }
                 }
@@ -1918,8 +1065,8 @@
         "vmSampleAge": {
           "spec": {
             "display": {
-              "name": "VM metric age · seconds",
-              "description": "Age of the latest VM identity sample. Compare with scrape interval and expected VMs. No data must not be interpreted as healthy or powered off without checking Harvester.\n\nWhen to investigate / alert coverage: Investigate deviations with the associated request, resource or collection signals; this context panel does not independently page."
+              "description": "Seconds since the most recent VM identity sample. Compare with the 30-second collection interval; an old sample is a visibility problem.\n\nMeasurement details:\nAge of the latest VM identity sample. Compare with scrape interval and expected VMs. No data must not be interpreted as healthy or powered off without checking Harvester.",
+              "name": "How old are the VM measurements? (seconds)"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -1939,9 +1086,10 @@
                 },
                 "yAxis": {
                   "format": {
-                    "decimalPlaces": 2,
+                    "decimalPlaces": 1,
                     "unit": "seconds"
                   },
+                  "label": "Seconds",
                   "show": true
                 }
               }
@@ -1953,114 +1101,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "query": "time() - max by (k8s_cluster_name,namespace,name) (timestamp(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}))",
-                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "storageHealth": {
-          "spec": {
-            "display": {
-              "name": "Longhorn volume robustness",
-              "description": "Cluster storage scope. Each state is a labeled series: 1 means the volume is in that state; 0 means it is not. Investigate replica placement, disk free space and rebuild activity. A single host cannot provide host-failure redundancy, even with healthy volumes.\n\nWhen to investigate / alert coverage: Investigate deviations with the associated request, resource or collection signals; this context panel does not independently page."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "decimal"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "max by (k8s_cluster_name,volume,state) (longhorn_volume_robustness{k8s_cluster_name=~\"${vm_cluster}\"})",
-                      "alias": "${k8s_cluster_name} · ${volume} · ${state}"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        },
-        "storageUsage": {
-          "spec": {
-            "display": {
-              "name": "Longhorn physical storage usage",
-              "description": "Node storage usage and capacity in bytes. Cluster scope; VM/namespace filters do not apply. This differs from guest filesystem usage and logical volume capacity.\n\nWhen to investigate / alert coverage: Investigate deviations with the associated request, resource or collection signals; this context panel does not independently page."
-            },
-            "plugin": {
-              "kind": "TimeSeriesChart",
-              "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
-                },
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
-                },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 2,
-                    "unit": "bytes(IEC)"
-                  },
-                  "show": true
-                }
-              }
-            },
-            "queries": [
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "max by (k8s_cluster_name,node) (longhorn_node_storage_usage_bytes{k8s_cluster_name=~\"${vm_cluster}\"})",
-                      "alias": "${node} · used"
-                    }
-                  }
-                }
-              },
-              {
-                "kind": "TimeSeriesQuery",
-                "spec": {
-                  "plugin": {
-                    "kind": "PrometheusTimeSeriesQuery",
-                    "spec": {
-                      "query": "max by (k8s_cluster_name,node) (longhorn_node_storage_capacity_bytes{k8s_cluster_name=~\"${vm_cluster}\"})",
-                      "alias": "${node} · capacity"
+                      "alias": "${k8s_cluster_name} · ${namespace} · ${name}",
+                      "query": "time() - max by (k8s_cluster_name,namespace,name) (timestamp(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}))"
                     }
                   }
                 }
@@ -2074,15 +1116,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "vm_cluster",
-              "display": {
-                "name": "Cluster",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -2090,6 +1126,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "Cluster"
+              },
+              "name": "vm_cluster",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -2098,7 +1139,8 @@
                     "kubevirt_vmi_info"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
@@ -2107,15 +1149,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "vm_namespace",
-              "display": {
-                "name": "Namespace",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -2123,6 +1159,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "Namespace"
+              },
+              "name": "vm_namespace",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -2131,7 +1172,8 @@
                     "kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\"}"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
@@ -2140,15 +1182,9 @@
           "perseslistvariable": {
             "kind": "ListVariable",
             "spec": {
-              "name": "vm_name",
-              "display": {
-                "name": "VM",
-                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
-              },
               "allowAllValue": true,
               "allowMultiple": true,
               "customAllValue": ".*",
-              "sort": "alphabetical-asc",
               "defaultValue": {
                 "perseslistvariabledefaultsinglevalue": {
                   "kind": "singleValue",
@@ -2156,6 +1192,11 @@
                 },
                 "perseslistvariabledefaultslicevalues": null
               },
+              "display": {
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything.",
+                "name": "VM"
+              },
+              "name": "vm_name",
               "plugin": {
                 "kind": "MetricLabelValues",
                 "spec": {
@@ -2164,12 +1205,16 @@
                     "kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\"}"
                   ]
                 }
-              }
+              },
+              "sort": "alphabetical-asc"
             }
           },
           "persestextvariable": null
         }
       ]
     }
-  }
+  },
+  "description": "Are my virtual machines and their hosts running out of resources?",
+  "name": "Virtualization · VM & Host Overview",
+  "scope": "publicDashboard"
 }

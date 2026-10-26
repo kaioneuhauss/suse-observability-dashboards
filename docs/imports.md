@@ -1,6 +1,6 @@
 # Importações VMware com VM Import Controller
 
-Módulo opcional e independente. Publica o dashboard **VMware Imports (VMIC)** e instala um pequeno inventário somente de leitura no Harvester. Não depende do chart Virtualization, não acessa o vCenter e não inicia, desliga, repete ou modifica importações.
+Módulo opcional e independente. Publica o dashboard **Virtualization · VMware Import Progress** e instala um pequeno inventário somente de leitura no Harvester. Não depende do chart Virtualization, não acessa o vCenter e não inicia, desliga, repete ou modifica importações.
 
 ## O que você consegue acompanhar
 
@@ -31,6 +31,8 @@ kubectl get virtualmachineimports.migration.harvesterhci.io --kubeconfig "$KCFG"
 ```
 
 Não instale o módulo em um cluster sem essa CRD. Zero objetos com inventário saudável é válido. CRD ausente ou acesso negado torna o inventário indisponível.
+
+Se ainda não existe: no Harvester, abra **Advanced → Add-ons**, selecione `vm-import-controller` e use **Enable**. Aguarde `DeploySuccessful` e repita a verificação da CRD. A importação em si precisa ser preparada e testada separadamente, conforme [VM Import](https://docs.harvesterhci.io/v1.8/advanced/addons/vmimport/). Habilitar o add-on não cria uma migração automaticamente. [Operação de add-ons 1.8](https://docs.harvesterhci.io/v1.8/advanced/addons).
 
 ## Instalar
 
