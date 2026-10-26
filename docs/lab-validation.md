@@ -25,7 +25,7 @@ Essas versões são evidência deste laboratório, não uma matriz de suporte. O
 - Correção real da coleta KubeVirt: o coletor anterior falhava por CA desatualizada; o novo inicializou com a CA vigente e passou a coletar dez VMs.
 - Remoção da antiga cópia de CA após backup e confirmação de ausência de referências nos 19 Pods/workloads do namespace.
 
-O backend e seu histórico de métricas não foram apagados. As duas aplicações de demonstração existentes foram preservadas, com sua remoção pendente de decisão específica.
+O backend e seu histórico de métricas não foram apagados. As aplicações de demonstração `brasil-dados` e `request-lab` foram preservadas por decisão explícita do responsável; a limpeza abrange somente os componentes dos dashboards.
 
 ## Validação concluída
 
