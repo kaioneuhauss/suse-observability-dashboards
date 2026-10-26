@@ -65,13 +65,13 @@ helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
 ## 5. Check the result
 
 ```sh
-kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-imports \
+kubectl get deployment/obs-imports-imports \
   --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
 kubectl logs deployment/obs-imports-imports --container import-inventory --since=5m \
   --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
 ```
 
-**Expected result:** collector Pods are ready. The publishing Jobs may already be gone; that is normal after success.
+**Expected result:** collector workloads are ready. Deployments should have all replicas ready, and DaemonSets should be ready on every expected node. Successful publishing Jobs are removed automatically.
 
 Open **Virtualization · VMware Import Progress**. Compare import names, phases and disk counts with the objects returned by kubectl. Zero imports is valid when the inventory is healthy. Missing CRDs, denied access and stale collection are not a healthy zero.
 

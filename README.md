@@ -81,11 +81,11 @@ Keep this values file. Use the same command to apply changes later. If you alrea
 ## 4. Open your dashboards
 
 ```sh
-kubectl get pods,jobs --kubeconfig /path/to/harvester.yaml --context harvester \
-  --namespace suse-observability --selector app.kubernetes.io/instance=obs-virtualization
+kubectl get deployment/obs-virtualization deployment/obs-virtualization-pods daemonset/obs-virtualization-node --kubeconfig /path/to/harvester.yaml --context harvester \
+  --namespace suse-observability
 ```
 
-**Expected result:** collector Pods are ready. Successful publishing Jobs disappear automatically. Then open **Dashboards → Virtualization · VM & Host Overview** in SUSE Observability and select your cluster. Compare **Running VMs** with Harvester. Allow a few minutes for the first samples.
+**Expected result:** collector workloads are ready. Successful publishing Jobs disappear automatically. Then open **Dashboards → Virtualization · VM & Host Overview** in SUSE Observability and select your cluster. Compare **Running VMs** with Harvester. Allow a few minutes for the first samples.
 
 If a panel shows **No data**, check the [validation guide](docs/validation.md). It does not automatically mean zero or healthy.
 

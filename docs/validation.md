@@ -4,15 +4,15 @@ Start with the Kubernetes resources, then check what the dashboards actually sho
 
 ## 1. Check Pods and publishing Jobs
 
-Example for Traefik; replace the release, kubeconfig, context and namespace for your module:
+Example for a Traefik collector release; replace the kubeconfig, context and namespace. For other modules, use the workload names shown in their guides. For Applications or `mode: content`, only run `helm status`; these releases do not have collector workloads.
 
 ```sh
 helm status obs-traefik --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
-kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-traefik \
+kubectl get deployment/obs-traefik-traefik \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-**Expected result:** the release is `deployed` and collector Pods are ready. Successful publishing Jobs are removed immediately. Applications and `mode: content` have no persistent Pods; `No resources found` is expected after successful publication. Failed Jobs stay available for inspection for up to 24 hours by default.
+**Expected result:** the release is `deployed` and collector workloads are ready. Successful publishing Jobs are removed immediately. Applications and `mode: content` have no persistent Pods after successful publication. Failed Jobs stay available for inspection for up to 24 hours by default.
 
 If Helm reports a publishing error, read the failed Job (Imports has no monitor Job):
 

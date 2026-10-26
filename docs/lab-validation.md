@@ -2,6 +2,39 @@
 
 This records what was checked in this lab. It is not a support matrix or a production certification. **This community project is not recommended for production.**
 
+## 1.3.0 — Live removal and installation using Helm and kubectl
+
+This run followed the module guides and the multiple-cluster layout. Cluster changes used direct `helm` and `kubectl` commands: no local installer script, Python helper or local SUSE CLI was used to remove or install the modules. Existing platform prerequisites were checked and reused; the SUSE server, Agents, Traefik configuration and VM Import Controller were not reinstalled.
+
+### Procedure tested
+
+1. Saved values and manifests for the 11 existing releases and recorded protected resource UIDs/specifications.
+2. Added the public Helm repository and verified a downloaded 1.3.0 package against the validated artifact.
+3. Upgraded the five existing 1.2.0 central publishers to 1.3.0 with their saved values and existing publisher identities. This adds the new cleanup hooks; the dashboard and monitor definitions are byte-for-byte unchanged.
+4. Ran `helm uninstall` for six source collector releases and five central publishers. All commands succeeded. The nine project dashboards disappeared; the native SUSE dashboard retained its original ID. No project release remained in any cluster.
+5. Reinstalled the six source releases and five central publishers using 1.3.0 packages from the public Helm repository and small values files. Source releases use `mode: telemetry`; central releases use `mode: content`. Existing Secret names, etcd collection and the approved Longhorn policy are documented optional settings.
+6. Checked readiness, fresh samples, source comparisons and the SUSE dashboard interface.
+
+### Results
+
+- **11 releases deployed at revision 1**, with **24 ready collector Pods**. Successful publishing and cleanup Jobs disappeared automatically.
+- **828 protected resources kept their UIDs and specifications** through removal and reinstallation: 86 in Observability, 29 in Rancher and 713 in Harvester. This run includes persistent volumes as well as workloads, PVCs, VMs, VMIs and Longhorn volumes, so its count is broader than the older 628-object check.
+- Both demonstration applications, the official platform releases and metric history were preserved. Coriolis remained stopped. All 62 regular chart-owned resources were newly created during the reinstall; 13 project workload objects received new UIDs.
+- All nine native Longhorn NetworkPolicies retained their UIDs and rules. The project policy was recreated with the same rule: TCP/9500 from the specified collector Pod labels **and** namespace together.
+- **362 query checks passed** through the Kubernetes service proxy to VictoriaMetrics: every one of the 181 panel queries with Everything selected, plus the same queries with a nonexistent cluster. No execution errors or non-finite numbers. All 181 negative cases returned no series. The only two empty positive cases were active-import age/status-age panels, because all eight retained imports were complete.
+- Source comparisons matched **10 running VMIs, 50 assigned vCPUs, 100 GiB of configured guest RAM, 184 Longhorn volumes and eight completed imports**. Longhorn reported 41 healthy, one degraded and 142 unknown volumes, matching the source. The degraded condition already existed before this run; storage was not changed to hide it.
+- Five KubeVirt targets and one Longhorn target reported `up=1`; their samples were less than 30 seconds old at the freshness check. All 23 expected node, etcd and Traefik targets reported `up=1`. The import inventory reported healthy and recent data.
+- Nine dashboards and 34 monitors were republished by the chart Jobs, which verify their persisted definitions. Integer counts and populated summary charts were checked in the SUSE UI.
+- **61 local tests passed**. CI passed with Helm 3.19.0 and Helm 4.1.1. Package integrity, generation, deletion scope, identity reuse, opt-out/plan behavior and module isolation were checked. All 11 real configurations also passed Helm server dry-runs before any mutation.
+
+### Corrections found while following the guide
+
+- Helm 4 does not accept `helm list --all`; the guide now uses the compatible listing command.
+- Not every collector has the release-instance label. Module checks now name the actual Deployments and DaemonSets, so the command checks the complete expected collector set instead of returning a misleading empty list.
+- Successful Jobs are removed automatically in 1.3.0, so the guides check Helm status and dashboard results rather than requiring completed Jobs to remain visible.
+
+This was a lifecycle and collection validation. The comprehensive native API/filter audit recorded under 1.2.0 was not rerun in full. No new migration, backup restore, failover, alert delivery or production-readiness test was performed. An empty result still needs an applicability check; it is not a healthy zero.
+
 ## 1.2.1 — Direct Helm documentation and distribution
 
 This revision replaces the local installer helper with direct Helm and kubectl instructions and publishes versioned chart packages. It does not change dashboard queries, collector settings or publisher behavior. The checks for this revision are recorded separately below; the live metric evidence from 1.2.0 remains historical evidence, not a new collection run.

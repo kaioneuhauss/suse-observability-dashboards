@@ -83,14 +83,14 @@ helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virt
 ## 5. Check the result
 
 ```sh
-kubectl get pods,jobs --kubeconfig /path/to/harvester.yaml --context harvester \
-  --namespace suse-observability --selector app.kubernetes.io/instance=obs-virtualization
+kubectl get deployment/obs-virtualization deployment/obs-virtualization-pods daemonset/obs-virtualization-node --kubeconfig /path/to/harvester.yaml --context harvester \
+  --namespace suse-observability
 kubectl logs deployment/obs-virtualization --container collector --since=5m \
   --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
 kubectl get virtualmachineinstances --all-namespaces --kubeconfig /path/to/harvester.yaml --context harvester
 ```
 
-**Expected result:** collector Pods are ready. The publishing Jobs may already be gone; that is normal after success.
+**Expected result:** collector workloads are ready. Deployments should have all replicas ready, and DaemonSets should be ready on every expected node. Successful publishing Jobs are removed automatically.
 
 Open **Virtualization · VM & Host Overview**. Select the cluster and compare **Running VMs** with the running instances returned by kubectl. Check that the collection status panels show `1` for the expected targets. Guest memory depends on balloon statistics; guest filesystem data needs QEMU Guest Agent. A stopped VM has no current resource usage.
 

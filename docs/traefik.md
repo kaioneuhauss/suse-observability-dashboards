@@ -102,11 +102,11 @@ helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
 ## 5. Check the result
 
 ```sh
-kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-traefik \
+kubectl get deployment/obs-traefik-traefik \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-**Expected result:** collector Pods are ready. The publishing Jobs may already be gone; that is normal after success.
+**Expected result:** collector workloads are ready. Deployments should have all replicas ready, and DaemonSets should be ready on every expected node. Successful publishing Jobs are removed automatically.
 
 Open **Traefik · Incoming Traffic & Errors** and choose your cluster. Visit a known application and check that its traffic increases. In Metrics Explorer, check `up{job="traefik",cluster_name="my-cluster"}`: every expected replica should report `1`.
 

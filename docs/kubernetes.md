@@ -49,12 +49,12 @@ helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernet
 ## 5. Check the result
 
 ```sh
-kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-kubernetes \
+kubectl get deployment/obs-kubernetes-pods daemonset/obs-kubernetes-node \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
 ```
 
-**Expected result:** collector Pods are ready. The publishing Jobs may already be gone; that is normal after success.
+**Expected result:** collector workloads are ready. Deployments should have all replicas ready, and DaemonSets should be ready on every expected node. Successful publishing Jobs are removed automatically.
 
 Open **Kubernetes · Cluster Health** and **Kubernetes · Application Resource Usage**. Check node counts, inventory freshness and requests/limits for a known application. In Metrics Explorer, `up{job="sre-node",cluster_name="my-cluster"}` should be `1` for the expected nodes.
 
