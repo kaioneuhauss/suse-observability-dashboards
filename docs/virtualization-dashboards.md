@@ -1,52 +1,55 @@
-# Como usar os dashboards de Virtualization
+# Understand the Virtualization dashboards
 
-O chart Virtualization publica quatro dashboards. O módulo opcional Imports acrescenta um quinto, específico para importação VMware. Todos usam o formato nativo do SUSE Observability.
+The Virtualization chart provides four views. Start with the overview, then open the view that matches the problem. The optional Imports module adds a fifth view for VMware imports.
 
-## Visão geral de VMs e hosts
+## VM & Host Overview
 
-Comece pela saúde e atualidade da coleta, quantidade de instâncias observadas e utilização de CPU, memória e filesystem. Compare o guest com o host antes de atribuir um problema à VM. Memória disponível no guest, RSS do QEMU, memória configurada e memória disponível no host respondem a perguntas diferentes.
+**Are my VMs or hosts running out of resources?**
 
-Use os filtros de cluster, namespace e VM para investigar uma instância. Painéis de host estão explicitamente identificados como escopo de cluster: selecionar uma VM não transforma uma medida do host em consumo daquela VM.
+Check collection health first, then running VM count, CPU, memory and filesystems. Compare the guest with its host before blaming the VM. Guest available memory, configured RAM, QEMU process memory and host available memory measure different things.
+
+Use cluster, namespace and VM filters to narrow the investigation. Host panels remain at cluster scope: selecting one VM does not turn host usage into that VM's usage.
 
 ## VM Performance
 
-Responde: **a VM está demandando recursos ou esperando por eles?**
+**Is the VM using resources, or waiting for them?**
 
-- CPU em uso junto com espera na fila do scheduler ajuda a separar demanda de contenção. A espera é uma média por vCPU, em segundos por segundo convertidos para porcentagem; não é contabilidade idêntica ao CPU Ready do VMware.
-- Espera por I/O e latência média por disco ajudam a localizar gargalos de armazenamento. Disco ocioso não tem latência média definida.
-- Memória utilizável, major page faults e atividade estimada de swap ajudam a investigar pressão no guest. O driver balloon e a versão do guest influenciam a disponibilidade dessas estatísticas.
+CPU usage together with scheduler waiting helps separate demand from contention. Waiting is an average per vCPU, converted to a percentage. It is not identical to VMware CPU Ready.
 
-Não habilita PSI nem muda configuração do kernel. As métricas disponíveis no KubeVirt instalado são suficientes para esse conjunto inicial.
+Disk latency and I/O waiting can help locate storage bottlenecks. An idle disk has no defined average latency. Guest available memory, major page faults and estimated swap activity help explain memory pressure; available statistics depend on guest support and the balloon driver.
+
+The chart does not enable PSI or change kernel settings.
 
 ## Capacity Planning
 
-Responde: **quanto está alocado e qual demanda foi observada?**
+**How much is assigned, and how much demand have we seen?**
 
-- vCPUs configuradas e RAM configurada consideram apenas VMs com VMI em execução. CPU configurada = cores × sockets × threads.
-- A razão vCPU/CPU do host usa CPUs lógicas. Não é porcentagem de utilização nem recomendação universal de overcommit.
-- MemAvailable do host considera todos os processos e cache recuperável.
-- p95 e pico de demanda usam o histórico disponível das últimas 24 horas. O pico de CPU é o maior valor da média de cinco minutos; não captura todo pico curto.
-- A contagem de amostras ajuda a perceber histórico incompleto. Uma instalação recente não fornece 24 horas completas só porque o gráfico está configurado assim.
-- O orçamento N-1 é apenas um limite superior: RAM total dos hosts menos RAM do maior host menos RAM configurada dos guests em execução. Não desconta overhead, reservas, restrições de placement ou armazenamento; resultado positivo não certifica HA. Em um host único não existe capacidade sobrevivente.
+Configured vCPUs and guest RAM count running VM instances. vCPU topology is cores × sockets × threads. The vCPU-to-host-CPU ratio uses logical host CPUs; it is not utilization or a universal overcommit recommendation.
 
-Faça recomendações de tamanho somente após observar ciclos representativos e requisitos da aplicação. O projeto não redimensiona VMs automaticamente.
+Demand percentiles and peaks use the available history from the last 24 hours. CPU peak is the maximum five-minute average, so very short spikes can be missed. Sample counts help identify incomplete history.
+
+The N-1 memory estimate subtracts the largest host and configured guest RAM from total host RAM. It does not account for overhead, reservations, placement constraints or storage. A positive result does not certify HA. A single-host cluster has no surviving host capacity.
+
+Observe representative workload cycles before changing VM sizes. This project does not resize VMs.
 
 ## Storage & Backups
 
-Responde: **o armazenamento está saudável e existem evidências de proteção?**
+**Which volumes need attention, and what backup records exist?**
 
-- Os gráficos resumem quantos volumes estão em cada estado de saúde e conexão, somando os estados ativos após deduplicação. `unknown` em volume detached não equivale a volume saudável nem a falha confirmada.
-- Latência Longhorn chega em nanossegundos e é exibida em milissegundos; IOPS já chega como taxa. A latência do guest pode incluir esperas adicionais e não precisa coincidir com a do Longhorn.
-- Capacidade provisionada, uso físico, capacidade lógica agendada de réplicas e tamanho de snapshots são mostrados separadamente. Não devem ser somados como se fossem a mesma medida.
-- Último backup, ausência de backup e idade superior a sete dias são sinais de revisão. Sete dias é uma janela explícita do painel, não um RPO acordado.
-- O gráfico de backups traduz os códigos Longhorn 1.11.2 em nomes: New, Pending, In progress, Completed, Error e Unknown. Timestamps e estados não comprovam acesso ao destino, consistência da aplicação ou restauração testada.
+Health and attachment charts count active volume states after deduplication. `unknown` on a detached volume is neither confirmed health nor a confirmed failure.
 
-O filtro é por volume Longhorn e inclui PVCs que não são discos de VMs. O dashboard não calcula automaticamente uma cobertura de backup por aplicação e não apresenta snapshots como espaço seguramente recuperável.
+Longhorn latency is converted from nanoseconds to milliseconds. Guest latency can include extra waiting, so the two values need not match. Provisioned size, physical usage, replica reservations and snapshot size are separate measurements and should not be added together.
 
-## VMware Import Progress (opcional)
+Last backup, missing backup records and backups older than seven days are review signals. Seven days is the panel's explicit window, not an agreed RPO. Backup codes are shown as New, Pending, In progress, Completed, Error and Unknown. A timestamp or Completed state does not prove application consistency or a successful restore.
 
-Use o [módulo Imports](imports.md) para fases, falhas, discos prontos e intervalos registrados pelo VM Import Controller. Ele acompanha importação de VMware para Harvester, separadamente das métricas de live migration entre hosts.
+The volume filter includes Longhorn volumes that are not VM disks. This is not automatic VM/application backup coverage, and snapshot size is not guaranteed reclaimable space.
 
-## Referência e adaptação
+## VMware Import Progress
 
-A organização dos temas contenção, capacidade e proteção foi inspirada em [harvester-extra-dashboards, de doccaz](https://github.com/doccaz/harvester-extra-dashboards), revisão `e40bb3d751f0b2f0afa765ab7cf0a3afc4767c8d` (Apache-2.0). Este projeto implementa seus próprios painéis nativos SUSE; não importa os JSONs Grafana nem exige instalar Prometheus/Grafana adicional. Fórmulas, unidades e limites foram confrontados com as versões e fontes descritas nos [contratos de métricas](metric-contracts.md).
+The [Imports module](imports.md) shows controller phases, failures, disk readiness and recorded intervals for VMware imports. It is separate from live migration between Harvester hosts.
+
+## Inspiration and definitions
+
+The contention, capacity and protection topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards), revision `e40bb3d751f0b2f0afa765ab7cf0a3afc4767c8d` (Apache-2.0). This project implements native SUSE dashboards; it does not import those Grafana JSON files or require an extra Grafana/Prometheus installation.
+
+See [Metric definitions and limits](metric-contracts.md) for formulas and source versions. This remains a community lab project, not a production recommendation.

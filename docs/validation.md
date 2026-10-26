@@ -1,58 +1,59 @@
-# Aceite e diagnóstico
+# Check the installation
 
-## 1. Recursos e publicadores
+Start with the Kubernetes resources, then check what the dashboards actually show. A successful Helm installation does not prove every metric is correct for your environment.
 
-```bash
-helm status obs-traefik --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS"
-kubectl get pods,jobs --kubeconfig "$KCFG" --context "$CTX" -n "$NS"
-kubectl logs job/obs-traefik-dashboards --kubeconfig "$KCFG" --context "$CTX" -n "$NS"
-kubectl logs job/obs-traefik-monitors --kubeconfig "$KCFG" --context "$CTX" -n "$NS"
+## 1. Check Pods and publishing Jobs
+
+Example for Traefik; replace the release, kubeconfig, context and namespace for your module:
+
+```sh
+helm status obs-traefik --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
+kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-traefik \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl logs job/obs-traefik-dashboards \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl logs job/obs-traefik-monitors \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-Troque `obs-traefik` pela release instalada. Os publicadores são Jobs finitos; `Complete` é esperado. Os logs devem confirmar as definições persistidas. `Running`, `Ready`, Helm `deployed` e `Events: <none>` não provam que uma métrica chega corretamente.
+Collectors should be ready. Publishing Jobs finish with `Complete`; they do not stay running. Imports has no monitor Job. Collector-only releases have neither publishing Job. Successful Jobs expire after 24 hours by default, so later absence is expected.
 
-## 2. Telemetria
+## 2. Check recent data
 
-Aguarde pelo menos dois scrapes de 30s e o tempo de ingestão. Use Metrics Explorer para verificar `up`, idade da última amostra, número esperado de alvos e identidade do cluster. Confira logs recentes dos coletores procurando TLS, 401/403, timeouts, fila crescente ou dados descartados.
+Wait a few minutes for collection and ingestion. Open the module's dashboard and select the right cluster. Check the collection health panels and compare one known resource with its source: a running VM in Harvester, a request in an application or a Pod's resource settings in Kubernetes.
 
-O modo OTLP pode prefixar `job` com `default/`; as consultas KubeVirt/Longhorn deste pacote aceitam essa forma. Remote write usa `cluster_name`; OTLP KubeVirt usa `k8s_cluster_name`. O mesmo nome de integração precisa ser preservado em ambos.
+For deeper checks, use **Metrics Explorer** in SUSE. The module guides give the relevant metric names. Confirm the expected targets, recent samples and correct cluster name. Remote write uses `cluster_name`; KubeVirt OTLP uses `k8s_cluster_name`. Both must refer to the same integration name.
 
-## 3. Painéis e filtros
+## 3. Try the filters
 
-Abra cada dashboard publicado. Teste Everything, cada cluster, namespace/aplicação/VM e uma seleção sem correspondência. Ao mudar o cluster, restaure os filtros dependentes para Everything. Compare ao menos uma série com a origem, mantendo a mesma janela e unidade.
+Try Everything, a single cluster and a single VM or application. Reset dependent filters to Everything when changing clusters. Compare the same time window and units. Long time windows have partial history after a new installation.
 
-`No data` pode significar ausência de tráfego, VM desligada, guest sem estatísticas, coletor bloqueado, label diferente ou série não aplicável. Não complete com zero para “deixar verde”. Janelas longas terão histórico parcial após uma coleta nova. Porcentagens de disponibilidade não equivalem a prova de um SLO de 30 dias.
+**No data is not zero.** It can mean no traffic, a stopped VM, missing guest statistics, a blocked collector or a metric that does not apply. Do not turn missing data into a healthy value. See [Metric definitions and limits](metric-contracts.md).
 
-Para auditar as consultas via API, um operador pode usar o script de desenvolvimento, com um endpoint de consulta autorizado:
+## 4. Check monitors separately
 
-```bash
-python3 scripts/audit-queries.py --url http://127.0.0.1:18428 \
-  --module virtualization --hours 1 --output local/query-audit.json
-```
+Confirm monitors are enabled, have recent data and attach to the right component. Set notification channels and rules in SUSE. Test an incident and recovery in an approved lab before relying on notifications. Publishing a monitor does not prove that an email or page is delivered.
 
-O script testa os filtros disponíveis e uma seleção inexistente. Esse endpoint local precisa ser preparado pelo operador; o script não abre túneis nem usa credenciais implicitamente. A consulta direta ao backend valida expressões/dados, mas não substitui permissões, escopo e apresentação na API/interface SUSE.
+## Common problems
 
-Compare também os totais HTTP em resoluções diferentes e a soma por rota com o total:
-
-```bash
-python3 scripts/audit-http-totals.py --url http://127.0.0.1:18428 \
-  --hours 6 --output local/http-period-audit.json
-```
-
-O script usa o contrato padrão e endpoint local autorizado. Não altera métricas nem gera tráfego. Veja [contratos e limites](metric-contracts.md).
-
-## 4. Monitores e notificações
-
-Confirme Enabled, resultados recentes e associação ao componente correto. Configure canais e regras de notificação no SUSE. Em ambiente de teste autorizado, provoque um evento controlado e confirme abertura, notificação e recuperação. A publicação da regra não comprova entrega de e-mail ou paging.
-
-## Falhas comuns
-
-| Sintoma | Verificação decisiva |
+| What you see | What to check |
 |---|---|
-| 403 no publicador | Permissões, dono do dashboard, token expirado; não trocar identidade como contorno |
-| KubeVirt `unknown authority` | CA atual, logs de `prepare-ca`/`sync-ca`, permissão `get` no ConfigMap e nomes TLS |
-| Longhorn timeout | EndpointSlice pronto, políticas existentes e acesso do coletor à porta 9500 |
-| Traefik sem métricas | Flags Prometheus, selector/porta e política de entrada; não expor métricas publicamente |
-| Aplicação sem dados | Contrato de métricas/labels/unidade, presença de buckets e tráfego |
-| Host exporter não agenda | Coletor duplicado na mesma porta, tolerations e admissão de hostNetwork/mounts |
-| Fleet recria recurso removido | Corrigir o GitRepo/Bundle proprietário antes de limpar a cópia reconciliada |
+| `ImagePullBackOff` | Registry access, image name and the Secret in the release namespace |
+| Publishing Job returns 403 | Token permissions, expiry and ownership of the existing dashboards |
+| KubeVirt `unknown authority` | Current CA, `prepare-ca`/`sync-ca` logs and access to the named CA ConfigMap |
+| Longhorn timeout | Ready service endpoints and access from the collector to TCP/9500 |
+| Traefik has no data | Prometheus enabled, correct Pod selector/port and NetworkPolicy |
+| Application has no data | Metric names, labels, histogram buckets and actual request traffic |
+| Host collector cannot start | Another collector on the same port, tolerations or host networking restrictions |
+| Deleted resources come back | Helm/Fleet ownership; update the source that reconciles them |
+| No publishing Job after a day | The Job TTL may have removed it; check the dashboard and release status |
+
+To inspect a failing Pod, replace its name here:
+
+```sh
+kubectl describe pod POD_NAME --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl logs POD_NAME --all-containers --since=10m \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+```
+
+Recorded lab checks are in [Lab validation](lab-validation.md). Maintainers can find optional API audit tools in [Development](development.md); they are not required for installation.

@@ -1,15 +1,21 @@
-# Desenvolvimento
+# Development
 
-- `charts/`: cinco charts independentes prontos para instalar.
-- `examples/`: cinco values mínimos.
-- `components/`: fontes compartilhadas dos coletores e publicador; uso de desenvolvimento/migração.
-- `scripts/build-charts.py`: gera cópias autocontidas, filtra dashboards/monitores e aplica schemas.
-- `scripts/enhance-dashboards.py`: painéis SRE adicionais baseados no schema nativo exportado.
-- `scripts/curate-dashboards.py`: titulos, explicacoes, formatos e organizacao dos 161 paineis; gera `docs/panel-guide.md`.
-- `scripts/pack.sh`: fluxo do usuario (configure/check/install/status/remove), sem Python local.
-- `tests/`: regressões do publicador, layout, recursos e isolamento dos módulos.
+This page is for changing the project itself. **Users installing the charts do not need these tools or scripts.** The installation workflow is documented in the [README](../README.md) and uses kubectl and Helm.
 
-```bash
+## Repository layout
+
+- `charts/`: five ready-to-install charts.
+- `helm/`: packaged releases and `index.yaml`, served as the public Helm repository.
+- `examples/`: minimal values files.
+- `components/`: shared collector and publisher sources; not a separate installation path.
+- `scripts/`: chart generation, dashboard editing and optional metric audits.
+- `tests/`: publisher, layout, metric contracts, module isolation and package integrity checks.
+
+Edit shared sources in `components/`, then regenerate the charts. Do not edit generated copies in `charts/` directly. Dashboard curation also generates `docs/panel-guide.md`.
+
+## Build and check
+
+```sh
 python3 -m pip install -r requirements-dev.txt
 python3 scripts/enhance-dashboards.py
 python3 scripts/build-virtualization-dashboards.py
@@ -17,32 +23,40 @@ python3 scripts/curate-dashboards.py
 python3 scripts/build-charts.py
 python3 -m unittest discover -s tests -v
 bash tests/helm-checks.sh
-for module in virtualization traefik applications kubernetes imports; do
-  helm lint "charts/suse-observability-$module" --strict -f "examples/$module.yaml"
-  helm package "charts/suse-observability-$module" --destination /tmp/helm-packages
-done
 ```
 
-Não edite as cópias geradas em `charts/` diretamente. Altere as fontes em `components/` e gere novamente. Os cinco catálogos são disjuntos; um módulo nunca exclui regras do outro. O publicador verifica nomes/identificadores, recusa colisões com dashboards nativos e compara os objetos persistidos.
+When changing a release, bump its version in the builder and package the updated charts before running the package integrity test. The catalogs are disjoint: one module must not delete another module's content. The publisher checks identifiers, rejects collisions with native dashboards and compares the persisted definition.
 
-Os arquivos de configurações antigas em `tests/fixtures/legacy-profiles` servem somente para regressão; não são o fluxo de instalação. Os guias e PDFs antigos foram removidos para evitar procedimentos concorrentes. O histórico Git preserva as revisões anteriores.
+## Publish chart packages
 
-A validação estática não prova deploy. A evidência de ambiente está em [lab-validation.md](lab-validation.md), com limites explícitos. Referências de desenho: [quatro sinais SRE](https://sre.google/sre-book/monitoring-distributed-systems/), [alertas por SLO](https://sre.google/workbook/alerting-on-slos/), [dashboards SUSE](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/dashboards/dashboards.html).
+Never overwrite an existing version with different contents. Keep previous packages so users can remove or roll back that exact release. For example:
 
-## Auditar as consultas pela API usada pelo produto
+```sh
+helm package charts/suse-observability-virtualization --destination helm
+helm package charts/suse-observability-traefik --destination helm
+helm package charts/suse-observability-applications --destination helm
+helm package charts/suse-observability-kubernetes --destination helm
+helm package charts/suse-observability-imports --destination helm
+helm repo index helm
+```
 
-O backend pode aceitar sintaxe que a API do SUSE rejeita. Em um ambiente de teste com dados reais, valide também o caminho nativo. Use um token existente autorizado a ler métricas, sem gravá-lo no repositório:
+Commit the sources, packages and index together. CI checks package hashes and compares the current package with its source. After publication, check `helm repo update`, `helm search repo` and `helm pull --version` against the public URL. Packaging follows the [Helm repository format](https://helm.sh/docs/topics/chart_repository/).
 
-```bash
-read -r -s -p 'Token SUSE para leitura: ' SRE_AUDIT_TOKEN; echo
-export SRE_AUDIT_TOKEN
-python3 scripts/audit-queries.py --native --url "$OBS_URL" \
+The old combined profiles in `tests/fixtures/legacy-profiles` are regression fixtures. They are not installation instructions. The former installer helper was removed; keep end-user guides on the direct Helm workflow.
+
+## Optional metric audits
+
+Backend acceptance does not prove that the SUSE API accepts the same syntax. In a test environment with real metrics, also check the native API. Use an authorized read token supplied through a private environment variable; never commit it:
+
+```sh
+python3 scripts/audit-queries.py --native --url https://observability.example.com \
   --service-token-env SRE_AUDIT_TOKEN --range --output local/native-range.json
-python3 scripts/audit-queries.py --native --url "$OBS_URL" \
+python3 scripts/audit-queries.py --native --url https://observability.example.com \
   --service-token-env SRE_AUDIT_TOKEN --output local/native-filters.json
-python3 scripts/audit-http-totals.py --native --url "$OBS_URL" \
+python3 scripts/audit-http-totals.py --native --url https://observability.example.com \
   --service-token-env SRE_AUDIT_TOKEN --output local/native-http.json
-unset SRE_AUDIT_TOKEN
 ```
 
-Esses testes fazem somente leituras. A API interna `/api/metrics` foi conferida no SUSE 2.10.2 e pode mudar; não é um contrato público de integração. Os relatórios contêm nomes do ambiente e devem permanecer privados. Revise resultados vazios e faça a conferência visual: um HTTP 200 não prova que a métrica represente o que o título promete.
+These are read-only checks. `/api/metrics` is an internal API checked on SUSE 2.10.2, not a stable public integration contract. Reports contain environment names and should remain private. Review empty results and check the UI: HTTP 200 is not proof that a panel measures what its title says.
+
+Static checks do not prove a deployment, failover or notification delivery. Record what actually ran and what did not in [Lab validation](lab-validation.md). Design references: [SRE monitoring signals](https://sre.google/sre-book/monitoring-distributed-systems/), [SLO alerts](https://sre.google/workbook/alerting-on-slos/) and [SUSE dashboards](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/dashboards/dashboards.html).

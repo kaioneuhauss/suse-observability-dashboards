@@ -1,0 +1,128 @@
+apiVersion: v1
+entries:
+  suse-observability-applications:
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.414336499-03:00"
+    description: Independent applications dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 963075ede2ff035af2b8acf9095ed21ed01e20be7e2bc93f04efa46c859ed414
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-applications
+    type: application
+    urls:
+    - suse-observability-applications-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.413309303-03:00"
+    description: Independent applications dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 73365ea4f0ad53d887526a4e53e9a6188c319eee557a08ac3f80919464edeb20
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-applications
+    type: application
+    urls:
+    - suse-observability-applications-1.2.0.tgz
+    version: 1.2.0
+  suse-observability-imports:
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.415841579-03:00"
+    description: Independent imports dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 6d642c3add6860ab10961e24b1c075be3e972bab96263fe72c8168877ec44720
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-imports
+    type: application
+    urls:
+    - suse-observability-imports-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.415275855-03:00"
+    description: Independent imports dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 80e1e1a868f54fd85cebea422d75785d4c5f2f64a186e7a27373f035aa81bd8d
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-imports
+    type: application
+    urls:
+    - suse-observability-imports-1.2.0.tgz
+    version: 1.2.0
+  suse-observability-kubernetes:
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.419920803-03:00"
+    description: Independent kubernetes dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 9eb3f275efc8f1481ac2fc689616e758ae100391ae01e8a94af874c6760f303f
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-kubernetes
+    type: application
+    urls:
+    - suse-observability-kubernetes-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.417022195-03:00"
+    description: Independent kubernetes dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 2ab16108c95285cb94b3b81da83cda80a54def8828b077094a99131d1cff145b
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-kubernetes
+    type: application
+    urls:
+    - suse-observability-kubernetes-1.2.0.tgz
+    version: 1.2.0
+  suse-observability-traefik:
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.424994501-03:00"
+    description: Independent traefik dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 83ae14f9b3635df090ac330106bb94ce332233f9ec4eecde27a530557e9c2970
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-traefik
+    type: application
+    urls:
+    - suse-observability-traefik-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.423047605-03:00"
+    description: Independent traefik dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 018feb0cabf2db11a58aa91375147f6a1aafaa387ec9d03115c747effae93b45
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-traefik
+    type: application
+    urls:
+    - suse-observability-traefik-1.2.0.tgz
+    version: 1.2.0
+  suse-observability-virtualization:
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.430798005-03:00"
+    description: Independent virtualization dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: 8c7caf4bb9e071bd06c5aec1d0e77611d7b0b160f451ebd92da86c2f14ccd110
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-virtualization
+    type: application
+    urls:
+    - suse-observability-virtualization-1.2.1.tgz
+    version: 1.2.1
+  - apiVersion: v2
+    appVersion: 2.10.2
+    created: "2026-10-26T19:04:57.427546354-03:00"
+    description: Independent virtualization dashboards, monitors and applicable collectors
+      for SUSE Observability
+    digest: deed747f5b58457abd80aee8c5441b40b57ccd24b3d81310b9c85567e6d4d9b6
+    home: https://github.com/kaioneuhauss/suse-observability-dashboards
+    name: suse-observability-virtualization
+    type: application
+    urls:
+    - suse-observability-virtualization-1.2.0.tgz
+    version: 1.2.0
+generated: "2026-10-26T19:04:57.412595375-03:00"

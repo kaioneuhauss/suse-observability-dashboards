@@ -1,3 +1,3 @@
-# Componentes internos
+# Internal components
 
-Fontes compartilhadas e fixtures para desenvolver os quatro módulos de `charts/`. Para instalar, comece no [README principal](../README.md). Não instale estes componentes junto aos módulos: isso duplicaria a coleta ou a propriedade dos dashboards.
+Shared sources for the five independent charts. To install, start with the [main README](../README.md). Do not install these components alongside the modules: that would duplicate collection or dashboard ownership.

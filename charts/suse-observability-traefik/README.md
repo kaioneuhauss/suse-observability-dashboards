@@ -1,5 +1,10 @@
-# traefik
+# SUSE Observability — Traefik
 
-[Instalação e pré-requisitos](../../docs/traefik.md) · [Values mínimos](../../examples/traefik.yaml) · [Vários clusters](../../docs/multiple-clusters.md)
+An independent chart for the traefik module. Install only the modules you need.
 
-Este chart é independente e não instala os outros módulos. Confira os valores avançados em `values.yaml`.
+> [!WARNING]
+> Community lab project. Not recommended for production and not an officially supported SUSE integration.
+
+[Installation and prerequisites](https://github.com/kaioneuhauss/suse-observability-dashboards/blob/main/docs/traefik.md) · [Minimal values](https://github.com/kaioneuhauss/suse-observability-dashboards/blob/main/examples/traefik.yaml) · [Removal](https://github.com/kaioneuhauss/suse-observability-dashboards/blob/main/docs/lifecycle.md)
+
+Use kubectl and Helm as shown in the guide. No local build or installer scripts are needed. Advanced settings are in `values.yaml`.

@@ -1,3 +1,3 @@
-# Credencial de publicação
+# Publishing credential
 
-Siga o [procedimento único de pré-requisitos](../docs/prerequisites.md#3-publicação-preparar-um-service-token). O token de ingestão do Agent e o Service Token de publicação são identidades diferentes. Preserve o dono dos dashboards existentes e use Secrets, nunca credenciais em values.
+Follow [Create the publishing Secret](../docs/prerequisites.md#4-create-the-publishing-secret). The Agent ingestion token and publishing Service Token have different permissions. Preserve the existing dashboard owner and keep credentials in Kubernetes Secrets, not values files.

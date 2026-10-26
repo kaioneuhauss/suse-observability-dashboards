@@ -16,4 +16,5 @@ __pycache__/
 *.py[cod]
 .venv/
 *.tgz
+!helm/*.tgz
 .DS_Store

@@ -1,83 +1,60 @@
-# Vários clusters, sem duplicar dashboards
+# Multiple clusters
 
-Cada chart tem três modos:
+You do not need a dashboard copy for each cluster. Publish each module once per SUSE Observability instance. Its filters will show the clusters sending data.
 
-| Modo | Onde instalar | O que cria |
+| Mode | What it installs | Where it runs |
 |---|---|---|
-| `all` | Cluster monitorado, namespace do Agent | Coletores e publicadores do módulo |
-| `telemetry` | Cada cluster monitorado | Somente os coletores do módulo |
-| `content` | Um cluster com acesso à API SUSE | Somente dashboard(s) e monitores |
+| `all` (default) | Collectors, dashboards and monitors | First monitored cluster |
+| `telemetry` | Collectors only | Other monitored clusters |
+| `content` | Dashboards and monitors only | One central publishing cluster |
 
-Aplicações usa apenas `content`, pois a aplicação já fornece suas métricas. Escolha **uma release publicadora por módulo e por instância SUSE**. Instalar `all` novamente em outro cluster faria dois releases administrarem os mesmos objetos externos. Os filtros do dashboard já abrangem todos os clusters que enviam dados.
+Applications always uses `content`. Keep one publishing release per module and SUSE instance. Two `all` releases would both manage the same external dashboards.
 
-## Primeiro cluster simples
+## Add another monitored cluster
 
-Siga o guia do módulo com `mode: all` (padrão). O Secret de ingestão e o de publicação precisam existir no mesmo namespace da release.
-
-## Adicionar outro cluster
-
-Use o mesmo chart com o nome da integração desse cluster e `mode: telemetry`. Não precisa levar o token de publicação:
+If you already installed Traefik with `all` on your first cluster, save this as `traefik-second.yaml`:
 
 ```yaml
 mode: telemetry
-clusterName: outro-cluster
+clusterName: second-cluster
 observability:
-  url: https://observability.exemplo.com.br
+  url: https://observability.example.com
 ```
 
-Instale com o kubeconfig/contexto do novo cluster. Para Virtualization, inclua `observability.otlpEndpoint`. A integração aparecerá nos filtros quando houver dados.
+Install on the second cluster, using the Agent's namespace and ingestion Secret there:
 
-## Manter a publicação somente no central
+```sh
+helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
+  --version 1.2.1 --values traefik-second.yaml \
+  --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
+  --namespace suse-observability --wait --timeout 15m
+```
 
-Em cada origem, use `mode: telemetry`. No central, crie um arquivo por módulo:
+No publishing token is needed on this cluster. Follow the module's normal checks; the cluster will appear in dashboard filters when its metrics arrive. For Virtualization, also include `observability.otlpEndpoint` and complete its registry/network prerequisites.
+
+## Keep all publishers on a central cluster
+
+Use `mode: telemetry` in every source cluster. For each central module, save a file like `traefik-content.yaml`:
 
 ```yaml
 mode: content
 observability:
-  url: https://observability.exemplo.com.br
+  url: https://observability.example.com
 ```
 
-O namespace central precisa apenas do Secret de publicação. Não precisa do Secret de ingestão, nome do cluster, CA KubeVirt ou OTLP. Exemplo:
+Create the publishing Secret in the central namespace, then install:
 
-```bash
-helm upgrade --install obs-virtualization ./charts/suse-observability-virtualization \
-  --kubeconfig "$CENTRAL_KCFG" --kube-context "$CENTRAL_CTX" -n "$CONTENT_NS" \
-  -f local/virtualization-content.yaml --wait --timeout 15m
+```sh
+helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
+  --version 1.2.1 --values traefik-content.yaml \
+  --kubeconfig /path/to/central.yaml --kube-context central \
+  --namespace suse-observability --wait --timeout 15m
 ```
 
-Esse foi o desenho usado no laboratório para preservar as identidades proprietárias já existentes. Os cinco módulos de conteúdo ficam no central; os coletores ficam nas origens.
+A central publisher does not need an Agent, ingestion Secret, `clusterName`, KubeVirt CA or OTLP endpoint. Its namespace must exist; if creating a dedicated one, use `kubectl create namespace` with that central kubeconfig and context before creating its Secret.
 
-## Fleet
+Use a separate values file per module and destination. Keep the same release name and namespace when updating. To remove everything, uninstall each source collector and delete the central content once, following [removal](lifecycle.md).
 
-Fleet pode administrar cada chart sem dependências externas. No diretório do GitRepo, use um bundle por módulo/destino. Fixe a revisão do seu Git e mantenha values sem credenciais:
+## Already using Fleet?
 
-```yaml
-# fleet.yaml na raiz de um bundle contendo o chart ou apontando para ele no repo
-namespace: suse-observability
-helm:
-  chart: ./charts/suse-observability-traefik
-  releaseName: obs-traefik
-  values:
-    mode: telemetry
-    clusterName: meu-cluster
-    observability:
-      url: https://observability.exemplo.com.br
-```
-
-Ajuste o caminho à raiz real do bundle. Use selectors/targets explícitos para impedir publicação em mais de um cluster. Antes de migrar uma release Helm manual para Fleet, confira adoção e propriedade; não crie outra release coletando os mesmos alvos. O teste deste trabalho usou Helm direto; o novo desenho Fleet precisa de aceite no destino.
-
-## Mesmo procedimento usando o assistente
-
-Depois de definir KCFG/CTX/NS para cada destino e OBS_URL:
-
-```bash
-# Em cada origem: usa o Secret de ingestao do Agent
-bash scripts/pack.sh configure traefik local/traefik-origem.yaml telemetry
-bash scripts/pack.sh install traefik local/traefik-origem.yaml
-
-# Troque KCFG/CTX/NS para o central antes destes comandos
-bash scripts/pack.sh configure traefik local/traefik-central.yaml content
-bash scripts/pack.sh install traefik local/traefik-central.yaml
-```
-
-O arquivo `content` precisa do Secret de publicação no namespace central. Se os nomes diferem do padrão, acrescente `auth.dashboards.existingSecret` e `auth.monitors.existingSecret`, como nos pré-requisitos. Para repetir em outro cluster, use outro arquivo local e altere explicitamente as variáveis de destino. Para remover, execute `bash scripts/pack.sh remove traefik` em cada destino onde instalou a release. Não apague o Secret de publicação antes de remover o conteúdo.
+The charts can be referenced by Fleet, but the tutorial here uses Helm directly. Do not let Fleet and a manual Helm installation manage the same release. Any Fleet setup needs its own target and ownership checks; it was not deployed as part of this lab validation.

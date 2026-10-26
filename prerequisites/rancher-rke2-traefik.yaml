@@ -1,5 +1,5 @@
-# Fragmento para MESCLAR em Edit as YAML do cluster provisionado pelo Rancher.
-# Não aplique este fragmento como um recurso Kubernetes completo.
+# Merge this fragment into the Rancher-provisioned cluster configuration.
+# This is not a complete Kubernetes resource.
 spec:
   rkeConfig:
     chartValues:

@@ -64,7 +64,7 @@ for name,cfg in PACKS.items():
  if name=='applications':
   values['mode']='content'
   values['applicationMetrics']={'requestCounter':'http_server_requests_total','durationHistogram':'http_server_request_duration_seconds','clusterLabel':'cluster_name','serviceLabel':'service_name','statusLabel':'http_response_status_code','routeLabel':'http_route'}
- dump(dest/'Chart.yaml',{'apiVersion':'v2','name':dest.name,'description':f'Independent {name} dashboards, monitors and applicable collectors for SUSE Observability','type':'application','version':'1.2.0','appVersion':'2.10.2','home':'https://github.com/kaioneuhauss/suse-observability-dashboards'})
+ dump(dest/'Chart.yaml',{'apiVersion':'v2','name':dest.name,'description':f'Independent {name} dashboards, monitors and applicable collectors for SUSE Observability','type':'application','version':'1.2.1','appVersion':'2.10.2','home':'https://github.com/kaioneuhauss/suse-observability-dashboards'})
  dump(dest/'values.yaml',values)
  for component,source in sources:
   for file in (source/'files').glob('*'):

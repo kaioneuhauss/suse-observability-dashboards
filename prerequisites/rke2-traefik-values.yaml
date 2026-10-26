@@ -1,4 +1,4 @@
-# Fragmento dos valores do chart RKE2 Traefik; mescle com os valores existentes.
+# RKE2 Traefik values fragment; merge with existing settings.
 metrics:
   prometheus:
     entryPoint: metrics

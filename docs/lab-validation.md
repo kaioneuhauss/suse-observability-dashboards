@@ -1,106 +1,102 @@
-# Evidência do laboratório — 26/10/2026
+# Lab validation — October 26, 2026
 
-## Revisão 1.2.0 — instalação do zero pelo novo guia
+This records what was checked in this lab. It is not a support matrix or a production certification. **This community project is not recommended for production.**
 
-Esta seção é a evidência mais recente. Os números da migração anterior abaixo permanecem como histórico, não como resultados desta revisão.
+## 1.2.1 — Direct Helm documentation and distribution
 
-- 161 painéis de métricas revisados em nove dashboards: títulos e explicações em inglês, contagens inteiras, unidades explícitas e organização por pergunta operacional.
-- `scripts/pack.sh configure` e `check` executados para 11 destinos reais: cinco publicadores centrais e seis releases coletoras nas três origens.
-- Remoção pelo novo comando, usando os charts anteriores para localizar os nomes antigos. Antes da reinstalação, confirmado **zero** releases, dashboards, monitores e recursos Kubernetes pertencentes aos módulos.
-- Dashboard nativo mantido com o mesmo ID. **628 objetos protegidos mantiveram seus UIDs** durante remoção e reinstalação: workloads existentes, PVCs, VMs, VMIs e volumes Longhorn. As aplicações de demonstração foram preservadas e Coriolis permaneceu parado.
-- Reinstalação das 11 releases com os arquivos gerados, preservando as opções de ambiente aprovadas: proprietários de publicação, coleta etcd e políticas restritas já existentes.
-- **59 testes locais aprovados**, incluindo formatos inteiros, layouts sem sobreposição, geração repetível e interrupção segura quando a exclusão externa falha. Helm lint/renderização e admissão server-side aprovados.
-- **7.967 casos de consultas/filtros no backend** após a reinstalação: zero erros e valores não finitos; 2.930 vazios classificados separadamente. A seleção de cluster inexistente não retornou séries em nenhum painel.
-- **7.967 casos adicionais pela API nativa SUSE**: zero erros e valores não finitos; 2.940 vazios, incluindo filtros sem séries. As diferenças de vazios entre rodadas refletem o ambiente em movimento.
-- **779 casos históricos de seis horas pela API nativa SUSE**, após corrigir a compatibilidade: zero erros e valores não finitos; 195 vazios. Controles de Everything, cluster individual e multisseleção representativa.
-- **45 consultas / 18 invariantes de totais HTTP pela API nativa** aprovados em passos de 60, 300 e 900 segundos; **34 consultas de monitores** executadas com dados e sem erro.
-- Comparação com a origem: 10 VMIs em execução, 50 vCPUs, 100 GiB de RAM guest configurada, 32 CPUs lógicas, 184 volumes Longhorn e oito registros de importação. Fases, discos e intervalos registrados pelo VMIC coincidiram com a API.
-- **772 campos de requests/limits** comparados após estabilização: zero divergências ou campos atuais ausentes. Durante o rollout, o primeiro teste detectou Pods recém-criados ainda não coletados; após novos ciclos, a comparação passou. Séries de Pods terminados podem permanecer no lookback/histórico e não são tratadas como Pods atuais.
-- KubeVirt: cinco alvos `up=1`; Longhorn: um alvo `up=1`; inventário de importações saudável. Amostras posteriores à instalação e com idade inferior a 30 segundos na verificação.
-- Conferência visual dos nove dashboards; contagens inteiras completas, filtros de VM (10 no total, 1 selecionada), unidades e rótulos legíveis. Os erros Traefik ficaram em linhas, porque o gráfico de barras não desenhou corretamente os pontos na versão observada.
-- NetworkPolicy Longhorn conferida: somente TCP/9500, um peer com os seletores de namespace e Pod juntos, limitado ao coletor `obs-virtualization`. Políticas nativas preservadas.
+This revision replaces the local installer helper with direct Helm and kubectl instructions and publishes versioned chart packages. It does not change dashboard queries, collector settings or publisher behavior. The checks for this revision are recorded separately below; the live metric evidence from 1.2.0 remains historical evidence, not a new collection run.
 
-O teste do guia identificou e corrigiu a validação de recursos em namespaces diferentes (CA e Longhorn), diferenças de flags entre Helm 3 e 4 e a remoção de coletores de versões anteriores. A exclusão de conteúdo continua exigindo o chart da versão instalada. A conferência visual encontrou um problema que o backend não revelava: o parser SUSE rejeitava `[1i]` nos totais HTTP. A versão final usa `${__interval}`, resolvido pela API nativa, e os testes foram repetidos nesse caminho. Os totais de uma mesma janela de seis horas foram 31.895 requisições de aplicações e 384.384 no Traefik, iguais nos passos de 60, 300 e 900 segundos. São origens distintas, não totais que devam ser iguais entre si. As três estatísticas de performance agora preservam a identidade da VM selecionada pelo maior valor.
+- **58 local tests passed**, including the published package digests and exact current-package/source comparison. The three tests specific to the removed installer helper were replaced by two repository-integrity tests.
+- All five version 1.2.1 packages passed Helm lint. Existing Helm rendering and negative configuration checks passed.
+- Packaged charts rendered with the 11 existing deployment configurations passed server-side admission dry-runs across Observability, Rancher and Harvester. Publishing hooks were excluded from this admission check because they already exist and are replaced by Helm during a real upgrade.
+- Documentation links and YAML examples were checked. End-user command blocks contain only Helm and kubectl. Generated chart and panel-guide sources were repeatable.
+- No new install, uninstall or server upgrade was performed for this documentation revision. Existing live-metric results below were not rerun or presented as new results.
 
-## Ambiente observado
+## 1.2.0 — Clean installation and dashboard review
 
-| Plataforma | Versão observada |
+- Reviewed 161 metric panels across nine dashboards: English titles and explanations, integer counts, explicit units and sections built around operational questions.
+- Prepared and checked 11 deployment targets: five central publishers and six collector releases across three source clusters.
+- Removed the project's releases, dashboards, monitors and owned Kubernetes resources before reinstalling. The native dashboard kept its ID.
+- **628 protected objects kept their UIDs** through removal and reinstallation: existing workloads, PVCs, VMs, VMIs and Longhorn volumes. Demo applications were preserved. Coriolis stayed stopped.
+- Reinstalled all 11 releases with the generated values, preserving approved publisher identities, etcd collection and existing restricted policies. This historical run used the helper that has since been removed; it is not the current installation procedure.
+- **59 local tests passed**, including integer formatting, layouts, repeatable generation and safe handling of external deletion failures. Helm lint, rendering and server-side admission checks passed.
+- **7,967 backend query/filter cases**: zero execution errors or non-finite values; 2,930 empty results counted separately. A nonexistent cluster returned no series in any panel.
+- **7,967 additional cases through the native SUSE API**: zero execution errors or non-finite values; 2,940 empty results, including filters without matching data. The environment changed between runs.
+- **779 historical six-hour cases through the native API**: zero errors or non-finite values; 195 empty results. Covered Everything, individual clusters and representative multiple selections.
+- **45 native HTTP-total queries and 18 invariants passed** at 60-, 300- and 900-second steps. All 34 monitor queries returned data without errors; this was not a full incident/notification test.
+- Source comparison matched 10 running VMIs, 50 vCPUs, 100 GiB of configured guest RAM, 32 host logical CPUs, 184 Longhorn volumes and eight import records. VMIC phases, disks and recorded intervals matched its API.
+- **772 current requests/limits fields matched**, with no missing current fields after collection caught up with the rollout. Newly created Pods were initially detected before their first samples arrived. Old Pod series can remain in backend history and are not treated as current Pods.
+- Five KubeVirt targets and one Longhorn target reported `up=1`. Import inventory was healthy. Samples were newer than installation and less than 30 seconds old at the check.
+- Reviewed all nine dashboards in the SUSE UI, including integer counts, units, labels and the VM filter (10 total, one selected). Traefik errors use lines because the tested native bar chart did not draw the points correctly.
+- Longhorn NetworkPolicy allowed only TCP/9500 from the collector, with namespace and Pod selectors in the same peer. Native policies were preserved.
+- Final readiness check: 10 Ready nodes, 11 installed project releases and 24 ready collector Pods across the three clusters.
+
+The clean-install run caught differences between Helm 3/4 flags, cross-namespace admission checks for CA/Longhorn resources, and cleanup of older collectors.
+
+The UI review caught an issue that direct backend checks missed: the SUSE parser rejected `[1i]` in HTTP totals. The final expressions use `${__interval}`, resolved by the native API. The same six-hour window returned 31,895 application requests and 384,384 Traefik requests at all three resolutions. These measure different sources and are not expected to equal each other. VM performance summary panels also retained the identity of the VM with the highest value.
+
+## Observed versions
+
+| Component | Version |
 |---|---|
 | SUSE Observability | 2.10.2 |
-| CLI de publicação | 3.3.6, SHA-256 conferido |
+| Publishing CLI | 3.3.6, SHA-256 checked |
 | Rancher Prime | 2.14.6 |
 | Harvester | 1.8.2 |
 | Longhorn | 1.11.2 |
 | KubeVirt | 1.7.4 |
 | VM Import Controller | 1.8.2 |
-| Kubernetes dos três clusters | RKE2 1.34.9 / 1.35.6 / 1.35.7 |
+| Kubernetes / RKE2 | 1.34.9 / 1.35.6 / 1.35.7 |
 | Traefik RKE2 | 3.7.1 / chart 40.1.003 |
 
-Essas versões são evidência deste laboratório, não uma matriz de suporte. O servidor, Agents e plataformas existentes foram preservados.
+These are lab observations. The server, official Agents and existing platforms were preserved.
 
-## Migração anterior — histórico
+## Earlier migration — historical evidence
 
-- Inventário inicial somente de leitura, propriedade Helm/Fleet e backups privados de values, manifests e conteúdo externo.
-- Exportação dos cinco dashboards do projeto, dashboard nativo e 33 monitores antigos.
-- Remoção confirmada dos cinco dashboards/33 monitores antigos pelo publicador.
-- Desinstalação de `sre-platform-telemetry` nos três clusters, `kubevirt-otel-collector` no Harvester e `suse-observability-content` no central, incluindo seus Jobs hooks.
-- Instalação com `helm install` das novas releases: Kubernetes/Traefik nos dois clusters RKE2, Virtualization no Harvester e quatro publicadores centrais; depois, instalação independente do módulo Imports na origem e no central.
-- Publicação final de nove dashboards do projeto (197 consultas de métricas) e 34 monitores Enabled; dashboard nativo mantido com o mesmo ID.
-- Correção real da coleta KubeVirt: o coletor anterior falhava por CA desatualizada; o novo inicializou com a CA vigente e passou a coletar dez VMs.
-- Remoção da antiga cópia de CA após backup e confirmação de ausência de referências nos 19 Pods/workloads do namespace.
+The previous combined releases were inventoried and backed up privately. Five old project dashboards and 33 old monitors were exported and removed, while the native dashboard was preserved. Old platform collectors, the Harvester KubeVirt collector and the central content release were replaced by independent modules. Imports was added separately.
 
-O backend e seu histórico de métricas não foram apagados. As aplicações de demonstração `brasil-dados` e `request-lab` foram preservadas por decisão explícita do responsável; a limpeza abrange somente os componentes dos dashboards.
+The old KubeVirt collector had a stale CA. The replacement used the current public CA and collected ten VMs. The unused CA copy was backed up and removed after checking that the namespace's 19 Pods/workloads no longer referenced it. SUSE metric history and the demo applications `brasil-dados` and `request-lab` were preserved.
 
-## Validação da migração anterior
+That earlier revision passed 53 local tests, 7,346 query/filter cases (2,030 empty) and 831 historical cases (213 empty), with no query errors or non-finite values. Additional application and Traefik filter audits passed after fixes. HTTP totals were checked with 45 queries and 18 invariants: the same period correctly produced 31,104 requests across three resolutions, whereas the earlier expression incorrectly dropped to 6,252 and 2,053 at wider steps.
 
-- 53 testes locais aprovados: isolamento dos módulos, schemas, layout e geração repetível, publicador, recursos, aliases HTTP, CA, NetworkPolicy e exporter VMIC (paginação, falha/staleness, campos ausentes, privacidade, fases e timestamps).
-- `helm lint` dos cinco charts, renderização e dry-run nos APIs de destino. Novos recursos de Virtualization/Imports passaram por dry-run no Harvester e central antes da aplicação.
-- Auditoria abrangente de **7.346 casos de consultas/filtros**, sem erros de execução ou valores não finitos. 2.030 casos vazios foram contabilizados separadamente: incluem controle de cluster inexistente, escopos sem dados e métricas não aplicáveis.
-- Auditoria histórica de seis horas: **831 casos**, zero erros/valores não finitos, 213 vazios. Cobre Everything, clusters individuais e multisseleção representativa; não todas as combinações arbitrárias possíveis.
-- Após as correções dos totais HTTP: nova auditoria de todos os filtros de aplicações (**114 casos**) e Traefik (**459 casos**), sem erros/valores não finitos. Após corrigir o escopo de capacidade, suas nove consultas foram reexecutadas com dados, incluindo Everything restrito ao Harvester.
-- **45 consultas / 18 verificações de invariantes HTTP**, aprovadas. O mesmo período foi avaliado em passos de 60, 300 e 900 segundos. Na janela de diagnóstico, o total correto foi 31.104 requisições nas três resoluções; antes, caía indevidamente para 6.252 e 2.053. Também foi corrigida a soma por rota que congelava o último minuto. Essa comparação detectou erros que um simples teste de sintaxe não encontrava.
-- **34 consultas de monitores**, todas executadas com séries atuais e sem erro. Isso não representa 34 testes de disparo/recuperação.
-- `up=1` nos alvos KubeVirt e Longhorn após liberação; `harvester_import_inventory_up=1`. Dez nós Ready e todos os Pods ativos dos módulos prontos nos três clusters; nove Jobs centrais de publicação concluídos.
-- Conferência visual de unidades, valores e filtros na interface SUSE, além da consulta direta ao backend.
+### Source comparisons from that migration
 
-### Valores confrontados com as APIs de origem
-
-| Comparação | Resultado observado |
+| Check | Observed result |
 |---|---|
-| VMIs em execução | 10 na API e no dashboard |
-| Topologia de CPU dessas VMs | 50 vCPUs em ambos; cores × sockets × threads |
-| RAM guest configurada dessas VMs | 107.374.182.400 bytes (100 GiB) em ambos |
-| CPUs lógicas do host | 32 em ambos |
-| Volumes Longhorn | 184 em ambos |
-| Robustness ativa | 41 healthy, 1 degraded, 142 unknown, correspondência exata |
-| Timestamps de último backup | 184 valores conferidos; 183 sem backup registrado e 1 com timestamp; não é cobertura de proteção de VMs |
-| Capacidade lógica provisionada Longhorn | 10.668.803.620.864 bytes em ambos; não é uso físico |
-| Registros VMIC | 8, todos `virtualMachineRunning`, em ambos |
-| Capacidade lógica de discos importados | 254.476.812.288 bytes em ambos |
-| Discos e intervalos VMIC por registro | Correspondência exata com condições/timestamps dos oito objetos |
-| Requests/limits dos containers | 772 campos comparados: 318 Observability, 148 Rancher, 306 Harvester; zero divergências ou campos faltantes |
+| Running VMIs | 10 in both API and dashboard |
+| Configured CPU topology | 50 vCPUs in both; cores × sockets × threads |
+| Configured guest RAM | 107,374,182,400 bytes (100 GiB) in both |
+| Host logical CPUs | 32 in both |
+| Longhorn volumes | 184 in both |
+| Active robustness states | 41 healthy, one degraded, 142 unknown; exact match |
+| Last-backup timestamps | 184 checked; 183 had no recorded backup and one had a timestamp |
+| Provisioned logical Longhorn size | 10,668,803,620,864 bytes in both; not physical usage |
+| VMIC records | Eight, all `virtualMachineRunning`, in both |
+| Imported logical disk capacity | 254,476,812,288 bytes in both |
+| VMIC disks and recorded intervals | Exact match with the eight API objects |
+| Container requests/limits | 772 fields: 318 Observability, 148 Rancher, 306 Harvester; zero mismatches |
 
-### Longhorn: autorização e resultado
+### Longhorn access and actual findings
 
-Após autorização explícita do responsável, foi aplicada `obs-virtualization-longhorn-metrics` em `longhorn-system`. A regra seleciona managers `app: longhorn-manager`, usa **um único peer com namespaceSelector e podSelector juntos**, e permite somente TCP/9500 de `obs-virtualization` / `sre-kubevirt-telemetry` no namespace `suse-observability`. As regras nativas existentes foram preservadas. O manifesto aplicado foi conferido novamente, e o alvo passou a `up=1` com métricas de volumes, disco, I/O, snapshots e backups ingeridas.
+The approved `obs-virtualization-longhorn-metrics` policy selects `app: longhorn-manager` in `longhorn-system`. It permits TCP/9500 from Pods matching both `obs-virtualization` / `sre-kubevirt-telemetry` labels and namespace `suse-observability`. The applied rule was checked; native policies stayed in place, and the target reported `up=1`.
 
-Existe um volume previamente criado com robustness degraded e falha de agendamento de réplica (`disks are unavailable`). O estado exibido corresponde à API Longhorn; não é erro da consulta. Não foram alteradas réplicas, placement, volumes ou dados para deixar o dashboard verde. A capacidade de um host único não foi tratada como HA.
+One pre-existing volume was degraded with replica scheduling failure `disks are unavailable`. The dashboard matched the Longhorn API. Replicas, placement, volumes and data were not changed to make a panel green. Single-host capacity was not presented as HA.
 
-### Casos vazios explicados
+### Empty results were kept separate
 
-Com Everything, os painéis de idade/última condição de importações **ativas** ficam vazios porque os oito registros estão concluídos. A latência Longhorn de leitura pode ficar vazia em janelas sem IOPS de leitura; o denominador/filtro impede inventar uma latência para disco ocioso. Filtros de volumes detached não têm I/O atual. Filtros inexistentes não produzem zeros de saúde. Essas ausências não foram contadas como aprovação de disponibilidade.
+Active-import age panels were empty because all eight retained imports were complete. Read latency can be empty when no reads occur, and detached volumes have no current I/O. Nonexistent filters produce no series rather than a healthy zero. These cases were not counted as proof of availability.
 
-## Limites e pendências
+## Validation boundaries
 
-- **VMIC:** validação ao vivo feita sobre oito registros concluídos existentes. Fases ativas/falhas e indisponibilidade do inventário passaram por testes locais; não foi iniciada uma importação VMware nova, desligada uma VM ou simulado um erro de transferência.
-- **Coriolis:** removido do escopo por decisão do responsável; a VM permaneceu parada.
-- **Histórico:** p95 de 24 horas e backup metadata não comprovam dia completo, RPO, restauração ou consistência de aplicação. Não houve restauração de backup.
-- **Métricas:** valores e contratos foram conferidos nas versões observadas. Medidas dinâmicas continuam sujeitas a resolução de coleta, lacunas e precisão dos exporters; não se promete exatidão irrestrita para todo workload/versão futura.
-- **Credencial de publicação:** preservados os tokens restritos existentes. O caminho de cliente novo com role padrão precisa de validação das permissões da versão/organização.
-- **CA:** inicialização com a CA atual e leitura restrita comprovadas; não foi provocada uma rotação da CA KubeVirt para testar o ciclo completo em produção.
-- **Notificações:** publicação de monitores e consultas não comprovam entrega de e-mail/paging nem abertura/recuperação de todos os incidentes.
-- **Aplicações:** contrato padrão validado com aplicações existentes. Aliases OTel passaram pelos testes de renderização; cada contrato alternativo precisa de aceite com suas métricas reais.
-- **Resiliência:** não houve reboot, perda de host, failover, teste destrutivo de volume, teste de carga prolongado ou alteração de VMs.
-- **Fleet/air gap:** não foram executados novos deploys nesses modos.
+- **VMIC:** live checks used eight existing completed records. Active/failure phases and inventory failures were covered locally; no new VMware import or transfer failure was triggered.
+- **Coriolis:** excluded by the owner; its VM stayed stopped.
+- **Backups and history:** no restore was performed. Timestamps, p95 and backup metadata do not prove RPO, application consistency or a full day of data.
+- **Metrics:** checks apply to the observed versions and contracts. Dynamic measurements remain subject to collection resolution, gaps and exporter accuracy.
+- **Publishing permissions:** existing restricted tokens were preserved. A new organization's role still needs permission/ownership validation.
+- **Certificates:** startup with the current CA was checked; a full KubeVirt CA rotation was not triggered.
+- **Notifications:** monitor publication and queries do not prove incident opening, email/paging delivery or recovery.
+- **Applications:** the default contract was checked live. Alternate OTel aliases passed rendering checks but need validation against their actual metrics.
+- **Resilience:** no reboot, host loss, failover, destructive storage test or prolonged load test was performed.
+- **Fleet and air gap:** no new deployment in those modes was performed.
 
-Backups completos, tokens e telemetria bruta permanecem fora deste repositório. Os charts e seus exemplos não contêm credenciais nem endereços privados do laboratório.
+Backups, tokens and raw telemetry remain outside the repository. Published examples contain no credentials or private lab addresses.

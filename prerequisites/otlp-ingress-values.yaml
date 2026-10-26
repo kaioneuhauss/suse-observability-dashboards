@@ -1,5 +1,5 @@
-# Mesclar nos values MANTIDOS do servidor SUSE; nao substituir a release inteira.
-# Ajuste o hostname, serviceName se a release difere, e o Secret TLS do servidor.
+# Merge into the existing SUSE server values; do not replace the full configuration.
+# Adjust the hostname, backend Service and TLS Secret for your server.
 opentelemetry-collector:
   ingress:
     enabled: true
@@ -16,4 +16,4 @@ opentelemetry-collector:
     tls:
     - hosts:
       - otlp-observability.example.com
-      secretName: PREENCHA-SECRET-TLS-OTLP
+      secretName: otlp-tls

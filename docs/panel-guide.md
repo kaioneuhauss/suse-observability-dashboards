@@ -1,14 +1,14 @@
-# Guia de leitura dos dashboards
+# Dashboard reading guide
 
-Títulos e explicações no produto permanecem em inglês. Cada linha abaixo registra o propósito de um painel. Abra o ícone de descrição no SUSE para consultar também a fórmula, janela e limitações.
+Each row explains what a panel shows. Open its description in SUSE for the formula, time window and measurement limits.
 
-Contagens são exibidas sem casas decimais. Taxas podem ser fracionárias. Dados ausentes nunca são uma confirmação de saúde. Os gráficos de totais do período não representam uma tendência temporal.
+Counts use whole numbers; rates can be fractional. Missing data is not proof of health. Period-total panels summarize the selected window and do not show a trend. This is a community lab project, not recommended for production.
 
 ## Virtualization · VM & Host Overview
 
 Are my virtual machines and their hosts running out of resources?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Running VMs | Number of running VM instances currently reported by KubeVirt. Powered-off VM definitions are not included; compare this with the running list in Harvester. |
 | Busiest VM: CPU used | CPU use of the busiest selected VM compared with its configured virtual CPUs. If high, open VM Performance to check whether CPU is actually waiting. |
@@ -33,7 +33,7 @@ Are my virtual machines and their hosts running out of resources?
 
 Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Longest wait for CPU | Highest average CPU scheduling wait among selected VMs. A sustained increase means virtual CPUs are waiting for processing time on the host. |
 | Busiest VM: CPU used | Highest CPU use relative to the VM's configured virtual CPUs. Compare with CPU waiting time before concluding that the host is overloaded. |
@@ -51,7 +51,7 @@ Why is a virtual machine slow? Compare CPU waiting time, memory pressure and dis
 
 How much capacity is assigned to running VMs, and how much room is left?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Virtual CPUs assigned to running VMs | Total configured virtual CPUs of running VMs. This is an integer allocation count, not measured CPU consumption. |
 | RAM assigned to running VMs | Total guest RAM configured for running VMs. Host processes and virtualization overhead need additional memory. |
@@ -67,7 +67,7 @@ How much capacity is assigned to running VMs, and how much room is left?
 
 Which volumes need attention, how busy is storage, and what backups are recorded?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Volumes needing attention | Volumes marked degraded or faulted by Longhorn. Open Longhorn to inspect replicas and scheduling; detached volumes with unknown health are counted separately in the health chart. |
 | Volumes with no recorded backup | Volumes whose last successful backup timestamp is zero. Check which ones actually need backups; this includes non-VM volumes. |
@@ -87,7 +87,7 @@ Which volumes need attention, how busy is storage, and what backups are recorded
 
 Which VMware imports have finished, failed or are still being processed by VM Import Controller?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Import records | Number of import records retained by VM Import Controller. Deleting a record removes it from this current inventory, even if the VM still exists. |
 | Completed imports | Imports for which the controller recorded the VM starting. Check the guest and application separately before accepting the migration. |
@@ -106,7 +106,7 @@ Which VMware imports have finished, failed or are still being processed by VM Im
 
 How many requests reach the application, how often do they fail, and how long do they take?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Requests per second | Average application traffic during the selected period. Fractional values are normal: 0.5 requests/s means about one request every two seconds. |
 | Requests in the selected period | Estimated number of completed requests in the selected time range. Counter sampling can make the estimate fractional; the display rounds to whole requests. |
@@ -129,7 +129,7 @@ How many requests reach the application, how often do they fail, and how long do
 
 Are requests reaching applications through Traefik, and where are errors or delays occurring?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Requests per second | Incoming traffic averaged over the last five minutes. Fractional rates are normal and do not imply a fractional request. |
 | Average response time (ms) | Average time for completed requests over five minutes. Compare with the 95% and 99% response-time tiles to find slow outliers. |
@@ -157,7 +157,7 @@ Are requests reaching applications through Traefik, and where are errors or dela
 
 Are servers and applications available, and is the cluster running out of resources?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | Servers ready to run workloads | Percentage of known nodes reporting Ready. A missing or unready server needs investigation before capacity planning. |
 | Servers with working OS metrics | Percentage of known servers with successful operating-system collection. Missing visibility is different from an unavailable server. |
@@ -203,7 +203,7 @@ Are servers and applications available, and is the cluster running out of resour
 
 Are applications using the CPU and memory reserved for them, or approaching their limits?
 
-| Painel | O que explica (texto exibido no produto) |
+| Panel | What it shows (description in SUSE) |
 |---|---|
 | CPU used by the five busiest pods (mCPU) | Actual CPU use for the five pods selected as busiest at the end of the period. Compare the same names in reserved CPU and CPU limits. |
 | CPU reserved for those same pods (mCPU) | Scheduling requests for the same five pods. Reserved CPU is not actual consumption; 1000 mCPU equals one CPU core. |

@@ -1,50 +1,67 @@
-# Aplicações instrumentadas
+# Applications
 
-Este chart publica um dashboard e dois monitores. Não exige Traefik, Harvester ou coletores de host. **Não instrumenta aplicações nem cria um receptor OTLP**: as métricas da aplicação precisam estar chegando ao SUSE.
+See request volume, errors and response times from inside your applications. This chart publishes one dashboard and two monitors. It does not install a collector or instrument your code. The application metrics must already be arriving in SUSE Observability.
 
-## Métricas necessárias
+This is a community lab integration, **not recommended for production**.
 
-| Sinal | Padrão esperado |
+## Before installing
+
+You need the [publishing Secret](prerequisites.md#4-create-the-publishing-secret) and these metrics in Metrics Explorer:
+
+| Signal | Expected name or labels |
 |---|---|
-| Requisições concluídas | `http_server_requests_total` |
-| Latência | `http_server_request_duration_seconds_bucket`, `_sum`, `_count` |
-| Requisições ativas, se expostas | `http_server_active_requests` |
-| Identidade | `cluster_name`, `service_name`, `namespace` (mapeamento dos monitores) |
-| Rota e resultado | `http_route`, `http_response_status_code` |
+| Completed requests | `http_server_requests_total` |
+| Duration histogram, in seconds | `http_server_request_duration_seconds_bucket`, `_sum`, `_count` |
+| Active requests, optional | `http_server_active_requests` |
+| Application identity | `cluster_name`, `service_name`, `namespace` |
+| Route and HTTP result | `http_route`, `http_response_status_code` |
 
-Use rotas normalizadas (`/orders/{id}`), não IDs, URLs brutas ou usuário como labels. Histograma em segundos. Latência sem buckets não permite calcular p95/p99. Traces isolados não garantem a existência dessas métricas.
+Use normalized routes such as `/orders/{id}`, not individual IDs or user names. Traces alone do not guarantee these metrics exist. A histogram without buckets cannot provide p95/p99. For instrumentation, follow the [SUSE OpenTelemetry guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-k8s.html).
 
-O padrão preserva o contrato usado pelo projeto. Para uma aplicação OTel que expõe o contador do histograma e os labels normalizados correspondentes, configure os nomes reais, por exemplo:
+## Install
+
+```sh
+helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
+helm repo update obs-dashboards
+```
+
+Save as `applications.yaml`:
 
 ```yaml
 observability:
-  url: https://observability.exemplo.com.br
+  url: https://observability.example.com
+```
+
+Use a cluster and namespace containing the publishing Secret. No ingestion Secret or `clusterName` is needed for this chart:
+
+```sh
+helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
+  --version 1.2.1 --values applications.yaml \
+  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
+  --namespace suse-observability --wait --timeout 15m
+```
+
+## Check it
+
+```sh
+kubectl get jobs --selector app.kubernetes.io/instance=obs-applications \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+```
+
+Open **Applications · Traffic, Errors & Speed**. Select a known application and compare requests, status codes and duration with its own measurements. **No data** can mean missing instrumentation or no traffic; it is not 100% availability.
+
+Request availability is the share of completed requests without a 5xx response. It is not uptime. Error budget usage compares the 5-minute and 1-hour rates with `slo.availabilityTarget`, which defaults to `99.9`. It does not prove a 30-day SLO. Health, ready, live and metrics routes are excluded by the queries; check whether this fits your route names.
+
+## Optional: different metric names
+
+If your application uses the histogram count as its request counter and OTel cluster labels, add these settings after checking the real metric names:
+
+```yaml
 applicationMetrics:
   requestCounter: http_server_request_duration_seconds_count
   clusterLabel: k8s_cluster_name
 ```
 
-O exemplo pressupõe que `namespace` já identifica o namespace Kubernetes correto; se a origem usa outro label, normalize-o no pipeline antes da ingestão.
+You can also set `durationHistogram`, `serviceLabel`, `statusLabel` and `routeLabel`. The chart applies them to filters, panels and monitors. Keep `namespace` normalized to the Kubernetes namespace in the ingestion pipeline. One dashboard definition uses one metric contract; it does not automatically combine incompatible schemas.
 
-Também existem `durationHistogram`, `serviceLabel`, `statusLabel` e `routeLabel`. O chart aplica os aliases aos filtros, painéis e monitores. Não agrega automaticamente contratos diferentes em uma mesma definição. Confirme nomes, unidade, status e semântica no Metrics Explorer antes de selecionar um perfil; a validação ao vivo deste laboratório usou o contrato padrão.
-
-## Instalar
-
-Prepare o [Secret de publicação](prerequisites.md). Use o cluster/namespace central ou outro que tenha acesso HTTPS à API SUSE:
-
-```bash
-cp examples/applications.yaml local/applications.yaml
-helm upgrade --install obs-applications ./charts/suse-observability-applications \
-  --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS" \
-  -f local/applications.yaml --wait --timeout 15m
-```
-
-Somente a URL precisa ser alterada quando os nomes padrão de Secret e métricas já correspondem ao ambiente.
-
-## SRE e aceite
-
-Compare uma rota conhecida com requisições, códigos HTTP e duração na aplicação. Teste tráfego, erro e recuperação em uma aplicação de teste autorizada. `No data` pode ser ausência de tráfego ou instrumentação; não significa disponibilidade de 100%.
-
-O painel de disponibilidade mede `1 - fração de 5xx` entre requisições concluídas. Não mede uptime ou falhas anteriores à instrumentação. O consumo do orçamento de erro usa `slo.availabilityTarget`, padrão `99.9`, e compara janelas de 5 minutos e 1 hora. `1x` é a velocidade de consumo permitida; isso não comprova um SLO de 30 dias. Health/ready/live/metrics são excluídos pelo contrato das consultas; revise se sua aplicação usa esses termos em rotas de negócio.
-
-Os monitores publicados continuam sendo erro HTTP e latência. O painel de orçamento fornece contexto; criar uma política de paging por SLO exige objetivo acordado, volume mínimo e teste das janelas. Referências: [SUSE e OpenTelemetry](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-k8s.html), [Google SRE: alertas por SLO](https://sre.google/workbook/alerting-on-slos/).
+The lab used the default contract. Validate custom names against actual application data. See [metric limits](metric-contracts.md), [validation](validation.md) and [removal](lifecycle.md).

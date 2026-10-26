@@ -1,16 +1,54 @@
 # Kubernetes / RKE2
 
-Módulo opcional com dois dashboards: saúde da plataforma e eficiência de recursos. Inclui node-exporter, inventário de requests/limits e 21 monitores. A coleta etcd é opcional e desligada por padrão.
+See cluster health and application resource usage: unavailable nodes, missing replicas, filesystem pressure and containers approaching their memory limits. This module installs two dashboards, host collectors, a requests/limits inventory and 21 monitors. etcd collection is optional and off by default.
 
-## Instalar
+This is a community lab integration, **not recommended for production**.
 
-Complete os [pré-requisitos comuns](prerequisites.md), especialmente o Agent e o nome exato da integração.
+## Before installing
 
-```bash
-cp examples/kubernetes.yaml local/kubernetes.yaml
+Complete the [common setup](prerequisites.md). The official Agent must be sending node and Pod data. Host collectors need Linux nodes, host networking and read-only host mounts allowed by your cluster's admission policies.
+
+**Already installed Virtualization on this cluster?** Add `mode: content` to the values below. Virtualization already collects the host and Pod inventory data; running both collectors would duplicate it and conflict on local ports.
+
+## Install
+
+```sh
+helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
+helm repo update obs-dashboards
 ```
 
-Preencha `clusterName` e `observability.url`. Em RKE2, confirme por acesso aprovado aos nós que `http://127.0.0.1:2381/metrics` responde em **cada nó etcd** antes de adicionar:
+Save as `kubernetes.yaml`:
+
+```yaml
+clusterName: my-cluster
+observability:
+  url: https://observability.example.com
+```
+
+Replace the values and cluster details:
+
+```sh
+helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
+  --version 1.2.1 --values kubernetes.yaml \
+  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
+  --namespace suse-observability --wait --timeout 15m
+```
+
+## Check it
+
+```sh
+kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-kubernetes \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
+```
+
+Open **Kubernetes · Cluster Health** and **Kubernetes · Application Resource Usage**. Check node counts, inventory freshness and requests/limits for a known application. In Metrics Explorer, `up{job="sre-node",cluster_name="my-cluster"}` should be `1` for the expected nodes.
+
+Usage, requests and limits answer different questions. High CPU alone is not proof of an incident; compare it with latency, throttling and application impact. See [validation](validation.md) and [removal](lifecycle.md).
+
+## Optional: etcd metrics
+
+Only enable this after your platform administrator confirms that `http://127.0.0.1:2381/metrics` is available on each etcd node. Add to your values and repeat the Helm install command:
 
 ```yaml
 telemetry:
@@ -18,18 +56,6 @@ telemetry:
     enabled: true
 ```
 
-O coletor usa host networking, somente nos nós com `node-role.kubernetes.io/etcd=true`. Não publica a porta nem altera o etcd. Se o endpoint não existe, mantenha a opção desligada e confira a documentação/configuração da versão.
+The collector runs on nodes labeled `node-role.kubernetes.io/etcd=true`. It does not expose the port or change etcd. Check `up{job="sre-etcd",cluster_name="my-cluster"}` after enabling it. If Virtualization owns host collection, set this option in that release instead.
 
-```bash
-helm upgrade --install obs-kubernetes ./charts/suse-observability-kubernetes \
-  --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS" \
-  -f local/kubernetes.yaml --wait --timeout 15m
-```
-
-## Aceite
-
-Confirme `up{job="sre-node"}` por nó e `up{job="sre-etcd"}` por membro habilitado. Confira o sucesso do inventário, requests/limits, PVCs e filtros. O dashboard separa utilização, reserva e limite. CPU alta isoladamente é contexto; combine com latência, throttling e impacto no serviço.
-
-Os monitores etcd não recebem séries onde a coleta não foi habilitada. Para não publicar monitores neste módulo, use `content.monitors.enabled: false`; a seleção individual de regras pertence à fonte de desenvolvimento. Não interprete falta de dados como etcd saudável.
-
-Se o módulo Virtualization já coleta hosts e pods neste cluster, use este módulo em `mode: content`. Habilite etcd no módulo Virtualization, se necessário. Assim não haverá duplicação de node-exporter nem disputa pelas portas locais.
+etcd panels and monitors have no samples where collection is disabled. That is not a healthy etcd result. To skip publishing all monitors for this module, set `content.monitors.enabled: false` before the first installation. Changing this flag later stops publication but does not delete monitors already in SUSE; see [lifecycle](lifecycle.md).

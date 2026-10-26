@@ -29,7 +29,7 @@ jobs:
           python scripts/build-virtualization-dashboards.py
           python scripts/curate-dashboards.py
           python scripts/build-charts.py
-          git diff --exit-code -- charts/ examples/ components/
+          git diff --exit-code -- charts/ examples/ components/ docs/panel-guide.md
       - name: Validate each independent module
         run: |
           for module in virtualization traefik applications kubernetes imports; do

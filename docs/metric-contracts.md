@@ -1,49 +1,46 @@
-# Contratos e precisão das métricas
+# Metric definitions and limits
 
-Uma consulta executar sem erro não comprova sua interpretação. O aceite verifica nome/labels, tipo, unidade, janela, denominador, deduplicação, comportamento sem dados e comparação com a fonte. A evidência e os limites deste ambiente estão em [lab-validation.md](lab-validation.md).
+A query can run successfully and still be interpreted incorrectly. Check its labels, unit, time window, denominator and behavior when data is missing. Compare values with the source system. The lab results are recorded in [Lab validation](lab-validation.md).
 
-## Unidades e fórmulas
+## Units and formulas
 
-| Família | Contrato usado |
+| Metric family | How it is used |
 |---|---|
-| CPU KubeVirt | `rate(cpu_usage_seconds_total[5m])` = CPUs consumidas; porcentagem = 100 × consumo / (cores × sockets × threads), sem substituir topologia por CPU request |
-| Espera de vCPU | Counters em segundos; taxa por vCPU, deduplicação por VM/id e média dos vCPUs, vezes 100 |
-| RAM guest | `available` é a memória reportada pelo domínio; `usable` corresponde ao disponível recuperável do guest. Uso estimado = available − usable. RSS QEMU e memória configurada são medidas distintas |
-| Swap guest | KubeVirt expõe tráfego acumulado como gauge; delta positivo de 5 minutos / 300 é uma estimativa vulnerável a reinício/reset. Não se aplica uma taxa de counter indiscriminadamente |
-| I/O guest | Tempo acumulado em segundos / operações acumuladas, usando taxas na mesma janela; × 1000 para ms. Operações zero deixam latência sem valor |
-| CPU host | Taxa do counter em segundos por modo/CPU; média entre CPUs. CPU ocupada = 1 − idle. Capacidade usa CPUs lógicas |
-| RAM host | MemTotal e MemAvailable em bytes; uso operacional = total − available, incluindo efeitos de cache recuperável |
-| CPU do Agent | `container_cpu_usage` em nanocores; / 1.000.000 = mCPU. Não aplicar `rate()` novamente. Requests/limits do inventário em cores, × 1000 = mCPU |
-| Memória do Agent | Working set e RSS em bytes, com significados diferentes. Requests e limits do inventário também em bytes |
-| Longhorn estados | Robustness/attachment: uma série por estado com valor 0 ou 1. Contar estados ativos após deduplicar volume, não somar quantidade de séries |
-| Longhorn I/O | Latência gauge em **ns**, / 1.000.000 = ms. IOPS e throughput são gauges já calculados como taxas |
-| Longhorn capacidade | Volume provisionado é lógico; node usage/capacity é físico gerenciado; scheduled é reserva lógica de réplicas. Thin provisioning pode deixar scheduled acima do físico |
-| Longhorn proteção | Last backup é timestamp Unix ou zero; idade apenas para timestamp positivo. Snapshot size não é espaço físico total replicado nem espaço recuperável garantido |
-| HTTP | Counters de requisições e buckets acumulados; taxas antes de agregar. Histogramas em segundos, quantis × 1000 = ms. Quantis são estimativas dependentes dos buckets |
-| HTTP no período | `range_sum(increase(counter[${__interval}]) …)` soma incrementos não sobrepostos seguindo o step efetivo resolvido pela API SUSE. `[1i]` é aceito pelo backend, mas rejeitado pelo parser SUSE 2.10.2. Não congelar o incremento em `@ end()` e não fixar 1 minuto quando o step pode aumentar |
-| Disponibilidade HTTP | 1 − fração de 5xx das requisições concluídas. Tráfego zero deixa o quociente indefinido. Não equivale a uptime; 4xx não consome esse orçamento específico |
-| VMIC | Inventário de CRs; diskSize em bytes lógicos. Intervalos calculados somente entre timestamps explícitos; não representam duração completa ou porcentagem global |
+| KubeVirt CPU | `rate(cpu_usage_seconds_total[5m])` gives consumed CPU cores. Percentage divides this by configured cores × sockets × threads, not CPU requests. |
+| vCPU waiting | Seconds counters become a rate per vCPU. Deduplicate by VM/id, average across vCPUs and multiply by 100. This is not identical to VMware CPU Ready. |
+| Guest memory | Estimated use is `available - usable`. Guest available memory, QEMU RSS and configured memory describe different things. |
+| Guest swap | KubeVirt exposes cumulative traffic as a gauge. Positive 5-minute change / 300 is an estimate affected by resets; it is not treated as a normal counter. |
+| Guest disk latency | Rate of accumulated seconds / rate of operations in the same window, multiplied by 1,000 for ms. No operations means no defined average latency. |
+| Host CPU | Rate by mode and CPU, averaged across CPUs. Busy CPU is 1 − idle. Capacity counts logical CPUs. |
+| Host memory | `MemTotal - MemAvailable`, in bytes. Available memory includes reclaimable cache. |
+| Agent CPU | `container_cpu_usage` is already in nanocores. Divide by 1,000,000 for mCPU; do not apply another `rate()`. Inventory requests/limits are cores, multiplied by 1,000 for mCPU. |
+| Agent memory | Working set and RSS are bytes with different meanings. Inventory memory requests/limits are also bytes. |
+| Longhorn states | Robustness and attachment have one 0/1 series per state. Count active states after deduplicating the volume, not the number of exposed series. |
+| Longhorn I/O | Latency gauges are nanoseconds; divide by 1,000,000 for ms. IOPS and throughput gauges are already rates. |
+| Longhorn capacity | Provisioned volume size is logical. Node usage/capacity is physical managed storage. Scheduled capacity is logical replica reservation and can exceed physical capacity. |
+| Longhorn backups | Last backup is a Unix timestamp or zero. Calculate age only for positive timestamps. Snapshot size is not guaranteed reclaimable space or total replicated physical usage. |
+| HTTP | Calculate counter rates before aggregation. Histogram values are seconds; multiply quantiles by 1,000 for ms. Percentiles depend on bucket boundaries. |
+| HTTP period totals | `range_sum(increase(counter[${__interval}]) …)` sums non-overlapping increments using the resolution resolved by SUSE. `[1i]` works in the backend but is rejected by the SUSE 2.10.2 parser. Do not freeze the increase at `@ end()` or assume a fixed one-minute step. |
+| HTTP availability | 1 − the 5xx share of completed requests. With no traffic, the ratio is undefined. It is not uptime; 4xx does not consume this particular error budget. |
+| VM Import Controller | Inventory of retained CRs. `diskSize` is logical bytes. Intervals use explicit timestamps, not estimated transfer progress or full migration duration. |
 
-`percentunit` recebe razões entre 0 e 1; `percent` recebe valores já multiplicados por 100. Bytes IEC usam potências de 1024. Labels de cluster de OTLP (`k8s_cluster_name`) e de remote write (`cluster_name`) são normalizados explicitamente quando há junção.
+`percentunit` takes a ratio from 0 to 1. `percent` takes a value already multiplied by 100. IEC byte units use powers of 1,024. Joins explicitly normalize OTLP's `k8s_cluster_name` and remote write's `cluster_name`.
 
-As métricas de estado/configuração são deduplicadas por identidade lógica antes de contar. As taxas de counters são calculadas por série antes de agregar, para respeitar resets. A deduplicação não permite instalar coletores duplicados deliberadamente: cada conjunto de alvos deve ter um proprietário.
+State and configuration metrics are deduplicated by logical identity before counting. Counter rates are calculated per series before aggregation to account for resets. This is not a reason to run duplicate collectors: each target set should have one collection owner.
 
-## Ausência e histórico
+## Missing data and history
 
-- Sem telemetria não se presume zero nem saudável. Zeros de contagem só têm fallback quando existe a família necessária de inventário/estado. Ausência de métrica de backup não vira zero volumes desprotegidos.
-- Um disco ocioso pode ter IOPS zero e latência vazia. Uma VM parada pode não ter consumo. Um guest sem estatísticas pode não ter RAM/filesystem. Esses casos precisam ser separados de scrape falho.
-- Séries antigas podem permanecer consultáveis durante o lookback do backend. Confira saúde e idade da amostra; histórico não prova estado atual.
-- p95 de 24 horas usa somente o histórico disponível. Quantis, médias, taxas e contagens derivadas de coleta não são medições de precisão ilimitada. Perdas de amostras, resets e mudanças de configuração afetam a leitura.
-- Os totais HTTP foram conferidos em passos de 60, 300 e 900 segundos para a mesma janela alinhada. Bordas de períodos, arredondamento e falta de amostras continuam sujeitos à resolução da coleta. O backend SUSE usa MetricsQL; essas expressões não são portáveis sem adaptação para Prometheus puro.
+- Missing telemetry is not assumed to be zero or healthy. Count fallbacks require the relevant inventory/state family. Missing backup metrics do not mean zero unprotected volumes.
+- An idle disk can have zero IOPS and no latency value. A stopped VM has no current usage. Missing guest statistics can hide memory or filesystem data. Check collection health to distinguish these cases.
+- Old series may remain visible during the backend lookback period. Check sample freshness, not just whether a line exists.
+- A 24-hour p95 uses only the history actually collected. New installations do not have a full day of data. Rates, quantiles and sampled counts have limits; missing samples and resets affect them.
+- HTTP totals were compared across 60-, 300- and 900-second steps for the same aligned window. Window boundaries, rounding and missing samples still depend on collection resolution.
+- These queries use the SUSE MetricsQL backend. They are not automatically portable to plain Prometheus.
 
-## Fontes versionadas e aceite de outra versão
+## Check again when versions change
 
-- [Métricas KubeVirt v1.7.4](https://github.com/kubevirt/kubevirt/blob/v1.7.4/docs/metrics.md).
-- [Coletor de volumes Longhorn v1.11.2](https://github.com/longhorn/longhorn-manager/blob/v1.11.2/metrics_collector/volume_collector.go) e [coletor de backups](https://github.com/longhorn/longhorn-manager/blob/v1.11.2/metrics_collector/backup_collector.go).
-- [VM Import Controller v1.8.2](https://github.com/harvester/vm-import-controller/tree/v1.8.2).
-- [Semântica MetricsQL](https://docs.victoriametrics.com/metricsql/).
-- [Métricas Traefik](https://doc.traefik.io/traefik/observe/metrics/overview/).
+The implementation was checked against [KubeVirt v1.7.4 metrics](https://github.com/kubevirt/kubevirt/blob/v1.7.4/docs/metrics.md), [Longhorn v1.11.2 volume metrics](https://github.com/longhorn/longhorn-manager/blob/v1.11.2/metrics_collector/volume_collector.go), [Longhorn backup metrics](https://github.com/longhorn/longhorn-manager/blob/v1.11.2/metrics_collector/backup_collector.go) and [VM Import Controller v1.8.2](https://github.com/harvester/vm-import-controller/tree/v1.8.2). Also see [MetricsQL](https://docs.victoriametrics.com/metricsql/) and [Traefik metrics](https://doc.traefik.io/traefik/observe/metrics/overview/).
 
-Ao atualizar plataforma/Agent, confira HELP/TYPE no endpoint, labels no backend e valores na API de origem. Não estenda automaticamente a validação deste laboratório a outras versões, contratos de instrumentação ou cargas. `scripts/audit-queries.py` cobre execução/filtros; comparação semântica e teste do fluxo operacional também fazem parte do aceite.
+After a platform or Agent upgrade, check metric types, labels and values against the source API again. Lab validation does not automatically cover another version, workload or instrumentation contract.
 
-O parâmetro `${__interval}` é resolvido pelo SUSE conforme a resolução do gráfico. Referência: [queries representativas](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). A aceitação direta pelo VictoriaMetrics não comprova compatibilidade com a interface SUSE; execute também a auditoria nativa.
+SUSE resolves `${__interval}` according to chart resolution; see its [query guidance](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). Acceptance by VictoriaMetrics alone does not prove acceptance by the SUSE API or UI. The [development guide](development.md) covers the optional native API audits.

@@ -1,5 +1,10 @@
-# virtualization
+# SUSE Observability — Virtualization
 
-[Instalação e pré-requisitos](../../docs/virtualization.md) · [Values mínimos](../../examples/virtualization.yaml) · [Vários clusters](../../docs/multiple-clusters.md)
+An independent chart for the virtualization module. Install only the modules you need.
 
-Este chart é independente e não instala os outros módulos. Confira os valores avançados em `values.yaml`.
+> [!WARNING]
+> Community lab project. Not recommended for production and not an officially supported SUSE integration.
+
+[Installation and prerequisites](https://github.com/kaioneuhauss/suse-observability-dashboards/blob/main/docs/virtualization.md) · [Minimal values](https://github.com/kaioneuhauss/suse-observability-dashboards/blob/main/examples/virtualization.yaml) · [Removal](https://github.com/kaioneuhauss/suse-observability-dashboards/blob/main/docs/lifecycle.md)
+
+Use kubectl and Helm as shown in the guide. No local build or installer scripts are needed. Advanced settings are in `values.yaml`.

@@ -272,7 +272,7 @@ UNITS = {
 def query(panel, expression, alias):
     panel['spec']['queries'] = [{'kind':'TimeSeriesQuery','spec':{'plugin':{'kind':'PrometheusTimeSeriesQuery','spec':{'query':expression,'alias':alias}}}}]
 
-guide_rows = ['# Guia de leitura dos dashboards', '', 'Títulos e explicações no produto permanecem em inglês. Cada linha abaixo registra o propósito de um painel. Abra o ícone de descrição no SUSE para consultar também a fórmula, janela e limitações.', '', 'Contagens são exibidas sem casas decimais. Taxas podem ser fracionárias. Dados ausentes nunca são uma confirmação de saúde. Os gráficos de totais do período não representam uma tendência temporal.', '']
+guide_rows = ['# Dashboard reading guide', '', 'Each row explains what a panel shows. Open its description in SUSE for the formula, time window and measurement limits.', '', 'Counts use whole numbers; rates can be fractional. Missing data is not proof of health. Period-total panels summarize the selected window and do not show a trend. This is a community lab project, not recommended for production.', '']
 reviewed = {}
 for slug, (name, purpose, guide) in META.items():
     path = CONTENT / 'dashboards' / (slug + '.json')
@@ -323,7 +323,7 @@ for slug, (name, purpose, guide) in META.items():
             p=copy.deepcopy(panels['backupAge'])
             query(p,f'count by (k8s_cluster_name) ({base} == {value}) or on (k8s_cluster_name) (0 * count by (k8s_cluster_name) ({base}))','${k8s_cluster_name} · '+label)
             panels['backupState']['spec']['queries']+=p['spec']['queries']
-    guide_rows += ['## '+name,'',purpose,'','| Painel | O que explica (texto exibido no produto) |','|---|---|']
+    guide_rows += ['## '+name,'',purpose,'','| Panel | What it shows (description in SUSE) |','|---|---|']
     for key,(title,intro) in rows.items():
         p=panels[key]['spec']; old=p['display'].get('description','')
         details=old.split('\n\nMeasurement details:\n',1)[-1]

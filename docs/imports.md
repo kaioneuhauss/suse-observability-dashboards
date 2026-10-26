@@ -1,74 +1,77 @@
-# Importações VMware com VM Import Controller
+# VMware imports with VM Import Controller
 
-Módulo opcional e independente. Publica o dashboard **Virtualization · VMware Import Progress** e instala um pequeno inventário somente de leitura no Harvester. Não depende do chart Virtualization, não acessa o vCenter e não inicia, desliga, repete ou modifica importações.
+Follow VMware imports into Harvester: which imports are active, completed or failed, which disks are ready, and whether the inventory is up to date. This module installs one dashboard and a read-only collector. It does not start imports, contact vCenter or change VMs. Coriolis is not included.
 
-## O que você consegue acompanhar
+This is a community lab integration, **not recommended for production**.
 
-| Informação | Interpretação |
-|---|---|
-| Registros, ativos, concluídos e falhos | Objetos `VirtualMachineImport` ainda retidos no cluster |
-| Fase por importação | Estado gravado pelo controller; fases desconhecidas continuam identificadas como desconhecidas |
-| Idade de uma importação ativa | Tempo desde a criação do objeto, incluindo filas e esperas |
-| Discos totais, prontos e falhos | Quantidade de objetos de disco; não é porcentagem de transferência |
-| Capacidade lógica dos discos | `diskSize` informado pelo controller, em bytes; não é dado já transferido |
-| Intervalos registrados | Desligamento → exportação e submissão → prontidão das imagens, quando existem todos os timestamps necessários |
-| Saúde e idade do inventário | Confirma que o coletor conseguiu listar os objetos recentemente |
+## Before installing
 
-`virtualMachineRunning` significa sucesso segundo o controller. Testes do sistema operacional, rede e aplicação continuam necessários. Não há uma métrica confiável de progresso global, ETA ou duração completa da migração nesse contrato; o dashboard não inventa esses valores. A integração Coriolis ficou fora desta entrega.
+Complete the [common setup](prerequisites.md). VM Import Controller must already be enabled on Harvester. Check its CRD:
 
-## Pré-requisitos
-
-1. [SUSE Observability e Agent](prerequisites.md) funcionando, com integração identificada pelo mesmo `clusterName`.
-2. VM Import Controller instalado e sua CRD disponível. Versão validada: **1.8.2**, API `migration.harvesterhci.io/v1beta1`.
-3. Permissão para instalar o chart e seu ClusterRole, que permite apenas `list` de `virtualmachineimports`. O coletor não lê Secrets nem os objetos das origens VMware.
-4. Acesso às imagens Python e vmagent ou seus espelhos. Não exige a imagem OTel de `dp.apps.rancher.io` nem endpoint OTLP: usa remote write via HTTPS.
-
-Verifique no contexto do Harvester:
-
-```bash
-kubectl get crd virtualmachineimports.migration.harvesterhci.io --kubeconfig "$KCFG" --context "$CTX"
-kubectl get virtualmachineimports.migration.harvesterhci.io --kubeconfig "$KCFG" --context "$CTX" -A
+```sh
+kubectl get crd virtualmachineimports.migration.harvesterhci.io \
+  --kubeconfig /path/to/harvester.yaml --context harvester
+kubectl get virtualmachineimports.migration.harvesterhci.io --all-namespaces \
+  --kubeconfig /path/to/harvester.yaml --context harvester
 ```
 
-Não instale o módulo em um cluster sem essa CRD. Zero objetos com inventário saudável é válido. CRD ausente ou acesso negado torna o inventário indisponível.
+If the add-on is present but disabled, edit it and set `spec.enabled: true`, preserving its other settings:
 
-Se ainda não existe: no Harvester, abra **Advanced → Add-ons**, selecione `vm-import-controller` e use **Enable**. Aguarde `DeploySuccessful` e repita a verificação da CRD. A importação em si precisa ser preparada e testada separadamente, conforme [VM Import](https://docs.harvesterhci.io/v1.8/advanced/addons/vmimport/). Habilitar o add-on não cria uma migração automaticamente. [Operação de add-ons 1.8](https://docs.harvesterhci.io/v1.8/advanced/addons).
+```sh
+kubectl edit addons.harvesterhci.io vm-import-controller --namespace harvester-system \
+  --kubeconfig /path/to/harvester.yaml --context harvester
+```
 
-## Instalar
+Confirm the namespace with `kubectl get addons.harvesterhci.io --all-namespaces` using your kubeconfig and context if it differs. Follow the [Harvester VM Import guide](https://docs.harvesterhci.io/v1.8/advanced/addons/vmimport/) to configure the controller and prepare actual migrations. Enabling the add-on does not start an import.
 
-Prepare os Secrets de ingestão e publicação conforme os pré-requisitos comuns. Copie `examples/imports.yaml` para `local/imports.yaml`:
+The collector needs only permission to list `virtualmachineimports`; the chart supplies that RBAC. It does not read VMware credentials. It uses HTTPS remote write, so it does not need an OTLP endpoint or the Application Collection image Secret.
+
+## Install
+
+```sh
+helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
+helm repo update obs-dashboards
+```
+
+Save as `imports.yaml`:
 
 ```yaml
-clusterName: meu-harvester
+clusterName: my-harvester
 observability:
-  url: https://observability.exemplo.com.br
+  url: https://observability.example.com
 ```
 
-```bash
-helm upgrade --install obs-imports ./charts/suse-observability-imports \
-  --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS" \
-  -f local/imports.yaml --wait --timeout 15m
+Replace the values, kubeconfig and context with your own:
+
+```sh
+helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
+  --version 1.2.1 --values imports.yaml \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
+  --namespace suse-observability --wait --timeout 15m
 ```
 
-Para manter a publicação centralizada, instale `mode: telemetry` no Harvester e `mode: content` uma única vez no central, conforme [vários clusters](multiple-clusters.md). O módulo não publica monitores automaticamente: uma importação antiga retida como falha não deve gerar paging permanente sem uma política operacional acordada.
+## Check it
 
-## Aceite
-
-```bash
-kubectl rollout status deployment/obs-imports-imports --kubeconfig "$KCFG" --context "$CTX" -n "$NS"
-kubectl logs deployment/obs-imports-imports --kubeconfig "$KCFG" --context "$CTX" -n "$NS" -c import-inventory --since=5m
+```sh
+kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-imports \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+kubectl logs deployment/obs-imports-imports --container import-inventory --since=5m \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
 ```
 
-No Metrics Explorer:
+Open **Virtualization · VMware Import Progress**. Compare import names, phases and disk counts with the objects returned by kubectl. Zero imports is valid when the inventory is healthy. Missing CRDs, denied access and stale collection are not a healthy zero.
 
-```promql
-harvester_import_inventory_up{cluster_name="meu-harvester"}
-count(harvester_import_info{cluster_name="meu-harvester"})
-sum by (phase,outcome) (harvester_import_info{cluster_name="meu-harvester"})
-```
+## What the numbers mean
 
-Compare os nomes, fases, contagens de discos e timestamps com os objetos na API. Uma falha de leitura elimina a exposição do inventário antigo e publica `inventory_up=0`; os painéis dependentes também verificam esse sinal. A atualização padrão ocorre a cada 30 segundos. Interrupção completa de envio exige observar a atualidade das amostras, pois o backend pode manter a última série por seu período de lookback.
+| Panel | Meaning |
+|---|---|
+| Import counts and phases | Import objects still retained in Kubernetes |
+| Active import age | Time since the object was created, including time waiting |
+| Ready and failed disks | Disk objects, not transfer percentage |
+| Disk capacity | Logical bytes reported by the controller, not bytes already copied |
+| Recorded intervals | Specific controller timestamps; not full migration duration |
+| Inventory health and age | Whether the collector can still read recent data |
 
-Os labels exportados são namespace, nome da importação, nome da VM de destino, tipo de origem, fase/resultado e etapa. Senhas, endereços das origens, caminhos de arquivos e mensagens de erro não são exportados. A remoção de um CR elimina esse registro do inventário atual; o histórico de métricas segue a retenção do backend. Revise essa retenção para auditoria de migrações.
+There is no reliable global completion percentage or ETA in this contract. `virtualMachineRunning` is controller success; still check the guest OS, networking and application. Deleting an import object removes it from current inventory, while old metrics follow SUSE retention.
 
-Contrato verificado no [código VM Import Controller v1.8.2](https://github.com/harvester/vm-import-controller/tree/v1.8.2). Consulte também os [contratos de métricas](metric-contracts.md).
+Validated with VM Import Controller **1.8.2**, API `migration.harvesterhci.io/v1beta1`. Existing completed imports were checked live; no new migration was started. No automatic monitors are included. See [metric limits](metric-contracts.md), [multiple clusters](multiple-clusters.md) and [removal](lifecycle.md).

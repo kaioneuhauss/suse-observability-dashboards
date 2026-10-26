@@ -1,89 +1,109 @@
 # SUSE Virtualization / Harvester
 
-Este módulo instala coleta KubeVirt/Longhorn, métricas de host, inventário de recursos, quatro dashboards e cinco monitores. Instale **no cluster Harvester**, no namespace do Agent. Não exige o módulo Traefik nem o de aplicações.
+Use this module for VM performance, host capacity, Longhorn storage and backup records. It installs four dashboards, five monitors and the collectors they need. It does not require any other module.
 
-## Pré-requisitos específicos
+This is a community lab integration, **not recommended for production**.
 
-1. Complete os [pré-requisitos comuns](prerequisites.md).
-2. Disponibilize um endpoint **OTLP gRPC com TLS** no SUSE. Use `host:443`, sem `https://`. Se ainda não existe, configure-o na instalação do servidor conforme a [documentação SUSE](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html). O arquivo `prerequisites/otlp-ingress-values.yaml` é um fragmento a adaptar ao Service e IngressClass reais; não substitui os values completos do servidor.
-3. Confirme no Harvester:
+## Before installing
 
-```bash
-kubectl get svc kubevirt-prometheus-metrics --kubeconfig "$KCFG" --context "$CTX" -n harvester-system
-kubectl get configmap kubevirt-ca --kubeconfig "$KCFG" --context "$CTX" -n harvester-system
-kubectl get svc longhorn-backend --kubeconfig "$KCFG" --context "$CTX" -n longhorn-system
-kubectl get networkpolicy --kubeconfig "$KCFG" --context "$CTX" -n longhorn-system
+Complete the [common setup](prerequisites.md). Install this module on **Harvester, in the Agent's namespace**. Three extra items are needed:
+
+### OTLP endpoint
+
+Your SUSE server needs an OTLP gRPC endpoint with TLS, such as `otlp-observability.example.com:443`. This is separate from the web UI address. If it is missing, follow [Set up OTLP access](otlp.md) with the administrator of the SUSE server.
+
+### Collector image access
+
+The default collector image comes from `dp.apps.rancher.io`. It needs an Application Collection account and a registry Secret named `application-collection` in the release namespace.
+
+If your administrator provides a Docker authentication file for that registry, create the Secret with:
+
+```sh
+kubectl create secret generic application-collection \
+  --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=/private/config.json \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
 ```
 
-O chart lê a CA pública diretamente do ConfigMap `kubevirt-ca`, prepara o arquivo antes do Collector iniciar e sincroniza mudanças a cada 60 segundos. A permissão limita-se a `get` desse ConfigMap. Não lê chaves privadas e não modifica KubeVirt. A coleta mantém TLS e valida quatro nomes de servidor distintos. Um CA inválido nunca substitui a última cópia válida. Para uma instalação com CA preparada externamente, use `virtualization.kubevirt.ca.autoSync: false` e configure `existingConfigMap`.
+The file must be a valid Docker config containing credentials for `dp.apps.rancher.io`. A Secret in another namespace is not accessible here. If the Secret already exists, reuse it. For an approved registry mirror, set `virtualization.image.repository`, `tag` and `imagePullSecrets` in your values file.
 
-4. Crie/reutilize o Secret de registry `application-collection` no namespace do Agent para baixar a imagem OTel de `dp.apps.rancher.io`. Use as credenciais da organização no Rancher/Harvester; não as grave em values. O chart também usa imagens públicas de node-exporter, vmagent e Python; verifique acesso ou espelhamento.
+### KubeVirt and Longhorn access
 
-   No gerenciador de Secrets do cluster, selecione o namespace do Agent e crie um Secret do tipo **Registry / dockerconfigjson**, com nome `application-collection`, servidor `dp.apps.rancher.io` e usuário/token da Application Collection. Se o Secret existe em outro namespace, ele não é automaticamente acessível aqui: peça ao administrador para disponibilizá-lo neste namespace. Verifique somente o tipo, sem imprimir credenciais:
+Check the existing endpoints:
 
-   ```bash
-   kubectl get secret application-collection --kubeconfig "$KCFG" --context "$CTX" -n "$NS" \
-     -o jsonpath='{.type}{"\n"}'
-   ```
-
-   Resultado esperado: `kubernetes.io/dockerconfigjson`. Se a organização usa espelho, ajuste `virtualization.image.repository`, `tag` e `imagePullSecrets` para a imagem equivalente validada pela organização. Um Secret presente não prova que as credenciais funcionam: o Pod precisa conseguir baixar a imagem.
-5. Confirme que o coletor pode acessar os endpoints KubeVirt e Longhorn. Em ambientes com NetworkPolicies isolando os managers Longhorn, é necessária permissão de entrada TCP/9500 a partir do coletor.
-
-## Instalar
-
-```bash
-cp examples/virtualization.yaml local/virtualization.yaml
+```sh
+kubectl get service kubevirt-prometheus-metrics --kubeconfig /path/to/harvester.yaml --context harvester --namespace harvester-system
+kubectl get configmap kubevirt-ca --kubeconfig /path/to/harvester.yaml --context harvester --namespace harvester-system
+kubectl get service longhorn-backend --kubeconfig /path/to/harvester.yaml --context harvester --namespace longhorn-system
+kubectl get networkpolicy --kubeconfig /path/to/harvester.yaml --context harvester --namespace longhorn-system
 ```
 
-Edite somente os valores do ambiente:
+The chart reads and refreshes the public KubeVirt CA automatically. No manual certificate copy is needed. It does not read private keys or change KubeVirt.
+
+If existing NetworkPolicies block Longhorn metrics, see the optional setting below. Do not enable it just because no policies exist.
+
+## Install
+
+Add the repository if you have not done it yet:
+
+```sh
+helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
+helm repo update obs-dashboards
+```
+
+Save this as `virtualization.yaml`, replacing the three values:
 
 ```yaml
-clusterName: meu-harvester
+clusterName: my-harvester
 observability:
-  url: https://observability.exemplo.com.br
-  otlpEndpoint: otlp-observability.exemplo.com.br:443
+  url: https://observability.example.com
+  otlpEndpoint: otlp-observability.example.com:443
 ```
 
-Se os managers Longhorn **já estão isolados por NetworkPolicy** e essa permissão foi aprovada, acrescente:
+`clusterName` must match the Agent's integration name. Use your actual kubeconfig, context and Agent namespace below:
+
+```sh
+helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
+  --version 1.2.1 --values virtualization.yaml \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
+  --namespace suse-observability --wait --timeout 15m
+```
+
+## Check it
+
+```sh
+kubectl get pods,jobs --kubeconfig /path/to/harvester.yaml --context harvester \
+  --namespace suse-observability --selector app.kubernetes.io/instance=obs-virtualization
+kubectl logs deployment/obs-virtualization --container collector --since=5m \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+kubectl get virtualmachineinstances --all-namespaces --kubeconfig /path/to/harvester.yaml --context harvester
+```
+
+Open **Virtualization · VM & Host Overview**. Select the cluster and compare **Running VMs** with the running instances returned by kubectl. Check that the collection status panels show `1` for the expected targets. Guest memory depends on balloon statistics; guest filesystem data needs QEMU Guest Agent. A stopped VM has no current resource usage.
+
+The [dashboard guide](virtualization-dashboards.md) explains the four views. For removal, use [Update, remove and reinstall](lifecycle.md).
+
+## Optional: allow Longhorn metrics through an existing policy
+
+Only use this when Longhorn managers are **already isolated** and you want to allow the collector to reach TCP/9500. Add to `virtualization.yaml`, then repeat the Helm install command:
 
 ```yaml
 virtualization:
   longhorn:
-    enabled: true
     allowMetricsNetworkPolicy: true
     existingIsolationConfirmed: true
 ```
 
-Essa regra adiciona um único peer com os seletores de namespace e Pod juntos (AND), permitindo TCP/9500 aos managers `app: longhorn-manager`. Com a release `obs-virtualization` em `suse-observability`, a origem deve ter `app.kubernetes.io/instance: obs-virtualization` e `app.kubernetes.io/name: sre-kubevirt-telemetry` nesse namespace. As políticas existentes continuam válidas; o chart não as remove nem altera. A porta também atende à API Longhorn; avalie essa exposição interna. Não habilite a regra como primeira política de um Longhorn que não era isolado: uma política nova pode mudar o comportamento do tráfego existente. Se a organização não permite esse acesso, use `virtualization.longhorn.enabled: false`; os painéis Longhorn ficam sem dados e devem ser tratados como não aplicáveis.
+The rule allows the collector's Pod labels **and** its namespace together. With the example release, only `obs-virtualization` / `sre-kubevirt-telemetry` Pods in `suse-observability` match. Existing policies stay in place. Port 9500 also serves the Longhorn API, so this is access to that port, not an HTTP path restriction.
 
-```bash
-helm upgrade --install obs-virtualization ./charts/suse-observability-virtualization \
-  --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS" \
-  -f local/virtualization.yaml --wait --timeout 15m
-kubectl logs deployment/obs-virtualization --kubeconfig "$KCFG" --context "$CTX" \
-  -n "$NS" -c collector --since=5m
+Creating the first ingress policy on previously unrestricted managers can block other traffic. If that is your situation, have the platform administrator design the policy first. To skip Longhorn collection, use `virtualization.longhorn.enabled: false`; its panels will have no data.
+
+Check the applied rule when enabled:
+
+```sh
+kubectl get networkpolicy obs-virtualization-longhorn-metrics -o yaml \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace longhorn-system
 ```
 
-Após a instalação, confira a regra renderizada/aplicada:
+## Optional: other dashboards on Harvester
 
-```bash
-kubectl get networkpolicy obs-virtualization-longhorn-metrics --kubeconfig "$KCFG" --context "$CTX" -n longhorn-system -o yaml
-```
-
-A regra deve selecionar somente os managers, um peer com os dois seletores e somente TCP/9500. [Guia dos quatro dashboards](virtualization-dashboards.md). Para importações VMware, instale opcionalmente o [módulo Imports](imports.md).
-
-## Aceite
-
-No Metrics Explorer, selecione o nome exato do cluster:
-
-```promql
-up{k8s_cluster_name="meu-harvester",job=~"(.*/)?(kubevirt-metrics|longhorn)"}
-kubevirt_vmi_info{k8s_cluster_name="meu-harvester"}
-longhorn_volume_robustness{k8s_cluster_name="meu-harvester"}
-```
-
-Os alvos habilitados devem ter `up=1`, com amostras posteriores à instalação. Compare a lista de VMs com as instâncias em execução no Harvester. Verifique CPU, memória, disco e filtros do dashboard. A memória do guest depende de estatísticas do balloon; filesystems dependem de QEMU Guest Agent. VMs desligadas não têm consumo atual. O painel de contagem mostra instâncias observadas, não todas as definições de VMs.
-
-Longhorn expõe uma série por `state`: `1` significa que o volume está naquele estado. Capacidade física do host, tamanho lógico de volume e filesystem do guest são medições diferentes. Um volume saudável em um único host não oferece tolerância à perda desse host.
-
-Se também quiser os dashboards Kubernetes no Harvester, publique o módulo Kubernetes com `mode: content`; reutilize os coletores deste módulo. Para etcd, confirme o endpoint local e habilite `telemetry.etcd.enabled: true` aqui. Não instale outro node-exporter nas mesmas portas.
+Install [Imports](imports.md) to follow VMware imports. To add the [Kubernetes dashboards](kubernetes.md), use `mode: content`; Virtualization already collects the host and Pod data. Do not install a second host collector on the same ports.

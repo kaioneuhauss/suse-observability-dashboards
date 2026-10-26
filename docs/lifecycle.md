@@ -1,66 +1,101 @@
-# Atualização, migração e remoção
+# Update, remove and reinstall
 
-## Caminho simples
+All steps use Helm and kubectl. The examples use Virtualization. For another module, replace `virtualization` in the chart, release, values file and Job names. Use the kubeconfig, context and namespace where that release is installed.
 
-Na raiz do projeto, confirme `KCFG`, `CTX` e `NS` e execute:
+## Check what is installed
 
-```bash
-bash scripts/pack.sh status virtualization
-bash scripts/pack.sh remove virtualization
+```sh
+helm list --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability
+helm get values obs-virtualization -o yaml \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability
 ```
 
-Troque `virtualization` por `imports`, `traefik`, `applications` ou `kubernetes`. O script usa os values da release instalada, salva um backup privado em `local/backups/`, exige a mesma versão local do chart, remove os dashboards/monitores daquela release e depois os recursos Helm e Jobs hooks. Se a exclusão externa falhar, ele para antes de desinstalar, permitindo corrigir o acesso e repetir.
+The `CHART` column includes the installed version. Keep that version available for removal. For example, `suse-observability-virtualization-1.2.1` means use `--version 1.2.1`.
 
-Para instalar novamente:
+## Update
 
-```bash
-bash scripts/pack.sh install virtualization local/virtualization.yaml
+Keep your release name, namespace, existing publisher identity and saved values. Read the changelog, update the repository, then apply the new version:
+
+```sh
+helm repo update obs-dashboards
+helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
+  --version 1.2.1 --values virtualization.yaml \
+  --set lifecycle.action=apply --set-string lifecycle.confirmDelete= \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
+  --namespace suse-observability --wait --timeout 15m
 ```
 
-Isso reinstala os componentes deste projeto. Não apaga histórico de métricas, plataformas, Agents oficiais, aplicações, VMs ou volumes. Os Secrets compartilhados ficam preservados para a reinstalação. Em vários clusters, execute a remoção para cada release coletora na origem e uma vez para a publicadora central.
+Use your complete saved values file, including any custom Secret names, collection options and `mode`. If you no longer have it, save the output of `helm get values` to a private file before updating. Do not replace a central `content` release with the README's default `all` example.
 
-O backup Helm não exporta edições manuais feitas no SUSE. Se precisa preservá-las, exporte os dashboards antes da remoção. A reinstalação publica as definições do Git; IDs e links podem mudar. Conteúdo de versões anteriores com outros nomes deve ser removido com o chart daquela versão antes de instalar esta.
+Unchanged dashboards keep their IDs. Changed dashboards use the default `replace` strategy, which can change links and overwrite manual edits. Export any edits you need from the SUSE UI before updating. A 403 means the token's access or ownership needs fixing; the publisher does not create a duplicate to bypass it.
 
-## Atualizar
+## Remove
 
-Preserve os arquivos de values, releases, namespaces e tokens proprietários. Confira o diff, renderize e execute novamente `helm upgrade --install` do módulo. O publicador compara a definição persistida com a desejada. Se não mudou, não recria o dashboard. Quando muda, a estratégia padrão `replace` pode alterar seu ID e substitui edições manuais. Não edite diretamente um dashboard gerenciado esperando que o chart preserve essas alterações.
+There are two parts: content stored in SUSE and resources stored in Kubernetes. `helm uninstall` alone removes Kubernetes resources, but leaves the dashboards and monitors in SUSE.
 
-Os Jobs baixam uma CLI fixada e verificam seu hash. A identidade precisa ter acesso ao objeto antigo; um 403 interrompe a operação antes de criar duplicatas. Faça exportação externa antes de atualização relevante: o backup temporário do Job não substitui um backup persistente.
+If you want a backup, save the installed settings and manifests first. Keep these files private:
 
-## Migrar do pacote antigo
-
-A revisão anterior permanece no histórico Git (`c059f58`). Antes de remover qualquer recurso:
-
-1. Liste Helm, Pods, RBAC, Services, ConfigMaps e políticas do projeto nos três clusters. Confirme a propriedade Helm/Fleet.
-2. Salve `helm get values`, `helm get manifest` e exports dos dashboards/monitores. Guarde fora do repositório, com acesso restrito. Registre o dashboard nativo que deve continuar existindo.
-3. Prepare os novos values e valide com `helm lint`, `helm template` e dry-run no API server. Para ConfigMaps grandes, use `kubectl apply --server-side --dry-run=server`; não use a anotação client-side de `kubectl apply`.
-4. No chart antigo `suse-observability-content`, use `lifecycle.action: delete` e `lifecycle.confirmDelete: DELETE_MANAGED_OBJECTS`. Confira a ausência apenas dos cinco dashboards/33 monitores antigos. Não apague conteúdo por wildcard.
-5. Desinstale somente as releases antigas identificadas: `sre-platform-telemetry` em cada origem, `kubevirt-otel-collector` no Harvester e `suse-observability-content` no central. Remova os dois Jobs hook antigos por nome exato. Não apague namespaces, PVCs ou plataformas.
-6. Confirme a ausência dos coletores antigos. Instale os módulos desejados e faça o [aceite](validation.md). Se ocorrer falha, pare aquele módulo e restaure seu chart/values e definições exportadas; IDs de dashboards podem mudar.
-
-O servidor SUSE, Agents oficiais, Rancher, Harvester, monitoramento nativo, VMs e volumes não pertencem à limpeza deste projeto. Aplicações de demonstração exigem uma decisão separada. O histórico de métricas existente é preservado; “do zero” refere-se aos componentes e conteúdo deste projeto, não ao apagamento do backend.
-
-## Remover um módulo
-
-Se a release publica conteúdo (`all` ou `content`), remova primeiro os objetos externos enquanto o token ainda funciona:
-
-```bash
-helm upgrade obs-traefik ./charts/suse-observability-traefik \
-  --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS" \
-  -f local/traefik.yaml \
-  --set lifecycle.action=delete \
-  --set lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS \
-  --wait --timeout 15m
+```sh
+helm get values obs-virtualization -o yaml \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability > virtualization-backup.yaml
+helm get manifest obs-virtualization \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability > virtualization-manifest.yaml
 ```
 
-Confira nos logs a ausência de todos os objetos do módulo, depois:
+These files do not include manual edits made in the SUSE UI. Export those separately if needed.
 
-```bash
-helm uninstall obs-traefik --kubeconfig "$KCFG" --kube-context "$CTX" -n "$NS" --wait
-kubectl delete job obs-traefik-dashboards obs-traefik-monitors --ignore-not-found \
-  --kubeconfig "$KCFG" --context "$CTX" -n "$NS"
+### 1. Delete the module's dashboards and monitors
+
+Skip this step for `mode: telemetry`. For `all` or `content`, keep the publishing token available and run this with the **installed chart version**:
+
+```sh
+helm upgrade obs-virtualization obs-dashboards/suse-observability-virtualization \
+  --version 1.2.1 --reuse-values \
+  --set lifecycle.action=delete --set lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
+  --namespace suse-observability --wait --timeout 15m
 ```
 
-Substitua nomes e arquivo pelo módulo correspondente. `helm uninstall` sozinho não remove conteúdo externo do SUSE. Jobs hooks podem sobreviver à release até o TTL de 24h; a exclusão por nomes exatos limpa imediatamente.
+Wait for success. If it fails, **stop here**, check the publishing Job logs and fix the error before retrying. The chart only deletes the names and identifiers belonging to this module.
 
-Para uma release `telemetry`, basta `helm uninstall` no cluster de origem. Não execute a etapa de exclusão de conteúdo em uma release coletora. Remova ou revogue Secrets exclusivos do projeto somente após confirmar que nenhum outro módulo os utiliza.
+### 2. Remove the release and its Jobs
+
+```sh
+helm uninstall obs-virtualization \
+  --kubeconfig /path/to/harvester.yaml --kube-context harvester \
+  --namespace suse-observability --wait --timeout 10m
+kubectl delete job obs-virtualization-dashboards obs-virtualization-monitors --ignore-not-found \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+```
+
+The last command removes retained Helm hook Jobs. Imports has no monitor Job, so `--ignore-not-found` handles that case. Collector-only releases just need `helm uninstall`.
+
+Check the result:
+
+```sh
+helm list --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability
+kubectl get pods,jobs --selector app.kubernetes.io/instance=obs-virtualization \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+```
+
+Confirm the module's dashboards are gone in SUSE. The SUSE server, retained metrics, official Agents, applications, VMs, volumes and shared Secrets are preserved. Do not delete the namespace. Delete or revoke a Secret only after confirming that no other module or application uses it.
+
+With multiple clusters, uninstall collectors in each source cluster and delete content once at its publisher. Do not delete the publisher token first.
+
+## Reinstall
+
+Run the module's install command with your saved values. When restoring from a backup taken during deletion, explicitly pass `--set lifecycle.action=apply --set-string lifecycle.confirmDelete=` as in the update example. Then follow [Check the installation](validation.md).
+
+The charts restore definitions from the repository; dashboard IDs may change. Removing and reinstalling a module does not clear SUSE's historical metrics.
+
+## Older versions and the previous combined package
+
+Version 1.2.0 packages are also available in the Helm repository for removal of that version. For earlier releases, use the matching chart from the repository's Git history; do not use a new catalog to delete old content with different names.
+
+The combined package is preserved at Git revision `c059f58`. Before migrating it, record its exact releases and ownership, export dashboards/monitors and back up Helm values/manifests. Delete its external content using that version's `lifecycle.action=delete` and confirmation setting, then uninstall only its identified releases. Do not remove resources by wildcard.
+
+If Helm/Fleet manages a resource from another source, change that source first. Otherwise it can recreate what you delete. Preserve the native SUSE dashboard and all platform workloads.
+
+## Disable monitors before a first install
+
+`content.monitors.enabled: false` skips monitor publication. It does not delete previously published monitors. To remove existing monitors but keep dashboards, first run the deletion step with `--set content.dashboards.enabled=false --set content.monitors.enabled=true`. After success, run the update command with your normal values, `lifecycle.action=apply`, dashboards enabled and monitors disabled. Confirm the outcome in SUSE. Never uninstall the release while you intend to retain its collectors.
