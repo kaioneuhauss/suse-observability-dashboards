@@ -12,10 +12,12 @@ class LayoutTests(unittest.TestCase):
    shutil.copy2(ROOT/'components/suse-observability-content/files/panel-monitor-coverage.json',component/'files')
    (temporary/'scripts').mkdir()
    shutil.copy2(ROOT/'scripts/enhance-dashboards.py',temporary/'scripts')
+   shutil.copy2(ROOT/'scripts/build-virtualization-dashboards.py',temporary/'scripts')
    def snapshot():return {str(p.relative_to(temporary)):p.read_bytes() for p in component.rglob('*.json')}
    expected=snapshot()
    for _ in range(2):
     subprocess.run([sys.executable,str(temporary/'scripts/enhance-dashboards.py')],check=True)
+    subprocess.run([sys.executable,str(temporary/'scripts/build-virtualization-dashboards.py')],check=True)
     self.assertEqual(expected,snapshot())
  def test_rendered_payload_preserves_layout(self):
   raw=subprocess.check_output(['helm','template','test',str(ROOT/'components/suse-observability-content'),'-f',str(ROOT/'components/suse-observability-content/config/values.yaml')],text=True)
@@ -38,8 +40,9 @@ class LayoutTests(unittest.TestCase):
      spec=q['spec']['plugin']['spec'];expr=spec['query']
      if 'range_sum(' in expr:
       self.assertEqual(spec.get('minStep'),'1m')
-      self.assertIn('[1m]',expr)
-      self.assertNotIn('[1i]',expr)
+      self.assertIn('[1i]',expr)
+      self.assertNotIn('[1m]',expr)
+      self.assertNotIn('[1i] @ end()',expr)
       self.assertNotIn('${__range}',expr)
       self.assertIn('@ start()',expr)
  def test_legend_avoids_misaligned_summary_values(self):

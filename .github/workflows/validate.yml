@@ -25,11 +25,13 @@ jobs:
       - run: bash tests/helm-checks.sh
       - name: Verify generated charts
         run: |
+          python scripts/enhance-dashboards.py
+          python scripts/build-virtualization-dashboards.py
           python scripts/build-charts.py
-          git diff --exit-code -- charts/ examples/
+          git diff --exit-code -- charts/ examples/ components/
       - name: Validate each independent module
         run: |
-          for module in virtualization traefik applications kubernetes; do
+          for module in virtualization traefik applications kubernetes imports; do
             helm lint "charts/suse-observability-$module" --strict -f "examples/$module.yaml"
           done
       - name: Package each chart

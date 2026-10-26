@@ -1,0 +1,51 @@
+clusterName: ''
+remoteWrite:
+  url: ''
+  existingSecret: suse-observability-agent-secrets
+  secretKey: STS_API_KEY
+  username: apikey
+  caSecret: ''
+  caKey: ca.crt
+  forcePrometheusProtocol: true
+scrapeInterval: 30s
+scrapeTimeout: 10s
+vmagent:
+  image: registry.rancher.com/suse-observability/vmagent:1.144.0-so6
+  nodePort: 18429
+  etcdPort: 18430
+  queueMaxDiskMiB: 1024
+  selfMonitoring: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+      ephemeral-storage: 128Mi
+    limits:
+      cpu: 150m
+      memory: 128Mi
+      ephemeral-storage: 1536Mi
+  memoryAllowedBytes: 64MiB
+  maxScrapeSize: 16MiB
+nodeSelector:
+  kubernetes.io/os: linux
+tolerations:
+- key: node-role.kubernetes.io/control-plane
+  operator: Exists
+  effect: NoSchedule
+- key: node-role.kubernetes.io/master
+  operator: Exists
+  effect: NoSchedule
+- key: node-role.kubernetes.io/etcd
+  operator: Exists
+  effect: NoExecute
+imagePullSecrets: []
+inventory:
+  image: python:3.12-alpine
+  pollIntervalSeconds: 30
+  resources:
+    requests:
+      cpu: 5m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 96Mi

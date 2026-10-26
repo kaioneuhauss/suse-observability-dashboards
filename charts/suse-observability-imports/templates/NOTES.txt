@@ -1,0 +1,3 @@
+Module: imports ({{ .Values.mode }})
+Check collector readiness, publisher Job logs and fresh metrics in SUSE Observability.
+See docs/imports.md for prerequisites, acceptance and removal.

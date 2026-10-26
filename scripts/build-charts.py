@@ -7,10 +7,11 @@ SRC=ROOT/'components'
 CONTENT=SRC/'suse-observability-content'
 CAT=json.loads((CONTENT/'files/catalog.json').read_text())
 PACKS={
- 'virtualization':{'dashboards':['harvester'],'tag':'dashboard-harvester','platform':True,'virt':True},
+ 'virtualization':{'dashboards':['harvester','virtualization-contention','virtualization-capacity','virtualization-storage'],'tag':'dashboard-harvester','platform':True,'virt':True},
  'traefik':{'dashboards':['traefik'],'tag':'dashboard-traefik','platform':True},
  'applications':{'dashboards':['applications'],'tag':'dashboard-applications'},
  'kubernetes':{'dashboards':['platform','resources'],'tag':'dashboard-platform','platform':True},
+ 'imports':{'dashboards':['imports'],'tag':'dashboard-imports','imports':True},
 }
 def inline_refs(value, root):
  if isinstance(value,list):return [inline_refs(v,root) for v in value]
@@ -29,7 +30,7 @@ def wrap(text,component):
   prefix+='{{- if hasKey .Values "applicationMetrics" }}{{- $_ := set $v "applicationMetrics" .Values.applicationMetrics }}{{- end }}\n{{- $_ := set $v "observability" .Values.observability }}\n{{- $_ := set $v "auth" .Values.auth }}\n{{- $_ := set $v "lifecycle" .Values.lifecycle }}\n{{- $_ := set $v "slo" .Values.slo }}\n'
  else:
   prefix+='{{- $_ := set $v "clusterName" (required "clusterName: use the exact SUSE integration name" .Values.clusterName) }}\n'
-  if component=='telemetry':
+  if component in ('telemetry','imports'):
    prefix+='{{- $_ := set $v.remoteWrite "url" (default (printf "%s/receiver/prometheus/api/v1/write" (trimSuffix "/" .Values.observability.url)) .Values.observability.remoteWriteUrl) }}\n{{- $_ := set $v.remoteWrite "existingSecret" .Values.ingestion.existingSecret }}\n{{- $_ := set $v.remoteWrite "secretKey" .Values.ingestion.secretKey }}\n'
   else:
    prefix+='{{- $_ := set $v.otlp "endpoint" (required "observability.otlpEndpoint is required for VM telemetry" .Values.observability.otlpEndpoint) }}\n{{- $_ := set $v.otlp "existingSecret" .Values.ingestion.existingSecret }}\n{{- $_ := set $v.otlp "secretKey" .Values.ingestion.secretKey }}\n'
@@ -44,9 +45,14 @@ for name,cfg in PACKS.items():
  c=yaml.safe_load((CONTENT/'values.yaml').read_text())
  selected=[x for x in CAT if (cfg['tag'] in x['tags'] or (name=='kubernetes' and 'dashboard-resources' in x['tags'])) and not (name=='virtualization' and x['slug']=='node-memory')]
  c['dashboards']['include']=cfg['dashboards'];c['monitors']['include']=[x['slug'] for x in selected]
+ if not selected:c['monitors']['enabled']=False
  values={'mode':'all','clusterName':'','observability':{'url':'','remoteWriteUrl':'','otlpEndpoint':''},'ingestion':{'existingSecret':'suse-observability-agent-secrets','secretKey':'STS_API_KEY'},'auth':{'dashboards':{'existingSecret':'suse-observability-publisher-token','serviceTokenKey':'serviceToken'},'monitors':{'existingSecret':'suse-observability-publisher-token','serviceTokenKey':'serviceToken'}},'lifecycle':c.pop('lifecycle'),'slo':{'availabilityTarget':99.9},'content':c}
  c.pop('observability');c.pop('auth')
  sources=[('content',CONTENT)]
+ if cfg.get('imports'):
+  source=SRC/'sre-import-telemetry';v=yaml.safe_load((source/'values.yaml').read_text());v.pop('clusterName')
+  for key in ('url','existingSecret','secretKey'):v['remoteWrite'].pop(key)
+  values['imports']=v;sources.append(('imports',source))
  if cfg.get('platform'):
   source=SRC/'sre-platform-telemetry';v=yaml.safe_load((source/'values.yaml').read_text());v.pop('clusterName')
   v['remoteWrite'].pop('url');v['remoteWrite'].pop('existingSecret');v['remoteWrite'].pop('secretKey')
@@ -58,7 +64,7 @@ for name,cfg in PACKS.items():
  if name=='applications':
   values['mode']='content'
   values['applicationMetrics']={'requestCounter':'http_server_requests_total','durationHistogram':'http_server_request_duration_seconds','clusterLabel':'cluster_name','serviceLabel':'service_name','statusLabel':'http_response_status_code','routeLabel':'http_route'}
- dump(dest/'Chart.yaml',{'apiVersion':'v2','name':dest.name,'description':f'Independent {name} dashboards, monitors and applicable collectors for SUSE Observability','type':'application','version':'1.0.0','appVersion':'2.10.2','home':'https://github.com/kaioneuhauss/suse-observability-dashboards'})
+ dump(dest/'Chart.yaml',{'apiVersion':'v2','name':dest.name,'description':f'Independent {name} dashboards, monitors and applicable collectors for SUSE Observability','type':'application','version':'1.1.0' if name=='virtualization' else '1.0.1' if name in ('applications','traefik') else '1.0.0','appVersion':'2.10.2','home':'https://github.com/kaioneuhauss/suse-observability-dashboards'})
  dump(dest/'values.yaml',values)
  for component,source in sources:
   for file in (source/'files').glob('*'):
@@ -81,8 +87,8 @@ for name,cfg in PACKS.items():
    sub['properties'].pop(key,None)
    if key in sub.get('required',[]):sub['required'].remove(key)
   if component!='content':
-   block='remoteWrite' if component=='telemetry' else 'otlp'
-   for key in (['url','existingSecret','secretKey'] if component=='telemetry' else ['endpoint','existingSecret','secretKey']):
+   block='remoteWrite' if component in ('telemetry','imports') else 'otlp'
+   for key in (['url','existingSecret','secretKey'] if component in ('telemetry','imports') else ['endpoint','existingSecret','secretKey']):
     sub['properties'][block]['properties'].pop(key,None)
     if key in sub['properties'][block].get('required',[]):sub['properties'][block]['required'].remove(key)
   else:

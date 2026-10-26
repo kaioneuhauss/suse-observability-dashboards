@@ -1,0 +1,33 @@
+{{- if ne .Values.mode "telemetry" }}
+{{- $root := . }}
+{{- $v := deepCopy .Values.content }}
+{{- if hasKey .Values "applicationMetrics" }}{{- $_ := set $v "applicationMetrics" .Values.applicationMetrics }}{{- end }}
+{{- $_ := set $v "observability" .Values.observability }}
+{{- $_ := set $v "auth" .Values.auth }}
+{{- $_ := set $v "lifecycle" .Values.lifecycle }}
+{{- $_ := set $v "slo" .Values.slo }}
+{{- with (dict "Values" $v "Release" .Release "Chart" .Chart "Files" .Files "Capabilities" .Capabilities "Template" .Template) }}
+{{- $ := . }}
+{{- if .Values.dashboards.enabled }}
+{{- if empty .Values.dashboards.include }}{{ fail "dashboards.include must select at least one dashboard when enabled" }}{{ end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-dashboards-definitions
+  namespace: {{ .Release.Namespace }}
+data:
+  publisher.py: |
+{{ .Files.Get "files/publisher.py" | indent 4 }}
+  dashboards.json: |
+    {"dashboards":[
+{{- range $index, $name := .Values.dashboards.include }}
+{{- if $index }}
+    ,
+{{- end }}
+{{ include "content.metricAliases" (dict "text" ($.Files.Get (printf "dashboards/%s.json" $name)) "values" $.Values) | replace "__ERROR_BUDGET__" (printf "%.8f" (divf (subf 100 $.Values.slo.availabilityTarget) 100)) | indent 4 }}
+{{- end }}
+    ]}
+{{- end }}
+
+{{- end }}
+{{- end }}

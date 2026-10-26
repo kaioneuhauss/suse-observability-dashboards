@@ -78,7 +78,7 @@ receivers:
               target_label: k8s_namespace_name
           metric_relabel_configs:
             - source_labels: [__name__]
-              regex: 'longhorn_volume_robustness|longhorn_node_storage_(capacity|usage|reservation|scheduled)_bytes'
+              regex: 'longhorn_volume_(robustness|state|capacity_bytes|actual_size_bytes|last_backup_at|read_iops|write_iops|read_latency|write_latency|read_throughput|write_throughput)|longhorn_node_storage_(capacity|usage|reservation|scheduled)_bytes|longhorn_snapshot_actual_size_bytes|longhorn_backup_(state|actual_size_bytes)'
               action: keep
 {{- end }}
 {{- if .Values.selfMonitoring }}

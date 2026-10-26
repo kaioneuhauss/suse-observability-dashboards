@@ -1,0 +1,864 @@
+{
+  "name": "Virtualization · Storage & Protection",
+  "description": "Longhorn capacity, volume health, I/O and backup metadata.",
+  "scope": "publicDashboard",
+  "dashboard": {
+    "metadata": {
+      "project": "{\"saveVariables\":false}"
+    },
+    "spec": {
+      "layouts": [
+        {
+          "kind": "Grid",
+          "spec": {
+            "items": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 24,
+                "height": 1,
+                "content": {
+                  "$ref": "#/spec/panels/guide"
+                }
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "width": 8,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/unhealthy"
+                }
+              },
+              {
+                "x": 8,
+                "y": 1,
+                "width": 8,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/neverBackup"
+                }
+              },
+              {
+                "x": 16,
+                "y": 1,
+                "width": 8,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/staleBackup"
+                }
+              },
+              {
+                "x": 0,
+                "y": 3,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/volumeHealth"
+                }
+              },
+              {
+                "x": 12,
+                "y": 3,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/attachment"
+                }
+              },
+              {
+                "x": 0,
+                "y": 6,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/latency"
+                }
+              },
+              {
+                "x": 12,
+                "y": 6,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/iops"
+                }
+              },
+              {
+                "x": 0,
+                "y": 9,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/backupAge"
+                }
+              },
+              {
+                "x": 12,
+                "y": 9,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/backupState"
+                }
+              },
+              {
+                "x": 0,
+                "y": 12,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/snapshotSpace"
+                }
+              },
+              {
+                "x": 12,
+                "y": 12,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/logicalCapacity"
+                }
+              },
+              {
+                "x": 0,
+                "y": 15,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/physicalStorage"
+                }
+              },
+              {
+                "x": 12,
+                "y": 15,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/scheduledStorage"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "panels": {
+        "guide": {
+          "spec": {
+            "display": {
+              "name": "Read this dashboard",
+              "description": "The OS inside a VM, the VM resource configuration, and consumption on the Harvester server."
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**Volume scope, not VM backup assurance.** These are Longhorn volumes, including non-VM PVCs and detached volumes. State metrics use labeled 0/1 series. A last-backup timestamp records metadata, not a tested restore or application-consistent backup. Snapshot space stays in the storage cluster. Host capacity panels follow only the cluster filter. No deletion or cleanup is performed."
+              }
+            },
+            "queries": []
+          }
+        },
+        "unhealthy": {
+          "spec": {
+            "display": {
+              "name": "Degraded or faulted volumes",
+              "description": "Count of unique volumes with an active degraded/faulted state. Detached unknown is not counted as healthy or unhealthy here. Zero is shown only when robustness telemetry exists.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(max by (k8s_cluster_name,volume) (longhorn_volume_robustness{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\",state=~\"degraded|faulted\"}) == 1) or (0 * count(max by (k8s_cluster_name,volume) (longhorn_volume_robustness{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\",state=~\"degraded|faulted\"})))",
+                      "alias": "Volumes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "neverBackup": {
+          "spec": {
+            "display": {
+              "name": "Volumes without a recorded backup",
+              "description": "Last successful backup timestamp equals zero. Includes all selected volumes, not just VM disks. Check which volumes require protection before scheduling backups.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(max by (k8s_cluster_name,volume) (longhorn_volume_last_backup_at{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) == 0) or (0 * count(max by (k8s_cluster_name,volume) (longhorn_volume_last_backup_at{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"})))",
+                      "alias": "Volumes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "staleBackup": {
+          "spec": {
+            "display": {
+              "name": "Last backup older than 7 days",
+              "description": "Counts only non-zero last-backup timestamps older than 7 days. Never-backed-up volumes are shown separately. The 7-day review window is not your agreed RPO.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(((time() - (max by (k8s_cluster_name,volume) (longhorn_volume_last_backup_at{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}))) > 604800) and (max by (k8s_cluster_name,volume) (longhorn_volume_last_backup_at{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) > 0)) or (0 * count(max by (k8s_cluster_name,volume) (longhorn_volume_last_backup_at{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"})))",
+                      "alias": "Volumes"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "volumeHealth": {
+          "spec": {
+            "display": {
+              "name": "Volume robustness · active states",
+              "description": "Only states whose value is 1 are shown. Unknown on detached volumes is expected; verify attachment before declaring an incident.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,volume,state) (longhorn_volume_robustness{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) == 1",
+                      "alias": "${k8s_cluster_name} · ${volume} · ${state}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "attachment": {
+          "spec": {
+            "display": {
+              "name": "Volume attachment · active states",
+              "description": "Attachment state uses one labeled 0/1 series per state. Detached volumes can be legitimate stopped VM disks; not a deletion list.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,volume,state) (longhorn_volume_state{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) == 1",
+                      "alias": "${k8s_cluster_name} · ${volume} · ${state}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "latency": {
+          "spec": {
+            "display": {
+              "name": "Longhorn volume I/O latency · ms",
+              "description": "Longhorn exposes current latency gauges in nanoseconds. Divide by 1,000,000; do not apply rate(). Filter zero-IOPS volumes out because idle latency has no operational meaning.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "milliseconds"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "(max by (k8s_cluster_name,volume) (longhorn_volume_read_latency{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) / 1000000) and (max by (k8s_cluster_name,volume) (longhorn_volume_read_iops{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) > 0)",
+                      "alias": "${volume} · read"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "(max by (k8s_cluster_name,volume) (longhorn_volume_write_latency{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) / 1000000) and (max by (k8s_cluster_name,volume) (longhorn_volume_write_iops{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) > 0)",
+                      "alias": "${volume} · write"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "iops": {
+          "spec": {
+            "display": {
+              "name": "Longhorn volume IOPS",
+              "description": "Read/write operations per second are already gauges computed by Longhorn. Do not take a second rate.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,volume) (longhorn_volume_read_iops{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"})",
+                      "alias": "${volume} · read"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,volume) (longhorn_volume_write_iops{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"})",
+                      "alias": "${volume} · write"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "backupAge": {
+          "spec": {
+            "display": {
+              "name": "Last successful backup age · days",
+              "description": "time() minus the non-zero Unix timestamp, divided by 86400. Empty may mean no backup; see the never-backed-up tile. Does not verify target accessibility or restore.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "(time() - (max by (k8s_cluster_name,volume) (longhorn_volume_last_backup_at{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}) > 0)) / 86400",
+                      "alias": "${volume}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "backupState": {
+          "spec": {
+            "display": {
+              "name": "Backup state code",
+              "description": "Longhorn 1.11.2: 0 New, 1 Pending, 2 InProgress, 3 Completed, 4 Error, 5 Unknown. Empty means no matching backup objects or missing telemetry. Metadata only.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,volume,backup) (longhorn_backup_state{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"})",
+                      "alias": "${volume} · ${backup}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "snapshotSpace": {
+          "spec": {
+            "display": {
+              "name": "Snapshot logical data · one copy per snapshot",
+              "description": "Sum reported snapshot sizes, deduplicated by volume/snapshot. This is not physical replicated disk usage or guaranteed reclaimable space; sharing, rebuilds and purge behavior matter.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "sum by (k8s_cluster_name,volume) (max by (k8s_cluster_name,volume,snapshot) (longhorn_snapshot_actual_size_bytes{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"}))",
+                      "alias": "${volume}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "logicalCapacity": {
+          "spec": {
+            "display": {
+              "name": "Volume provisioned capacity",
+              "description": "Logical provisioned size, independent of physical bytes used and replica count.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,volume) (longhorn_volume_capacity_bytes{k8s_cluster_name=~\"${storage_cluster}\",volume=~\"${storage_volume}\"})",
+                      "alias": "${volume}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "physicalStorage": {
+          "spec": {
+            "display": {
+              "name": "Node physical storage · cluster scope",
+              "description": "Longhorn-managed node capacity, used bytes and reserved bytes for other applications/system. Cluster scope: volume filter does not apply. Scheduled bytes are a different measure.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,node) (longhorn_node_storage_capacity_bytes{k8s_cluster_name=~\"${storage_cluster}\"})",
+                      "alias": "${node} · capacity"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,node) (longhorn_node_storage_usage_bytes{k8s_cluster_name=~\"${storage_cluster}\"})",
+                      "alias": "${node} · usage"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,node) (longhorn_node_storage_reservation_bytes{k8s_cluster_name=~\"${storage_cluster}\"})",
+                      "alias": "${node} · reservation"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "scheduledStorage": {
+          "spec": {
+            "display": {
+              "name": "Node scheduled replica capacity · cluster scope",
+              "description": "Logical bytes scheduled as replicas. Can exceed physical capacity with thin provisioning; do not subtract this from physical usage to calculate free disk.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (k8s_cluster_name,node) (longhorn_node_storage_scheduled_bytes{k8s_cluster_name=~\"${storage_cluster}\"})",
+                      "alias": "${node}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "variables": [
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "storage_cluster",
+              "display": {
+                "name": "Cluster",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "k8s_cluster_name",
+                  "matchers": [
+                    "longhorn_volume_capacity_bytes"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        },
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "storage_volume",
+              "display": {
+                "name": "Volume",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "volume",
+                  "matchers": [
+                    "longhorn_volume_capacity_bytes{k8s_cluster_name=~\"${storage_cluster}\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        }
+      ]
+    }
+  }
+}

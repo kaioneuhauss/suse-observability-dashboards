@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "clusterName",
+    "remoteWrite",
+    "scrapeInterval",
+    "scrapeTimeout",
+    "vmagent",
+    "nodeSelector",
+    "tolerations",
+    "imagePullSecrets",
+    "inventory"
+  ],
+  "properties": {
+    "clusterName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "remoteWrite": {
+      "type": "object",
+      "required": [
+        "url",
+        "existingSecret",
+        "secretKey"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "existingSecret": {
+          "type": "string",
+          "minLength": 1
+        },
+        "secretKey": {
+          "type": "string",
+          "minLength": 1
+        },
+        "forcePrometheusProtocol": {
+          "type": "boolean"
+        }
+      }
+    },
+    "scrapeInterval": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*s$"
+    },
+    "scrapeTimeout": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*s$"
+    },
+    "vmagent": {
+      "type": "object",
+      "required": [
+        "queueMaxDiskMiB",
+        "selfMonitoring",
+        "resources"
+      ],
+      "properties": {
+        "queueMaxDiskMiB": {
+          "type": "integer",
+          "minimum": 513
+        },
+        "selfMonitoring": {
+          "type": "boolean"
+        },
+        "maxScrapeSize": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*(KiB|MiB)$"
+        },
+        "resources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      }
+    },
+    "nodeSelector": {
+      "type": "object"
+    },
+    "tolerations": {
+      "type": "array"
+    },
+    "imagePullSecrets": {
+      "type": "array"
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "image",
+        "resources",
+        "pollIntervalSeconds"
+      ],
+      "properties": {
+        "image": {
+          "type": "string",
+          "minLength": 1
+        },
+        "pollIntervalSeconds": {
+          "type": "integer",
+          "minimum": 30
+        },
+        "resources": {
+          "$ref": "#/definitions/componentResources"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "vmagentLimits": {
+      "type": "object",
+      "required": [
+        "sampleLimit",
+        "seriesLimit",
+        "labelLimit"
+      ],
+      "properties": {
+        "sampleLimit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seriesLimit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "labelLimit": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "componentResources": {
+      "type": "object",
+      "required": [
+        "requests",
+        "limits"
+      ],
+      "properties": {
+        "requests": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "required": [
+            "cpu",
+            "memory"
+          ],
+          "properties": {
+            "cpu": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            },
+            "memory": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[0-9]+(?:\\.[0-9]+)?|\\.[0-9]+)(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$",
+                  "not": {
+                    "pattern": "^0+(?:\\.0+)?(?:[eE][+-]?[0-9]+|[numkKMGTEP]i?)?$"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

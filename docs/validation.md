@@ -32,6 +32,15 @@ python3 scripts/audit-queries.py --url http://127.0.0.1:18428 \
 
 O script testa os filtros disponíveis e uma seleção inexistente. Esse endpoint local precisa ser preparado pelo operador; o script não abre túneis nem usa credenciais implicitamente. A consulta direta ao backend valida expressões/dados, mas não substitui permissões, escopo e apresentação na API/interface SUSE.
 
+Compare também os totais HTTP em resoluções diferentes e a soma por rota com o total:
+
+```bash
+python3 scripts/audit-http-totals.py --url http://127.0.0.1:18428 \
+  --hours 6 --output local/http-period-audit.json
+```
+
+O script usa o contrato padrão e endpoint local autorizado. Não altera métricas nem gera tráfego. Veja [contratos e limites](metric-contracts.md).
+
 ## 4. Monitores e notificações
 
 Confirme Enabled, resultados recentes e associação ao componente correto. Configure canais e regras de notificação no SUSE. Em ambiente de teste autorizado, provoque um evento controlado e confirme abertura, notificação e recuperação. A publicação da regra não comprova entrega de e-mail ou paging.

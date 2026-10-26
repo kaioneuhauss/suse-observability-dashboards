@@ -249,7 +249,10 @@
             },
             "include": {
               "const": [
-                "harvester"
+                "harvester",
+                "virtualization-contention",
+                "virtualization-capacity",
+                "virtualization-storage"
               ]
             },
             "updateStrategy": {

@@ -1,6 +1,6 @@
 # SUSE Virtualization / Harvester
 
-Este módulo instala coleta KubeVirt/Longhorn, métricas de host, inventário de recursos, um dashboard e cinco monitores. Instale **no cluster Harvester**, no namespace do Agent. Não exige o módulo Traefik nem o de aplicações.
+Este módulo instala coleta KubeVirt/Longhorn, métricas de host, inventário de recursos, quatro dashboards e cinco monitores. Instale **no cluster Harvester**, no namespace do Agent. Não exige o módulo Traefik nem o de aplicações.
 
 ## Pré-requisitos específicos
 
@@ -40,11 +40,12 @@ Se os managers Longhorn **já estão isolados por NetworkPolicy** e essa permiss
 ```yaml
 virtualization:
   longhorn:
+    enabled: true
     allowMetricsNetworkPolicy: true
     existingIsolationConfirmed: true
 ```
 
-Essa regra permite apenas o coletor desta release/namespace e a porta 9500. A porta também atende à API Longhorn; avalie essa exposição interna. Não habilite a regra como primeira política de um Longhorn que não era isolado: uma política nova pode mudar o comportamento do tráfego existente. Se a organização não permite esse acesso, use `virtualization.longhorn.enabled: false`; os dois painéis Longhorn ficam sem dados e devem ser tratados como não aplicáveis.
+Essa regra adiciona um único peer com os seletores de namespace e Pod juntos (AND), permitindo TCP/9500 aos managers `app: longhorn-manager`. Com a release `obs-virtualization` em `suse-observability`, a origem deve ter `app.kubernetes.io/instance: obs-virtualization` e `app.kubernetes.io/name: sre-kubevirt-telemetry` nesse namespace. As políticas existentes continuam válidas; o chart não as remove nem altera. A porta também atende à API Longhorn; avalie essa exposição interna. Não habilite a regra como primeira política de um Longhorn que não era isolado: uma política nova pode mudar o comportamento do tráfego existente. Se a organização não permite esse acesso, use `virtualization.longhorn.enabled: false`; os painéis Longhorn ficam sem dados e devem ser tratados como não aplicáveis.
 
 ```bash
 helm upgrade --install obs-virtualization ./charts/suse-observability-virtualization \
@@ -53,6 +54,14 @@ helm upgrade --install obs-virtualization ./charts/suse-observability-virtualiza
 kubectl logs deployment/obs-virtualization --kubeconfig "$KCFG" --context "$CTX" \
   -n "$NS" -c collector --since=5m
 ```
+
+Após a instalação, confira a regra renderizada/aplicada:
+
+```bash
+kubectl get networkpolicy obs-virtualization-longhorn-metrics --kubeconfig "$KCFG" --context "$CTX" -n longhorn-system -o yaml
+```
+
+A regra deve selecionar somente os managers, um peer com os dois seletores e somente TCP/9500. [Guia dos quatro dashboards](virtualization-dashboards.md). Para importações VMware, instale opcionalmente o [módulo Imports](imports.md).
 
 ## Aceite
 

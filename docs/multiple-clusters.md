@@ -45,7 +45,7 @@ helm upgrade --install obs-virtualization ./charts/suse-observability-virtualiza
   -f local/virtualization-content.yaml --wait --timeout 15m
 ```
 
-Esse foi o desenho usado no laboratório para preservar as identidades proprietárias já existentes. Os quatro módulos de conteúdo ficam no central; os coletores ficam nas origens.
+Esse foi o desenho usado no laboratório para preservar as identidades proprietárias já existentes. Os cinco módulos de conteúdo ficam no central; os coletores ficam nas origens.
 
 ## Fleet
 

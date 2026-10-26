@@ -16,8 +16,8 @@ def substitute(expr,values):
 
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument('--module',choices=['virtualization','traefik','applications','kubernetes']);ap.add_argument('--url',default='http://127.0.0.1:18428');ap.add_argument('--output',required=True)
-    ap.add_argument('--range',action='store_true');ap.add_argument('--hours',type=int,default=6);ap.add_argument('--workers',type=int,default=3)
+    ap.add_argument('--module',choices=['virtualization','traefik','applications','kubernetes','imports']);ap.add_argument('--url',default='http://127.0.0.1:18428');ap.add_argument('--output',required=True)
+    ap.add_argument('--max-values',type=int,default=0,help='Bound values per filter; 0 audits all');ap.add_argument('--range',action='store_true');ap.add_argument('--hours',type=int,default=6);ap.add_argument('--workers',type=int,default=3)
     ap.add_argument('--api-prefix',default='/api/v1');ap.add_argument('--service-token-env',default='');a=ap.parse_args();now=int(time.time());jobs=[];coverage=[]
     def api(endpoint,params):
         url=a.url.rstrip('/')+a.api_prefix.rstrip('/')+'/'+endpoint+'?'+urllib.parse.urlencode(params,doseq=True)
@@ -31,7 +31,7 @@ def main():
         return sorted({r['metric'][label] for r in data['data']['result'] if r['metric'].get(label)})
     chart=Path(__file__).resolve().parents[1]/'components/suse-observability-content/dashboards'
     for path in sorted(chart.glob('*.json')):
-        if a.module and path.stem not in {'virtualization':['harvester'],'traefik':['traefik'],'applications':['applications'],'kubernetes':['platform','resources']}[a.module]:continue
+        if a.module and path.stem not in {'virtualization':['harvester','virtualization-contention','virtualization-capacity','virtualization-storage'],'traefik':['traefik'],'applications':['applications'],'kubernetes':['platform','resources'],'imports':['imports']}[a.module]:continue
         doc=json.loads(path.read_text().replace('__ERROR_BUDGET__','0.00100000'));specs=[v['perseslistvariable']['spec'] for v in doc['dashboard']['spec']['variables']]
         names=[s['name'] for s in specs];base=dict.fromkeys(names,'.*');scenarios={};choices=[]
         def keep(v):scenarios[json.dumps(v,sort_keys=True)]=v.copy()
@@ -39,6 +39,7 @@ def main():
             keep(selected)
             if level==len(specs) or (a.range and level>0):return
             spec=specs[level];available=values(spec,selected)
+            if a.max_values:available=available[:a.max_values]
             choices.append({'variable':spec['name'],'parents':selected.copy(),'options':available})
             if len(available)>1:
                 multi=selected.copy();multi[spec['name']]='|'.join(re.escape(v) for v in available[:2]);keep(multi)
@@ -68,7 +69,7 @@ def main():
         return result
     with concurrent.futures.ThreadPoolExecutor(max_workers=a.workers) as ex:results=list(ex.map(execute,jobs))
     errors=[r for r in results if r['status']!='success']
-    out={'checked_at':now,'mode':'range' if a.range else 'instant','hours':a.hours,'filter_coverage':coverage,'results':results,'limits':'API only; all live single-value paths, representative multi-selection, bounded time windows.'}
+    out={'checked_at':now,'mode':'range' if a.range else 'instant','hours':a.hours,'max_values_per_filter':a.max_values,'filter_coverage':coverage,'results':results,'limits':'API only; all live single-value paths, representative multi-selection, bounded time windows.'}
     dest=Path(a.output);dest.parent.mkdir(parents=True,exist_ok=True);dest.write_text(json.dumps(out,ensure_ascii=False,indent=2))
     print(json.dumps({'queries':len(results),'errors':len(errors),'empty':sum(r.get('series')==0 for r in results),'nonfinite_cases':sum(r.get('nonfinite_values',0)>0 for r in results)}))
     return bool(errors)

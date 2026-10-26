@@ -135,7 +135,11 @@
               "resources",
               "platform",
               "traefik",
-              "harvester"
+              "harvester",
+              "virtualization-contention",
+              "virtualization-capacity",
+              "virtualization-storage",
+              "imports"
             ]
           }
         },

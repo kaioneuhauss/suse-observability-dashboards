@@ -1350,5 +1350,320 @@
     "title": "Request metric age · seconds",
     "monitors": [],
     "guidance": "Context panel; use related monitors and verify telemetry."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "registered",
+    "title": "Retained import records",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "succeeded",
+    "title": "Controller completed",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "failed",
+    "title": "Failed / invalid records",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "active",
+    "title": "Active / pending records",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "phases",
+    "title": "Recorded phase per import",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "collection",
+    "title": "Import inventory collection · 1 healthy / 0 failed",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "diskReadiness",
+    "title": "Disk objects ready · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "disks",
+    "title": "Disk records by import",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "activeAge",
+    "title": "Active import age · seconds",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "lastCondition",
+    "title": "Time since last recorded condition · active imports",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "logicalDisks",
+    "title": "Recorded disk capacity · bytes",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "stageTimes",
+    "title": "Recorded stage duration · seconds",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "allocatedCpu",
+    "title": "Running VMs · configured vCPUs",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "allocatedMemory",
+    "title": "Running VMs · configured guest RAM",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "hostAvailable",
+    "title": "Host memory available",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "cpuRatio",
+    "title": "Running vCPU / host logical CPU ratio",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "nMinusOne",
+    "title": "N-1 guest-memory budget · upper bound",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "cpuP95",
+    "title": "VM CPU demand · p95 over 24h · cores",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "memoryP95",
+    "title": "Guest memory used · p95 over 24h",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "cpuPeak",
+    "title": "VM CPU demand · max over 24h · cores",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-capacity",
+    "panel": "coverage",
+    "title": "CPU telemetry samples · trailing 24h",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "cpuReady",
+    "title": "Worst CPU scheduler wait · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "cpuUsage",
+    "title": "Highest VM CPU use · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "memoryUse",
+    "title": "Highest guest memory use · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "ready",
+    "title": "CPU scheduler wait by VM · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "cpu",
+    "title": "CPU use by VM · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "ioWait",
+    "title": "vCPU I/O wait by VM · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "memory",
+    "title": "Guest memory use by VM · %",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "faults",
+    "title": "Guest major page faults/s",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "swap",
+    "title": "Guest swap activity · estimated bytes/s",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "readLatency",
+    "title": "VM disk read latency · ms",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-contention",
+    "panel": "writeLatency",
+    "title": "VM disk write latency · ms",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "unhealthy",
+    "title": "Degraded or faulted volumes",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "neverBackup",
+    "title": "Volumes without a recorded backup",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "staleBackup",
+    "title": "Last backup older than 7 days",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "volumeHealth",
+    "title": "Volume robustness · active states",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "attachment",
+    "title": "Volume attachment · active states",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "latency",
+    "title": "Longhorn volume I/O latency · ms",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "iops",
+    "title": "Longhorn volume IOPS",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "backupAge",
+    "title": "Last successful backup age · days",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "backupState",
+    "title": "Backup state code",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "snapshotSpace",
+    "title": "Snapshot logical data · one copy per snapshot",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "logicalCapacity",
+    "title": "Volume provisioned capacity",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "physicalStorage",
+    "title": "Node physical storage · cluster scope",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "scheduledStorage",
+    "title": "Node scheduled replica capacity · cluster scope",
+    "monitors": [],
+    "guidance": "Decision support; inspect source health, coverage and the metric contract."
   }
 ]

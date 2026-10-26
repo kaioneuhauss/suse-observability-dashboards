@@ -1,0 +1,808 @@
+{
+  "name": "Virtualization · VMware Imports (VMIC)",
+  "description": "VM Import Controller phases, failures, disk readiness and recorded stage durations.",
+  "scope": "publicDashboard",
+  "dashboard": {
+    "metadata": {
+      "project": "{\"saveVariables\":false}"
+    },
+    "spec": {
+      "layouts": [
+        {
+          "kind": "Grid",
+          "spec": {
+            "items": [
+              {
+                "x": 0,
+                "y": 0,
+                "width": 24,
+                "height": 1,
+                "content": {
+                  "$ref": "#/spec/panels/guide"
+                }
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "width": 6,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/registered"
+                }
+              },
+              {
+                "x": 6,
+                "y": 1,
+                "width": 6,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/succeeded"
+                }
+              },
+              {
+                "x": 12,
+                "y": 1,
+                "width": 6,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/failed"
+                }
+              },
+              {
+                "x": 18,
+                "y": 1,
+                "width": 6,
+                "height": 2,
+                "content": {
+                  "$ref": "#/spec/panels/active"
+                }
+              },
+              {
+                "x": 0,
+                "y": 3,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/phases"
+                }
+              },
+              {
+                "x": 12,
+                "y": 3,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/collection"
+                }
+              },
+              {
+                "x": 0,
+                "y": 6,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/diskReadiness"
+                }
+              },
+              {
+                "x": 12,
+                "y": 6,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/disks"
+                }
+              },
+              {
+                "x": 0,
+                "y": 9,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/activeAge"
+                }
+              },
+              {
+                "x": 12,
+                "y": 9,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/lastCondition"
+                }
+              },
+              {
+                "x": 0,
+                "y": 12,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/logicalDisks"
+                }
+              },
+              {
+                "x": 12,
+                "y": 12,
+                "width": 12,
+                "height": 3,
+                "content": {
+                  "$ref": "#/spec/panels/stageTimes"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "panels": {
+        "guide": {
+          "spec": {
+            "display": {
+              "name": "Read this dashboard",
+              "description": "The OS inside a VM, the VM resource configuration, and consumption on the Harvester server."
+            },
+            "plugin": {
+              "kind": "Markdown",
+              "spec": {
+                "text": "**VM Import Controller imports, not live migration.** Retained import objects are the inventory; deleting them removes this live inventory, while metric retention controls history. Success means the controller recorded virtualMachineRunning, not application acceptance. Disk readiness is completed disk objects, not transfer bytes or an overall progress percentage. Stage durations come only from explicit recorded timestamps; no exact total migration duration or ETA is inferred. No import, shutdown or retry action is executed."
+              }
+            },
+            "queries": []
+          }
+        },
+        "registered": {
+          "spec": {
+            "display": {
+              "name": "Retained import records",
+              "description": "Count of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(max by (cluster_name,namespace,import_name,target_vm,source_kind,phase,outcome) (harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)) or (0 * sum(max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1))",
+                      "alias": "Retained import records"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "succeeded": {
+          "spec": {
+            "display": {
+              "name": "Controller completed",
+              "description": "Count of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(max by (cluster_name,namespace,import_name,target_vm,source_kind,phase,outcome) (harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",outcome=\"succeeded\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)) or (0 * sum(max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1))",
+                      "alias": "Controller completed"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "failed": {
+          "spec": {
+            "display": {
+              "name": "Failed / invalid records",
+              "description": "Count of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(max by (cluster_name,namespace,import_name,target_vm,source_kind,phase,outcome) (harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",outcome=\"failed\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)) or (0 * sum(max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1))",
+                      "alias": "Failed / invalid records"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "active": {
+          "spec": {
+            "display": {
+              "name": "Active / pending records",
+              "description": "Count of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "StatChart",
+              "spec": {
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 2,
+                  "unit": "decimal"
+                },
+                "sparkline": false,
+                "thresholds": {
+                  "defaultColor": "#1976B9",
+                  "steps": []
+                },
+                "valueFontSize": 40
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "count(max by (cluster_name,namespace,import_name,target_vm,source_kind,phase,outcome) (harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",outcome=\"active\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)) or (0 * sum(max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1))",
+                      "alias": "Active / pending records"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "phases": {
+          "spec": {
+            "display": {
+              "name": "Recorded phase per import",
+              "description": "Each visible series has value 1 and names the controller phase. virtualMachineRunning is the terminal controller status; it is not a current guest-health check.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind,phase,outcome) (harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name} · ${phase} · ${outcome}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "collection": {
+          "spec": {
+            "display": {
+              "name": "Import inventory collection · 1 healthy / 0 failed",
+              "description": "API read success and exporter freshness. HTTP scrape success alone is insufficient: this signal becomes 0 on API errors or stale polling.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"})",
+                      "alias": "${cluster_name}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "diskReadiness": {
+          "spec": {
+            "display": {
+              "name": "Disk objects ready · %",
+              "description": "Number of disk records with VirtualMachineImageReady=True divided by recorded disks. A 100% value covers the disk-image stage only; VM creation and boot can still be pending. No disks means undefined, not 100%.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "percent"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "100 * (max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_disks{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",state=\"ready\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)) / ((max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_disks{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",state=\"total\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)) > 0)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "disks": {
+          "spec": {
+            "display": {
+              "name": "Disk records by import",
+              "description": "Counts recorded total, ready and failed disks. Ready takes precedence over an old failed condition after recovery. These are disk objects, not bytes transferred.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_disks{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",state=\"total\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name} · total"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_disks{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",state=\"ready\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name} · ready"
+                    }
+                  }
+                }
+              },
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_disks{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",state=\"failed\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name} · failed"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "activeAge": {
+          "spec": {
+            "display": {
+              "name": "Active import age · seconds",
+              "description": "Elapsed time from object creation for active imports only. Includes queueing and all stages; no promised completion time is inferred.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "seconds"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_active_age_seconds{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "lastCondition": {
+          "spec": {
+            "display": {
+              "name": "Time since last recorded condition · active imports",
+              "description": "Age of the newest condition timestamp for active imports. Long copy operations may legitimately have no condition updates; this is an investigation signal, not proof that transfer stalled.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "seconds"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "(time() - (max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_last_condition_timestamp_seconds{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1))) and on (cluster_name,namespace,import_name) (harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",outcome=\"active\"})",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "logicalDisks": {
+          "spec": {
+            "display": {
+              "name": "Recorded disk capacity · bytes",
+              "description": "Sum diskSize from the controller API. Logical source disk capacity, not bytes copied, allocated storage or measured throughput. Missing sizes remain absent.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind) (harvester_import_disk_capacity_bytes{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\",state=\"total\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "stageTimes": {
+          "spec": {
+            "display": {
+              "name": "Recorded stage duration · seconds",
+              "description": "poweroff_to_export: VMPoweredOff → VMExported. images_submitted_to_ready: earliest submitted → latest ready across all disks, only when every disk has timestamps. These intervals do not include full boot/application acceptance and are not end-to-end migration duration.\n\nWhen to investigate / alert coverage: Context for investigation; not a paging rule. Verify source health and sample coverage before acting."
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 2,
+                    "unit": "seconds"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "query": "max by (cluster_name,namespace,import_name,target_vm,source_kind,stage) (harvester_import_stage_duration_seconds{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\",import_name=~\"${import_name}\"}) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"}) == 1)",
+                      "alias": "${cluster_name} · ${namespace} · ${import_name} · ${stage}"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "variables": [
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "import_cluster",
+              "display": {
+                "name": "Cluster",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "cluster_name",
+                  "matchers": [
+                    "harvester_import_inventory_up"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        },
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "import_namespace",
+              "display": {
+                "name": "Namespace",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "namespace",
+                  "matchers": [
+                    "harvester_import_info{cluster_name=~\"${import_cluster}\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        },
+        {
+          "perseslistvariable": {
+            "kind": "ListVariable",
+            "spec": {
+              "name": "import_name",
+              "display": {
+                "name": "Import",
+                "description": "Select one or more values. After changing a parent filter, reset the following filters to Everything."
+              },
+              "allowAllValue": true,
+              "allowMultiple": true,
+              "customAllValue": ".*",
+              "sort": "alphabetical-asc",
+              "defaultValue": {
+                "perseslistvariabledefaultsinglevalue": {
+                  "kind": "singleValue",
+                  "singleValue": "{\"type\":\"Everything\"}"
+                },
+                "perseslistvariabledefaultslicevalues": null
+              },
+              "plugin": {
+                "kind": "MetricLabelValues",
+                "spec": {
+                  "labelName": "import_name",
+                  "matchers": [
+                    "harvester_import_info{cluster_name=~\"${import_cluster}\",namespace=~\"${import_namespace}\"}"
+                  ]
+                }
+              }
+            }
+          },
+          "persestextvariable": null
+        }
+      ]
+    }
+  }
+}

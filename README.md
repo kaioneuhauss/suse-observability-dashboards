@@ -1,15 +1,26 @@
 # Dashboards independentes para SUSE Observability
 
-Instale somente o que existe no seu ambiente. Cada módulo tem **seu próprio Helm chart**, dashboard, monitores e, quando necessário, coletores. Não depende dos outros módulos.
+Instale somente o que existe no seu ambiente. Cada módulo tem **seu próprio Helm chart**, dashboard(s) e, quando necessário, coletores e monitores. Não depende dos outros módulos.
 
 | Seu ambiente | Chart | Conteúdo | Procedimento |
 |---|---|---|---|
-| SUSE Virtualization / Harvester | `suse-observability-virtualization` | VMs, hosts, Longhorn e saúde da coleta; 5 monitores | [Virtualization](docs/virtualization.md) |
+| SUSE Virtualization / Harvester | `suse-observability-virtualization` | 4 dashboards: visão geral, contenção, capacidade e proteção; 5 monitores | [Virtualization](docs/virtualization.md) |
+| Importações VMware → Harvester | `suse-observability-imports` | Fases, falhas, discos e tempos registrados pelo VM Import Controller | [Imports](docs/imports.md) |
 | Traefik | `suse-observability-traefik` | Tráfego, erros, p95/p99, conexões e TLS; 6 monitores | [Traefik](docs/traefik.md) |
 | Aplicações com métricas HTTP | `suse-observability-applications` | RED, disponibilidade por requisição e orçamento de erro; 2 monitores | [Aplicações](docs/applications.md) |
 | Kubernetes / RKE2 | `suse-observability-kubernetes` | Hosts, workloads, recursos, PVCs e etcd opcional; 21 monitores | [Kubernetes](docs/kubernetes.md) |
 
 Precisa apenas de Virtualization? Instale somente esse chart no Harvester. Ter SUSE Observability é o pré-requisito comum; o módulo de VMs também exige um cluster Harvester monitorado. Não instale coletores de VMs nos guests.
+
+## O que os dashboards ajudam a decidir
+
+- **Virtualization:** localizar espera de CPU e I/O, avaliar memória do guest e host, comparar demanda com recursos configurados e revisar saúde e proteção dos volumes.
+- **Imports:** acompanhar os registros de importação VMware do VM Import Controller, sem confundir discos prontos com porcentagem de transferência.
+- **Traefik:** investigar tráfego, falhas HTTP, cauda de latência e conexões por entrada/backend.
+- **Aplicações:** correlacionar requisições, erros, latência e consumo do orçamento de erro com a instrumentação existente.
+- **Kubernetes:** acompanhar disponibilidade de workloads, pressão nos hosts, requests/limits, PVCs, etcd e a própria coleta.
+
+São **nove dashboards em cinco módulos independentes**. O [guia dos dashboards de Virtualization](docs/virtualization-dashboards.md) descreve cada visão, seus filtros e limites. A organização dos temas de Virtualization foi inspirada no [harvester-extra-dashboards, de doccaz](https://github.com/doccaz/harvester-extra-dashboards); os painéis aqui usam o formato nativo do SUSE Observability.
 
 ## Instalação rápida
 
@@ -53,6 +64,7 @@ Os charts já estão prontos. A instalação não precisa de Python local, gera�
 
 - [Aceite e solução de problemas](docs/validation.md): Pods prontos, Jobs concluídos, métricas recentes, filtros, alertas e limites do teste.
 - [Migração e remoção](docs/lifecycle.md): limpeza restrita aos objetos do módulo, preservação das plataformas e rollback.
+- [Contratos de métricas](docs/metric-contracts.md): unidades, fórmulas, dados ausentes e limites de precisão.
 - [Validação deste laboratório](docs/lab-validation.md): versões e evidência efetivamente coletadas.
 - [Desenvolvimento](docs/development.md): fontes compartilhadas, testes e criação dos charts.
 

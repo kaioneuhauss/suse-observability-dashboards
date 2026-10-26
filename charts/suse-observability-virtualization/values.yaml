@@ -50,6 +50,9 @@ content:
     enabled: true
     include:
     - harvester
+    - virtualization-contention
+    - virtualization-capacity
+    - virtualization-storage
     updateStrategy: replace
   monitors:
     enabled: true
