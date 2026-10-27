@@ -535,4 +535,4 @@ The README covers the standard dashboard installation and removal. Environment-s
 - [Dashboard reading guide](docs/panel-guide.md) · [Metric definitions](docs/metric-contracts.md) · [Alerts](docs/alerts.md)
 - [Validation](docs/validation.md) · [Lab results and limits](docs/lab-validation.md) · [Changelog](docs/changelog.md)
 
-`examples/` contains small values files. `charts/` contains chart source; `helm/` contains the packages Helm downloads. `dev/` is only for maintainers. The Virtualization topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards); these are native SUSE dashboards.
+`examples/` contains small values files. `charts/` contains chart source; `helm/` contains the packages Helm downloads. `dev/` is only for maintainers. The Virtualization topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards).
