@@ -473,7 +473,7 @@
   {
     "dashboard": "platform",
     "panel": "availability",
-    "title": "Which applications are missing copies?",
+    "title": "Which applications have unavailable replicas?",
     "monitor_slugs": [],
     "guidance": [
       "Deployment / Daemonset / Statefulset desired replicas (native)"
@@ -733,7 +733,7 @@
   {
     "dashboard": "platform",
     "panel": "missingCopies",
-    "title": "Missing application copies",
+    "title": "Unavailable application replicas",
     "monitor_slugs": [],
     "guidance": [
       "Deployment / Daemonset / Statefulset desired replicas (native)"
@@ -893,7 +893,7 @@
   {
     "dashboard": "resources",
     "panel": "cpuLimitMissingValues",
-    "title": "Top 10 pods without CPU limits: current CPU use (mCPU)",
+    "title": "Top 5 pods without CPU limits: current CPU use (mCPU)",
     "monitors": [],
     "guidance": "Investigation context; verify collection and source data before acting."
   },
@@ -936,7 +936,7 @@
   {
     "dashboard": "resources",
     "panel": "cpuRequestMissingValues",
-    "title": "Top 10 pods without CPU requests: current CPU use (mCPU)",
+    "title": "Top 5 pods without CPU requests: current CPU use (mCPU)",
     "monitors": [],
     "guidance": "Investigation context; verify collection and source data before acting."
   },
@@ -997,7 +997,7 @@
   {
     "dashboard": "resources",
     "panel": "memLimitMissingValues",
-    "title": "Top 10 pods without memory limits: current memory use",
+    "title": "Top 5 pods without memory limits: current memory use",
     "monitors": [],
     "guidance": "Investigation context; verify collection and source data before acting."
   },
@@ -1044,7 +1044,7 @@
   {
     "dashboard": "resources",
     "panel": "memRequestMissingValues",
-    "title": "Top 10 pods without memory requests: current memory use",
+    "title": "Top 5 pods without memory requests: current memory use",
     "monitors": [],
     "guidance": "Investigation context; verify collection and source data before acting."
   },
@@ -1393,14 +1393,14 @@
   {
     "dashboard": "virtualization-contention",
     "panel": "cpuReady",
-    "title": "Longest wait for CPU",
+    "title": "Top 5 VMs by CPU waiting time",
     "monitors": [],
     "guidance": "Decision support; inspect source health, coverage and the metric contract."
   },
   {
     "dashboard": "virtualization-contention",
     "panel": "cpuUsage",
-    "title": "Busiest VM: CPU used",
+    "title": "Top 5 VMs by CPU use",
     "monitors": [],
     "guidance": "Decision support; inspect source health, coverage and the metric contract."
   },
@@ -1428,7 +1428,7 @@
   {
     "dashboard": "virtualization-contention",
     "panel": "memoryUse",
-    "title": "Busiest VM: memory used",
+    "title": "Top 5 VMs by guest memory use",
     "monitors": [],
     "guidance": "Decision support; inspect source health, coverage and the metric contract."
   },

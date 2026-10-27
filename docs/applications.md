@@ -46,7 +46,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
-  --version 1.5.0 --values applications.yaml \
+  --version 1.6.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```

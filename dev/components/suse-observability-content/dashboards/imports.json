@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/registered"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 6,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/succeeded"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 6,
                 "x": 6,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/failed"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 6,
                 "x": 12,
                 "y": 1
@@ -49,7 +49,7 @@
                 "content": {
                   "$ref": "#/spec/panels/active"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 6,
                 "x": 18,
                 "y": 1
@@ -61,7 +61,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -70,7 +70,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -79,7 +79,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 5
+                "y": 6
               },
               {
                 "content": {
@@ -88,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 8
+                "y": 9
               },
               {
                 "content": {
@@ -97,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 8
+                "y": 9
               },
               {
                 "content": {
@@ -106,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 11
+                "y": 12
               },
               {
                 "content": {
@@ -115,7 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 11
+                "y": 12
               },
               {
                 "content": {
@@ -124,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 14
+                "y": 15
               },
               {
                 "content": {
@@ -133,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 14
+                "y": 15
               },
               {
                 "content": {
@@ -142,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 17
+                "y": 18
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 17
+                "y": 18
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 20
+                "y": 21
               },
               {
                 "content": {
@@ -169,7 +169,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 20
+                "y": 21
               },
               {
                 "content": {
@@ -178,7 +178,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 23
+                "y": 24
               },
               {
                 "content": {
@@ -187,7 +187,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 26
+                "y": 27
               }
             ]
           }

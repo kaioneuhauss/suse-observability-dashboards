@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/rps"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/client4xx"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/error5xx"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 16,
                 "y": 1
@@ -49,37 +49,37 @@
                 "content": {
                   "$ref": "#/spec/panels/requests1h"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 12,
                 "x": 0,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/meanLatency"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 12,
                 "x": 12,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/p95"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 12,
                 "x": 0,
-                "y": 3
+                "y": 5
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/p99"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 12,
                 "x": 12,
-                "y": 3
+                "y": 5
               },
               {
                 "content": {
@@ -88,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 4
+                "y": 7
               },
               {
                 "content": {
@@ -97,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 4
+                "y": 7
               },
               {
                 "content": {
@@ -106,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 7
+                "y": 10
               },
               {
                 "content": {
@@ -115,7 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 7
+                "y": 10
               },
               {
                 "content": {
@@ -124,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 10
+                "y": 13
               },
               {
                 "content": {
@@ -133,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 10
+                "y": 13
               },
               {
                 "content": {
@@ -142,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 13
+                "y": 16
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 13
+                "y": 16
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 16
+                "y": 19
               },
               {
                 "content": {
@@ -169,7 +169,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 16
+                "y": 19
               },
               {
                 "content": {
@@ -178,7 +178,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 19
+                "y": 22
               },
               {
                 "content": {
@@ -187,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 22
+                "y": 25
               },
               {
                 "content": {
@@ -196,7 +196,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 22
+                "y": 25
               },
               {
                 "content": {
@@ -205,7 +205,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 25
+                "y": 28
               }
             ]
           }

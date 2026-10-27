@@ -39,7 +39,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
-  --version 1.5.0 --values kubernetes.yaml \
+  --version 1.6.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -59,6 +59,10 @@ kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
 Open **Kubernetes · Cluster Health** and **Kubernetes · Application Resource Usage**. Check node counts, inventory freshness and requests/limits for a known application. In Metrics Explorer, `up{job="sre-node",cluster_name="my-cluster"}` should be `1` for the expected nodes.
 
 Usage, requests and limits answer different questions. High CPU alone is not proof of an incident; compare it with latency, throttling and application impact. See [validation](validation.md) and [removal](lifecycle.md).
+
+**Unavailable application replicas** counts application instances that should be available but are not. If an application is configured with 3 replicas and only 2 are available, it contributes 1 to this count. The **Which applications have unavailable replicas?** panel shows the affected workload, namespace, cluster and number unavailable. It covers Deployments, StatefulSets and DaemonSets, including platform workloads. Deployments use unavailable replicas, StatefulSets use desired minus ready, and DaemonSets use unavailable instances. A rollout can produce a temporary gap; check readiness probes, scheduling and image pulls if it persists. Zero means no gap in the measured workloads, not proof that the entire application works.
+
+Action lists preview up to five entries. Use **Open values table → Table view** for all matching resources. Counts above the lists still include every matching resource.
 
 ## Optional: etcd metrics
 

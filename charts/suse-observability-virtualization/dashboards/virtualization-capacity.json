@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/allocatedCpu"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/allocatedMemory"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/hostAvailable"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 16,
                 "y": 1
@@ -52,7 +52,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -61,7 +61,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -70,7 +70,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 5
+                "y": 6
               },
               {
                 "content": {
@@ -79,7 +79,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 5
+                "y": 6
               },
               {
                 "content": {
@@ -88,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 8
+                "y": 9
               },
               {
                 "content": {
@@ -97,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 8
+                "y": 9
               }
             ]
           }

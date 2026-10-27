@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.0 — Readable resource names and separate VM Top 5 lists
+
+- Increased short summary cards across all nine dashboards: the native component reduced labels to about 4px in one-row cards.
+- Replaced the three single-VM performance summaries with separate Top 5 lists for CPU use, guest memory use and CPU scheduling wait. Rankings retain full VM identity, include running VMs and use the selected end time.
+- Limited action-list previews to five entries, including pods above the 80% review threshold. Counts still cover all matches and the Metrics Explorer links open the complete lists.
+- Renamed “Missing application copies” to “Unavailable application replicas”, added a concrete explanation and a current list of affected applications with their unavailable counts.
+- Installation, collectors, credentials, monitor definitions and removal behavior are unchanged.
+
 ## 1.5.0 — Resource names, stable navigation and clearer module steps
 
 - Added named PVC/volume lists for degraded/faulted volumes, missing backup records and old backups, with full Metrics Explorer links.

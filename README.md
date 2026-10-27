@@ -19,6 +19,10 @@ You only need **Helm, kubectl and a text editor**. No repository clone, local Ba
 
 **Only need SUSE Virtualization?** Complete steps 2–4, install option A, then check it in step 6. You can stop there. Imports is a separate, optional module. Coriolis is not included.
 
+**Reading the dashboards:** VM Performance has separate Top 5 lists for CPU use, guest memory use and CPU waiting time. Resource lists show up to five entries so names stay readable; **Open values table → Table view** shows the complete list. Hover over a shortened name to see its full identity. Each ranking uses the end of the selected period.
+
+In Kubernetes Cluster Health, **Unavailable application replicas** means configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. The list below names the affected applications. A brief gap during an update can be normal; it does not mean data was lost. This panel belongs to the optional Kubernetes module.
+
 **What “from zero” means here:** no dashboard components are installed yet. You still need an existing Harvester/Kubernetes cluster and a working SUSE Observability server. Server sizing, licensing, storage, DNS, certificates and application instrumentation are separate prerequisites. These charts do not create those platforms. For a new SUSE server, complete the [official server installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html) first.
 
 ## 2. Write down your environment details
@@ -224,7 +228,7 @@ Install:
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.5.0 --values virtualization.yaml \
+  --version 1.6.0 --values virtualization.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -268,7 +272,7 @@ imports:
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.5.0 --values imports.yaml \
+  --version 1.6.0 --values imports.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -291,7 +295,7 @@ observability:
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
-  --version 1.5.0 --values kubernetes.yaml \
+  --version 1.6.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -361,7 +365,7 @@ For another namespace/selector, add `telemetry.traefik.namespace`, `selector`, `
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.5.0 --values traefik.yaml \
+  --version 1.6.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -392,7 +396,7 @@ observability:
 
 ```sh
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
-  --version 1.5.0 --values applications.yaml \
+  --version 1.6.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -446,7 +450,7 @@ For example, save `virtualization-second.yaml` with `mode: telemetry`, the secon
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.5.0 --values virtualization-second.yaml \
+  --version 1.6.0 --values virtualization-second.yaml \
   --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```

@@ -12,13 +12,13 @@ ROOT = Path(__file__).resolve().parents[1]
 CONTENT = ROOT / 'components/suse-observability-content'
 META = {
  'harvester': ('Virtualization · VM & Host Overview', 'Are my virtual machines and their hosts running out of resources?', 'Start with the summary, then select a VM to see its memory and disks. VM means the operating system inside the virtual machine; host means the physical Harvester server. Host panels always cover the selected cluster.'),
- 'virtualization-contention': ('Virtualization · VM Performance', 'Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.', 'Select a VM and look for changes at the same time as the slowdown. High CPU use alone does not prove a problem: also check waiting time and disk response. Most rates use the last 5 minutes.'),
+ 'virtualization-contention': ('Virtualization · VM Performance', 'Which VMs are busiest, and what could be slowing them down?', 'Each Top 5 selects its own VMs at the end of the selected period. Read the VM name beside its value, then select a VM to investigate its trend. High CPU use alone does not prove a problem; compare waiting time, memory pressure and disk response.'),
  'virtualization-capacity': ('Virtualization · Capacity Planning', 'How much capacity is assigned to running VMs, and how much room is left?', 'Assigned resources are configuration, not actual use. Use available host memory before starting more VMs. The 24-hour charts help review sizing; they do not recommend an automatic resize or guarantee high availability.'),
  'virtualization-storage': ('Virtualization · Storage & Backups', 'Which volumes need attention, how busy is storage, and what backups are recorded?', 'Start with volume health, then check storage space and backups. A volume is a virtual disk; this view includes all selected Longhorn volumes, including non-VM volumes. A recorded backup does not prove that a restore will succeed.'),
  'imports': ('Virtualization · VMware Import Progress', 'Which VMware imports have finished, failed or are still being processed by VM Import Controller?', 'Select an import to see its current stage and disk preparation. Completed means the controller recorded the VM starting; check the application separately. Disk readiness is not the percentage of data transferred. This dashboard does not cover Coriolis.'),
  'applications': ('Applications · Traffic, Errors & Speed', 'How many requests reach the application, how often do they fail, and how long do they take?', 'Choose an application, then compare traffic, errors and response time. These measurements come from instrumentation inside the application. Health-check routes are excluded. No traffic cannot prove availability.'),
  'traefik': ('Traefik · Incoming Traffic & Errors', 'Are requests reaching applications through Traefik, and where are errors or delays occurring?', 'Traefik is the entry point that sends incoming requests to applications. Start with traffic, errors and response time, then select an application. Certificates and connections are cluster-wide measurements.'),
- 'platform': ('Kubernetes · Cluster Health', 'Are servers and applications available, and is the cluster running out of resources?', 'Start with readiness and missing application copies. Then review server resources, storage and the cluster database. A pod is a running unit of an application; a node is a server. Empty charts need a collection or applicability check.'),
+ 'platform': ('Kubernetes · Cluster Health', 'Are servers and applications available, and is the cluster running out of resources?', 'Start with server readiness and unavailable application replicas. A replica is one instance of an application: if 3 are configured and only 2 are available, 1 is unavailable. Use the application list below to find the affected workload. Brief gaps can occur during updates.'),
  'resources': ('Kubernetes · Application Resource Usage', 'Are applications using the CPU and memory reserved for them, or approaching their limits?', 'A request reserves resources for scheduling. A limit sets a maximum. Actual use is a separate measurement. Compare the same five busiest pods across used, reserved and limit charts. 1000 mCPU equals one CPU core.'),
 }
 
@@ -45,9 +45,9 @@ scrapeHealth|Can we collect VM and storage metrics?|1 means the endpoint answere
 vmSampleAge|How old are the VM measurements?|Seconds since the most recent VM identity sample. Compare with the 30-second collection interval; an old sample is a visibility problem.
 ''',
 'virtualization-contention': '''
-cpuReady|Longest wait for CPU|Highest average CPU scheduling wait among selected VMs. A sustained increase means virtual CPUs are waiting for processing time on the host.
-cpuUsage|Busiest VM: CPU used|Highest CPU use relative to the VM's configured virtual CPUs. Compare with CPU waiting time before concluding that the host is overloaded.
-memoryUse|Busiest VM: memory used|Highest guest memory-use percentage. Compare with swap activity and page reads to see whether memory pressure is affecting performance.
+cpuReady|Top 5 VMs by CPU waiting time|Up to five running VMs with the most CPU scheduling wait at the end of the selected period. Values average the previous 5 minutes. A sustained increase means virtual CPUs are waiting for processing time on the host.
+cpuUsage|Top 5 VMs by CPU use|Up to five running VMs with the highest CPU use relative to configured virtual CPUs, averaged over 5 minutes at the end of the selected period. Compare with CPU waiting time before concluding that the host is overloaded.
+memoryUse|Top 5 VMs by guest memory use|Up to five running VMs with the highest guest memory-use percentage at the end of the selected period. Reclaimable memory is excluded. Compare with swap activity and page reads before adding RAM.
 ready|Time VMs spend waiting for CPU|Average percentage of time each VM's virtual CPUs wait to be scheduled. Look for increases that coincide with a slowdown.
 cpu|CPU used by each VM|CPU demand as a percentage of configured virtual CPUs. High use can be productive work; CPU waiting time provides the contention context.
 ioWait|Time VMs spend waiting for disk I/O|Time virtual CPUs spend blocked on input/output. Compare with disk response time; it is different from waiting for a turn on the CPU.
@@ -72,9 +72,9 @@ coverage|VM CPU samples collected over 24 hours|Number of CPU measurements avail
 unhealthy|Volumes needing attention|Volumes marked degraded or faulted by Longhorn. Open Longhorn to inspect replicas and scheduling; detached volumes with unknown health are counted separately in the health chart.
 neverBackup|Volumes with no recorded backup|Volumes whose last successful backup timestamp is zero. Check which ones actually need backups; this includes non-VM volumes.
 staleBackup|Volumes last backed up over 7 days ago|Volumes with a successful backup older than seven days. Compare this review window with your own recovery requirement; never-backed-up volumes appear separately.
-unhealthyDetails|Which volumes need attention?|Up to 10 volumes degraded or faulted at the end of the selected period. Each entry names the PVC and Longhorn volume; 1 means that state is active. Check replicas and scheduling in Longhorn. Open the values table for every affected volume.
-neverBackupDetails|Which volumes have no recorded backup?|Up to 10 volumes with no successful backup timestamp. Each entry identifies the PVC and Longhorn volume; 1 means no recorded backup. Open the values table for the complete list, then compare it with your backup policy.
-staleBackupDetails|Which backups are older than 7 days?|Days since the last recorded successful backup, with PVC and volume names. Up to 10 oldest entries; open the values table for all matches. Check the backup schedule and destination against your recovery requirement.
+unhealthyDetails|Which volumes need attention?|Up to 5 volumes degraded or faulted at the end of the selected period. Each entry names the PVC and Longhorn volume; 1 means that state is active. Check replicas and scheduling in Longhorn. Open the values table for every affected volume.
+neverBackupDetails|Which volumes have no recorded backup?|Up to 5 volumes with no successful backup timestamp. Each entry identifies the PVC and Longhorn volume; 1 means no recorded backup. Open the values table for the complete list, then compare it with your backup policy.
+staleBackupDetails|Which backups are older than 7 days?|Days since the last recorded successful backup, with PVC and volume names. Up to 5 oldest entries; open the values table for all matches. Check the backup schedule and destination against your recovery requirement.
 volumeHealth|Volume count by health|Number of volumes in each Longhorn health state. Unknown often occurs for detached volumes and does not mean healthy. Select a volume to investigate it.
 attachment|Volume count by attachment state|How many volumes are attached, detached or changing state. Detached can be normal for stopped VMs and does not mean that a disk should be deleted.
 latency|Time to read or write a storage volume|Current average response time reported by Longhorn for active volumes, in milliseconds. Compare with VM disk latency to locate storage delays.
@@ -162,18 +162,18 @@ memRequestMissingList|Pods with no memory reservation|Count of pods with at leas
 memLimitMissingList|Pods with no memory limit|Count of pods with at least one container missing a memory limit. Review workload policy and host capacity before choosing limits.
 memUseGauge|Pod closest to its memory limit|Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources.
 missingSettingsPods|Which pods have missing resource settings?|The legend lists affected pods and missing settings. A line is an inventory marker, not a trend; use the details link for columns.
-memoryRisk|Pods using the largest share of their memory limit|Ten highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers.
+memoryRisk|Pods using the largest share of their memory limit|Five highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers.
 cpuReservation|CPU used compared with CPU reserved|CPU use divided by the scheduling request. More than 100% is possible and does not by itself mean a limit was exceeded.
 throttling|CPU work delayed by configured limits|Share of CPU scheduling periods in which containers were throttled. Compare with application response time before raising limits.
 workingSetRSS|Pod memory: working set and resident memory|Two views of memory for the same busiest pods. Working set and resident memory overlap; do not add them together.
 inventoryHealth|Can we read pod resource settings?|1 means pod configuration collection is working; 0 means it failed. Check this before trusting missing-setting counts.
-cpuLimitReview|Which pods exceed 80% of their CPU limit?|List of pods above the review threshold. It is a starting point for investigation, not an automatic resizing recommendation.
-memLimitReview|Which pods exceed 80% of their memory limit?|List of pods above the review threshold. Compare sustained usage and recent memory-related restarts.
+cpuLimitReview|Which pods exceed 80% of their CPU limit?|Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Investigate throttling and demand before changing limits.
+memLimitReview|Which pods exceed 80% of their memory limit?|Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Compare sustained usage and recent memory-related restarts.
 cpuOver80Count|Pods above 80% of their CPU limit|Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names.
-cpuRequestMissingValues|Top 10 pods without CPU requests: current CPU use (mCPU)|Ten highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests.
-cpuLimitMissingValues|Top 10 pods without CPU limits: current CPU use (mCPU)|Ten highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them.
-memRequestMissingValues|Top 10 pods without memory requests: current memory use|Ten highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests.
-memLimitMissingValues|Top 10 pods without memory limits: current memory use|Ten highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits.
+cpuRequestMissingValues|Top 5 pods without CPU requests: current CPU use (mCPU)|Five highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests.
+cpuLimitMissingValues|Top 5 pods without CPU limits: current CPU use (mCPU)|Five highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them.
+memRequestMissingValues|Top 5 pods without memory requests: current memory use|Five highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests.
+memLimitMissingValues|Top 5 pods without memory limits: current memory use|Five highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits.
 memOver80Count|Pods above 80% of their memory limit|Count of measured pods above the memory review threshold. See the detail list and inspect individual containers.
 ''',
 'platform': '''
@@ -182,7 +182,7 @@ coverage|Servers with working OS metrics|Percentage of known servers with succes
 nonRunning|Pods needing attention|Count of pods in concerning states, excluding completed jobs. Use the detail list to see whether the issue is scheduling, startup or readiness.
 nonRunningList|Which pods need attention?|Names and observed states of affected pods. Read the legend or open details; lines mark inventory entries, not a performance trend.
 restarts|Which pods restarted in the last hour?|Estimated container restarts grouped by pod. Inspect previous logs and termination reasons; a restart alone does not prove a memory problem.
-availability|Which applications are missing copies?|Workloads running fewer ready copies than requested. Check scheduling, images and readiness probes for the affected workload.
+availability|Which applications have unavailable replicas?|Up to 5 affected applications at the end of the selected period, with the number of unavailable replicas beside each name. For example, 1 means one configured instance is not available. Check scheduling, image pulls and readiness probes. A short gap during an update can be normal.
 filesystem|Host filesystem space used|Percentage used on monitored host filesystems. Review the device and mount point; not every exposed device is a separate physical disk.
 nodeUsed|Space used on host filesystems|Bytes used on each monitored server filesystem. Compare the same filesystem with capacity and percentage used.
 nodeTotal|Size of host filesystems|Total measured filesystem capacity. Device filters exclude several duplicate or irrelevant mounts.
@@ -214,7 +214,7 @@ networkErrors|Network interface errors|Receive and transmit errors per second by
 collectorQueue|Metrics waiting to be delivered|Bytes queued by collectors for delivery to SUSE Observability. A growing queue can indicate a network, authentication or backend issue.
 collectorRetries|Metric delivery retries in 15 minutes|Estimated retry attempts by collectors. Inspect collector logs and delivery queues when retries persist.
 diskLatency|Time to read or write a host disk|Average response time per completed host disk operation. Idle disks have no meaningful response-time average.
-missingCopies|Missing application copies|Total gap between desired and available workload copies. Open the detail list to find the affected applications.
+missingCopies|Unavailable application replicas|Total number of configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. This counts instances, not applications or lost data. Check the named applications below; brief gaps during updates can be normal.
 restartCount|Container restarts in the last hour|Estimated restart count across selected pods. Rounded to whole restarts for display; counter sampling can affect estimates.
 '''
 }
@@ -291,9 +291,24 @@ def query(panel, expression, alias):
 # pair; its TimeSeries legend Last column can misattribute values.
 ACTION_LISTS = {'resources': {'memLimitReview','cpuLimitReview','cpuRequestMissingValues',
     'cpuLimitMissingValues','memRequestMissingValues','memLimitMissingValues'},
+    'platform': {'availability'},
+    'virtualization-contention': {'cpuReady','cpuUsage','memoryUse'},
     'virtualization-storage': {'unhealthyDetails','neverBackupDetails','staleBackupDetails'}}
 
 def add_actionable_panels(slug, panels):
+    if slug == 'platform':
+        p=panels['availability']['spec']; q=p['queries'][0]['spec']['plugin']['spec']
+        # Rebuild from the source expression on every generator run. Preserve
+        # the measured-zero fallback, but never infer health from missing data.
+        base=panels['missingCopies']['spec']['queries'][0]['spec']['plugin']['spec']['query']
+        assert base.startswith('sum(') and base.endswith(')'), base
+        base=base[4:-1]
+        affected=f'label_join((({base}) > 0), "sre_series", " · ", "workload", "kind", "namespace", "cluster_name")'
+        healthy=f'label_replace((0 * count({base})), "sre_series", "No unavailable replicas in measured workloads", "", "")'
+        q['query']=f'topk(5, last_over_time(({affected} or on() {healthy})[1s:1s] @ end()))'
+        q['alias']='${sre_series}'
+        p['plugin']={'kind':'StatChart','spec':{'calculation':'last','sparkline':False,'valueFontSize':20,'format':{'unit':'none','decimalPlaces':0},'thresholds':{'defaultColor':'#1976B9','steps':[{'value':1,'color':'#E5A000'}]}}}
+        panels['missingCopies']['spec']['queries'][0]['spec']['plugin']['spec']['alias']='Unavailable replicas'
     if slug == 'virtualization-storage':
         selector='k8s_cluster_name=~"${storage_cluster}",volume=~"${storage_volume}"'
         labels='k8s_cluster_name,pvc_namespace,pvc,volume'
@@ -311,7 +326,7 @@ def add_actionable_panels(slug, panels):
             # StatChart uses the last non-null sample of every returned series.
             # Freeze the offender set at the selected end so recovered volumes
             # do not linger in a range query just because they failed earlier.
-            query(panels[key],f'topk(10, last_over_time(({expression})[1s:1s] @ end()))',alias)
+            query(panels[key],f'topk(5, last_over_time(({expression})[1s:1s] @ end()))',alias)
     if slug == 'resources':
         selector='cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"'
         keys='cluster_name,namespace,pod_name,container'; pods='cluster_name,namespace,pod_name'
@@ -333,7 +348,8 @@ def add_actionable_panels(slug, panels):
             p=panels[key]['spec']; q=p['queries'][0]['spec']['plugin']['spec']
             if q['query'].startswith('sort_by_label('):
                 q['query']=q['query'][14:-15]
-            if key.endswith('MissingValues'): q['query']='topk(10, '+q['query']+')'
+            if not q['query'].startswith('topk(5, '): q['query']='topk(5, '+q['query']+')'
+            q['query']=q['query'].replace('"cluster_name", "namespace", "pod_name"', '"pod_name", "namespace", "cluster_name"')
             unit='percentunit' if key.endswith('LimitReview') else ('none' if key.startswith('cpu') else 'bytes(IEC)')
             p['plugin']={'kind':'StatChart','spec':{'calculation':'last','sparkline':False,'valueFontSize':20,'format':{'unit':unit,'decimalPlaces':1},'thresholds':{'defaultColor':'#1976B9','steps':[]}}}
             if key.endswith('LimitReview'):p['plugin']['spec']['thresholds']={'defaultColor':'#1976B9','steps':[{'value':0.8,'color':'#E5A000'},{'value':0.95,'color':'#D3443B'}]}
@@ -388,8 +404,11 @@ for slug, (name, purpose, guide) in META.items():
         for key in ('cpuReady','cpuUsage','memoryUse'):
             q=panels[key]['spec']['queries'][0]['spec']['plugin']['spec']
             if q['query'].startswith('max('):
-                q['query']='last_over_time((topk(1,'+q['query'][4:-1]+'))[1s:1s] @ end())'
-            q['alias']='${k8s_cluster_name} · ${namespace} · ${name}'
+                running='max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~"${vm_cluster}",namespace=~"${vm_namespace}",name=~"${vm_name}",phase="running"}) == 1'
+                expression='('+q['query'][4:-1]+') and on (k8s_cluster_name,namespace,name) ('+running+')'
+                q['query']='topk(5, last_over_time(('+expression+')[1s:1s] @ end()))'
+            q['alias']='${name} · ${namespace} · ${k8s_cluster_name}'
+            panels[key]['spec']['plugin']['spec']['valueFontSize']=20
     if slug == 'harvester':
         q=panels['runningCount']['spec']['queries'][0]['spec']['plugin']['spec']
         if 'phase="running"' not in q['query']:
@@ -443,8 +462,14 @@ for slug, (name, purpose, guide) in META.items():
         if 'yAxis' in spec and label:spec['yAxis']['label']=label
         rows[key][0]=title
         p['display']={'name':title,'description':intro+'\n\nMeasurement details:\n'+details}
-        fmt['decimalPlaces']=0 if key in COUNTS.get(slug,set()) else (2 if key in ('success','error5xx','availability5m','serviceErrorRatio','cpuRatio','burnRate') else 1)
+        fmt['decimalPlaces']=0 if key in COUNTS.get(slug,set()) else (2 if key in ('cpuReady','success','error5xx','availability5m','serviceErrorRatio','cpuRatio','burnRate') else 1)
         if key in COUNTS.get(slug,set()): fmt['unit']='none' if plug['kind']=='StatChart' else 'decimal'
+        if plug['kind'] in ('StatChart','GaugeChart'):
+            # Keep the actionable resource name visible when SUSE truncates a
+            # long identity. Namespace and cluster remain part of the label.
+            for q in p.get('queries',[]):
+                qs=q['spec']['plugin']['spec']
+                qs['query']=qs['query'].replace('"k8s_cluster_name", "namespace", "name"', '"name", "namespace", "k8s_cluster_name"').replace('"cluster_name", "namespace", "pod_name"', '"pod_name", "namespace", "cluster_name"')
         if plug['kind']=='TimeSeriesChart':
             spec['legend']['values']=[]
 
@@ -455,13 +480,13 @@ for slug, (name, purpose, guide) in META.items():
             # SUSE expands variables and URL-encodes this parameter itself.
             # Pre-encoding it produces %255B and breaks the explorer link.
             expressions=[q['spec']['plugin']['spec']['query'] for q in p['queries']]
-            if key in ACTION_LISTS.get(slug,set()) and expressions[0].startswith('topk(10, '): expressions[0]=expressions[0][9:-1]
+            if key in ACTION_LISTS.get(slug,set()) and expressions[0].startswith('topk(5, '): expressions[0]=expressions[0][8:-1]
             if key in ('memLimitReview','cpuLimitReview'):expressions[0]='round(100 * ('+expressions[0]+'), 0.1)'
             state=[[[expression] for expression in expressions], [0,[6,[True,'']]]]
             encoded=json.dumps(state,separators=(',',':'))
             for char in '<>%&+#':encoded=encoded.replace(char,'\\u'+format(ord(char),'04x'))
             p['links']=[{'name':'Open values table','targetBlank':True,
-              'tooltip':'All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.',
+              'tooltip':('All matching resources, including those outside Top 5. ' if key in ACTION_LISTS.get(slug,set()) else 'Values and labels from this panel query. ')+'Select Table view and check the time range. Units and conditions are explained in the panel description.',
               'url':'./#/metrics?metrics='+encoded}]
         guide_rows.append('| '+title+' | '+intro+' |')
     guide_rows.append('')
@@ -477,10 +502,10 @@ for slug, (name, purpose, guide) in META.items():
             if slug=='imports' and key in ('registered','succeeded','failed','active'):width=6
             if slug=='imports' and key==keys.split()[-1] and width==12 and x in (0,24):width=24
             if slug=='traefik' and key in ('requests1h','meanLatency','p95','p99'):width=12
-            height=1 if kind=='StatChart' else (2 if kind=='GaugeChart' else 3)
+            # One grid row makes SUSE 2.10.2 shrink Stat labels to ~4px.
+            height=2 if kind in ('StatChart','GaugeChart') else 3
             if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=6;height=2
             if key in ACTION_LISTS.get(slug, set()): width=24; height=3
-            if slug=='virtualization-storage' and key in ('unhealthyDetails','staleBackupDetails'):height=2
             if x+width>24:y+=row_height;x=0;row_height=0
             items.append({'x':x,'y':y,'width':width,'height':height,'content':{'$ref':'#/spec/panels/'+key}})
             x+=width;row_height=max(row_height,height);seen.append(key)

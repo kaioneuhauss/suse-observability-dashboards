@@ -31,13 +31,13 @@ Are my virtual machines and their hosts running out of resources?
 
 ## Virtualization · VM Performance
 
-Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.
+Which VMs are busiest, and what could be slowing them down?
 
 | Panel | What it shows (description in SUSE) |
 |---|---|
-| Longest wait for CPU | Highest average CPU scheduling wait among selected VMs. A sustained increase means virtual CPUs are waiting for processing time on the host. |
-| Busiest VM: CPU used | Highest CPU use relative to the VM's configured virtual CPUs. Compare with CPU waiting time before concluding that the host is overloaded. |
-| Busiest VM: memory used | Highest guest memory-use percentage. Compare with swap activity and page reads to see whether memory pressure is affecting performance. |
+| Top 5 VMs by CPU waiting time | Up to five running VMs with the most CPU scheduling wait at the end of the selected period. Values average the previous 5 minutes. A sustained increase means virtual CPUs are waiting for processing time on the host. |
+| Top 5 VMs by CPU use | Up to five running VMs with the highest CPU use relative to configured virtual CPUs, averaged over 5 minutes at the end of the selected period. Compare with CPU waiting time before concluding that the host is overloaded. |
+| Top 5 VMs by guest memory use | Up to five running VMs with the highest guest memory-use percentage at the end of the selected period. Reclaimable memory is excluded. Compare with swap activity and page reads before adding RAM. |
 | Time VMs spend waiting for CPU | Average percentage of time each VM's virtual CPUs wait to be scheduled. Look for increases that coincide with a slowdown. |
 | CPU used by each VM | CPU demand as a percentage of configured virtual CPUs. High use can be productive work; CPU waiting time provides the contention context. |
 | Time VMs spend waiting for disk I/O | Time virtual CPUs spend blocked on input/output. Compare with disk response time; it is different from waiting for a turn on the CPU. |
@@ -72,9 +72,9 @@ Which volumes need attention, how busy is storage, and what backups are recorded
 | Volumes needing attention | Volumes marked degraded or faulted by Longhorn. Open Longhorn to inspect replicas and scheduling; detached volumes with unknown health are counted separately in the health chart. |
 | Volumes with no recorded backup | Volumes whose last successful backup timestamp is zero. Check which ones actually need backups; this includes non-VM volumes. |
 | Volumes last backed up over 7 days ago | Volumes with a successful backup older than seven days. Compare this review window with your own recovery requirement; never-backed-up volumes appear separately. |
-| Which volumes need attention? | Up to 10 volumes degraded or faulted at the end of the selected period. Each entry names the PVC and Longhorn volume; 1 means that state is active. Check replicas and scheduling in Longhorn. Open the values table for every affected volume. |
-| Which volumes have no recorded backup? | Up to 10 volumes with no successful backup timestamp. Each entry identifies the PVC and Longhorn volume; 1 means no recorded backup. Open the values table for the complete list, then compare it with your backup policy. |
-| Which backups are older than 7 days? | Days since the last recorded successful backup, with PVC and volume names. Up to 10 oldest entries; open the values table for all matches. Check the backup schedule and destination against your recovery requirement. |
+| Which volumes need attention? | Up to 5 volumes degraded or faulted at the end of the selected period. Each entry names the PVC and Longhorn volume; 1 means that state is active. Check replicas and scheduling in Longhorn. Open the values table for every affected volume. |
+| Which volumes have no recorded backup? | Up to 5 volumes with no successful backup timestamp. Each entry identifies the PVC and Longhorn volume; 1 means no recorded backup. Open the values table for the complete list, then compare it with your backup policy. |
+| Which backups are older than 7 days? | Days since the last recorded successful backup, with PVC and volume names. Up to 5 oldest entries; open the values table for all matches. Check the backup schedule and destination against your recovery requirement. |
 | Volume count by health | Number of volumes in each Longhorn health state. Unknown often occurs for detached volumes and does not mean healthy. Select a volume to investigate it. |
 | Volume count by attachment state | How many volumes are attached, detached or changing state. Detached can be normal for stopped VMs and does not mean that a disk should be deleted. |
 | Time to read or write a storage volume (ms) | Current average response time reported by Longhorn for active volumes, in milliseconds. Compare with VM disk latency to locate storage delays. |
@@ -174,7 +174,7 @@ Are servers and applications available, and is the cluster running out of resour
 | Pods needing attention | Count of pods in concerning states, excluding completed jobs. Use the detail list to see whether the issue is scheduling, startup or readiness. |
 | Which pods need attention? | Names and observed states of affected pods. Read the legend or open details; lines mark inventory entries, not a performance trend. |
 | Which pods restarted in the last hour? | Estimated container restarts grouped by pod. Inspect previous logs and termination reasons; a restart alone does not prove a memory problem. |
-| Which applications are missing copies? | Workloads running fewer ready copies than requested. Check scheduling, images and readiness probes for the affected workload. |
+| Which applications have unavailable replicas? | Up to 5 affected applications at the end of the selected period, with the number of unavailable replicas beside each name. For example, 1 means one configured instance is not available. Check scheduling, image pulls and readiness probes. A short gap during an update can be normal. |
 | Host filesystem space used | Percentage used on monitored host filesystems. Review the device and mount point; not every exposed device is a separate physical disk. |
 | Space used on host filesystems | Bytes used on each monitored server filesystem. Compare the same filesystem with capacity and percentage used. |
 | Size of host filesystems | Total measured filesystem capacity. Device filters exclude several duplicate or irrelevant mounts. |
@@ -206,7 +206,7 @@ Are servers and applications available, and is the cluster running out of resour
 | Metrics waiting to be delivered | Bytes queued by collectors for delivery to SUSE Observability. A growing queue can indicate a network, authentication or backend issue. |
 | Metric delivery retries in 15 minutes | Estimated retry attempts by collectors. Inspect collector logs and delivery queues when retries persist. |
 | Time to read or write a host disk (ms) | Average response time per completed host disk operation. Idle disks have no meaningful response-time average. |
-| Missing application copies | Total gap between desired and available workload copies. Open the detail list to find the affected applications. |
+| Unavailable application replicas | Total number of configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. This counts instances, not applications or lost data. Check the named applications below; brief gaps during updates can be normal. |
 | Container restarts in the last hour | Estimated restart count across selected pods. Rounded to whole restarts for display; counter sampling can affect estimates. |
 
 ## Kubernetes · Application Resource Usage
@@ -228,17 +228,17 @@ Are applications using the CPU and memory reserved for them, or approaching thei
 | Pods with no memory limit | Count of pods with at least one container missing a memory limit. Review workload policy and host capacity before choosing limits. |
 | Pod closest to its memory limit | Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources. |
 | Which pods have missing resource settings? | The legend lists affected pods and missing settings. A line is an inventory marker, not a trend; use the details link for columns. |
-| Pods using the largest share of their memory limit | Ten highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers. |
+| Pods using the largest share of their memory limit | Five highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers. |
 | CPU used compared with CPU reserved | CPU use divided by the scheduling request. More than 100% is possible and does not by itself mean a limit was exceeded. |
 | CPU work delayed by configured limits | Share of CPU scheduling periods in which containers were throttled. Compare with application response time before raising limits. |
 | Pod memory: working set and resident memory | Two views of memory for the same busiest pods. Working set and resident memory overlap; do not add them together. |
 | Can we read pod resource settings? | 1 means pod configuration collection is working; 0 means it failed. Check this before trusting missing-setting counts. |
-| Which pods exceed 80% of their CPU limit? | List of pods above the review threshold. It is a starting point for investigation, not an automatic resizing recommendation. |
-| Which pods exceed 80% of their memory limit? | List of pods above the review threshold. Compare sustained usage and recent memory-related restarts. |
+| Which pods exceed 80% of their CPU limit? | Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Investigate throttling and demand before changing limits. |
+| Which pods exceed 80% of their memory limit? | Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Compare sustained usage and recent memory-related restarts. |
 | Pods above 80% of their CPU limit | Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names. |
-| Top 10 pods without CPU requests: current CPU use (mCPU) | Ten highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests. |
-| Top 10 pods without CPU limits: current CPU use (mCPU) | Ten highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them. |
-| Top 10 pods without memory requests: current memory use | Ten highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests. |
-| Top 10 pods without memory limits: current memory use | Ten highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits. |
+| Top 5 pods without CPU requests: current CPU use (mCPU) | Five highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests. |
+| Top 5 pods without CPU limits: current CPU use (mCPU) | Five highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them. |
+| Top 5 pods without memory requests: current memory use | Five highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests. |
+| Top 5 pods without memory limits: current memory use | Five highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits. |
 | Pods above 80% of their memory limit | Count of measured pods above the memory review threshold. See the detail list and inspect individual containers. |
 

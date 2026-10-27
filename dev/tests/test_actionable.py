@@ -23,10 +23,30 @@ class ActionableTests(unittest.TestCase):
    self.assertNotIn('%',raw);self.assertNotIn('>',raw)
    state=json.loads(raw); detail=state[0][0][0]
    self.assertIn('${workload_cluster}',detail)
-   self.assertNotIn('topk(10,',detail)
+   self.assertNotIn('topk(',detail)
+   self.assertTrue(q.startswith('topk(5, '))
    if key.endswith('LimitReview'):
     self.assertIn('> 0.8',q);self.assertTrue(detail.startswith('round(100 * ('))
-    self.assertNotIn('topk(',q)
+ def test_rankings_keep_full_identity_and_freeze_the_selected_end(self):
+  panels=json.loads((CONTENT/'virtualization-contention.json').read_text())['dashboard']['spec']['panels']
+  for key in ['cpuReady','cpuUsage','memoryUse']:
+   p=panels[key]['spec'];q=p['queries'][0]['spec']['plugin']['spec']
+   self.assertTrue(q['query'].startswith('topk(5, last_over_time('))
+   self.assertIn('@ end()',q['query'])
+   self.assertIn('phase="running"',q['query'])
+   for label in ['name','namespace','k8s_cluster_name']:self.assertIn('${'+label+'}',q['alias'])
+   detail=json.loads(p['links'][0]['url'].split('metrics=',1)[1])[0][0][0]
+   self.assertNotIn('topk(',detail)
+ def test_stat_cards_reserve_readable_space_and_bound_action_lists(self):
+  for path in CONTENT.glob('*.json'):
+   s=json.loads(path.read_text())['dashboard']['spec']
+   for item in s['layouts'][0]['spec']['items']:
+    p=s['panels'][item['content']['$ref'].split('/')[-1]]['spec']
+    if p['plugin']['kind']=='StatChart':
+     self.assertGreaterEqual(item['height'],2,(path.name,p['display']['name']))
+     if item['width']==24 and p['queries'][0]['spec']['plugin']['spec']['alias']!='Pods':
+      self.assertGreaterEqual(item['height'],3)
+      self.assertTrue(p['queries'][0]['spec']['plugin']['spec']['query'].startswith('topk(5, '))
  def test_import_selectors_use_normalized_pod_label(self):
   panels=json.loads((CONTENT/'imports.json').read_text())['dashboard']['spec']['panels']
   for key in ['controllerRx','controllerTx','controllerCPU','controllerMemory','imageRx','imageTx']:

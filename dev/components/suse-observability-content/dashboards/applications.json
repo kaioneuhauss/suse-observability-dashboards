@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/rps"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/requests1h"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/requests24h"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 16,
                 "y": 1
@@ -49,28 +49,28 @@
                 "content": {
                   "$ref": "#/spec/panels/success"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/error5xx"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/p95_1h"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 16,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -79,7 +79,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 3
+                "y": 5
               },
               {
                 "content": {
@@ -88,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 3
+                "y": 5
               },
               {
                 "content": {
@@ -97,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 6
+                "y": 8
               },
               {
                 "content": {
@@ -106,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 6
+                "y": 8
               },
               {
                 "content": {
@@ -115,7 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 9
+                "y": 11
               },
               {
                 "content": {
@@ -124,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 9
+                "y": 11
               },
               {
                 "content": {
@@ -133,7 +133,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 12
+                "y": 14
               },
               {
                 "content": {
@@ -142,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 15
+                "y": 17
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 15
+                "y": 17
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 18
+                "y": 20
               }
             ]
           }

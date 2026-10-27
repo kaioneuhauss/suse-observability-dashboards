@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/ready"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/coverage"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/nonRunning"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 16,
                 "y": 1
@@ -52,7 +52,7 @@
                 "height": 2,
                 "width": 8,
                 "x": 0,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -61,7 +61,7 @@
                 "height": 2,
                 "width": 8,
                 "x": 8,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -70,7 +70,7 @@
                 "height": 2,
                 "width": 8,
                 "x": 16,
-                "y": 2
+                "y": 3
               },
               {
                 "content": {
@@ -79,7 +79,7 @@
                 "height": 2,
                 "width": 12,
                 "x": 0,
-                "y": 4
+                "y": 5
               },
               {
                 "content": {
@@ -88,25 +88,25 @@
                 "height": 2,
                 "width": 12,
                 "x": 12,
-                "y": 4
+                "y": 5
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/nonRunningList"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
-                "y": 6
+                "y": 7
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/availability"
                 },
                 "height": 3,
-                "width": 12,
-                "x": 12,
-                "y": 6
+                "width": 24,
+                "x": 0,
+                "y": 10
               },
               {
                 "content": {
@@ -115,7 +115,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 9
+                "y": 13
               },
               {
                 "content": {
@@ -124,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 12
+                "y": 16
               },
               {
                 "content": {
@@ -133,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 12
+                "y": 16
               },
               {
                 "content": {
@@ -142,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 15
+                "y": 19
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 15
+                "y": 19
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 18
+                "y": 22
               },
               {
                 "content": {
@@ -169,7 +169,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 18
+                "y": 22
               },
               {
                 "content": {
@@ -178,7 +178,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 21
+                "y": 25
               },
               {
                 "content": {
@@ -187,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 21
+                "y": 25
               },
               {
                 "content": {
@@ -196,7 +196,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 24
+                "y": 28
               },
               {
                 "content": {
@@ -205,7 +205,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 24
+                "y": 28
               },
               {
                 "content": {
@@ -214,7 +214,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 27
+                "y": 31
               },
               {
                 "content": {
@@ -223,7 +223,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 27
+                "y": 31
               },
               {
                 "content": {
@@ -232,7 +232,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 30
+                "y": 34
               },
               {
                 "content": {
@@ -241,7 +241,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 30
+                "y": 34
               },
               {
                 "content": {
@@ -250,7 +250,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 33
+                "y": 37
               },
               {
                 "content": {
@@ -259,7 +259,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 33
+                "y": 37
               },
               {
                 "content": {
@@ -268,7 +268,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 36
+                "y": 40
               },
               {
                 "content": {
@@ -277,7 +277,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 36
+                "y": 40
               },
               {
                 "content": {
@@ -286,7 +286,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 39
+                "y": 43
               },
               {
                 "content": {
@@ -295,7 +295,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 39
+                "y": 43
               },
               {
                 "content": {
@@ -304,7 +304,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 42
+                "y": 46
               },
               {
                 "content": {
@@ -313,7 +313,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 42
+                "y": 46
               },
               {
                 "content": {
@@ -322,7 +322,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 45
+                "y": 49
               },
               {
                 "content": {
@@ -331,7 +331,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 45
+                "y": 49
               },
               {
                 "content": {
@@ -340,7 +340,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 48
+                "y": 52
               },
               {
                 "content": {
@@ -349,7 +349,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 48
+                "y": 52
               },
               {
                 "content": {
@@ -358,7 +358,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 51
+                "y": 55
               },
               {
                 "content": {
@@ -367,7 +367,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 51
+                "y": 55
               }
             ]
           }
@@ -377,40 +377,36 @@
         "availability": {
           "spec": {
             "display": {
-              "description": "Workloads running fewer ready copies than requested. Check scheduling, images and readiness probes for the affected workload.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.",
-              "name": "Which applications are missing copies?"
+              "description": "Up to 5 affected applications at the end of the selected period, with the number of unavailable replicas beside each name. For example, 1 means one configured instance is not available. Check scheduling, image pulls and readiness probes. A short gap during an update can be normal.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.",
+              "name": "Which applications have unavailable replicas?"
             },
             "links": [
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
-                "url": "./#/metrics?metrics=[[[\"label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\")) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"kind\\\", \\\"workload\\\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\"))), \\\"sre_series\\\", \\\"No missing application copies\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
+                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"last_over_time((label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\")) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"workload\\\", \\\"kind\\\", \\\"namespace\\\", \\\"cluster_name\\\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\"))), \\\"sre_series\\\", \\\"No unavailable replicas in measured workloads\\\", \\\"\\\", \\\"\\\"))[1s:1s] @ end())\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
             "plugin": {
-              "kind": "TimeSeriesChart",
+              "kind": "StatChart",
               "spec": {
-                "legend": {
-                  "mode": "table",
-                  "position": "bottom",
-                  "show": true,
-                  "values": []
+                "calculation": "last",
+                "format": {
+                  "decimalPlaces": 0,
+                  "unit": "none"
                 },
+                "sparkline": false,
                 "thresholds": {
-                  "mode": "absolute",
-                  "steps": []
+                  "defaultColor": "#1976B9",
+                  "steps": [
+                    {
+                      "color": "#E5A000",
+                      "value": 1
+                    }
+                  ]
                 },
-                "visual": {
-                  "connectNulls": false
-                },
-                "yAxis": {
-                  "format": {
-                    "decimalPlaces": 0,
-                    "unit": "decimal"
-                  },
-                  "show": true
-                }
+                "valueFontSize": 20
               }
             },
             "queries": [
@@ -421,7 +417,7 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${sre_series}",
-                      "query": "label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\")) > 0), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"kind\", \"workload\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\"))), \"sre_series\", \"No missing application copies\", \"\", \"\")"
+                      "query": "topk(5, last_over_time((label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\")) > 0), \"sre_series\", \" · \", \"workload\", \"kind\", \"namespace\", \"cluster_name\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\"))), \"sre_series\", \"No unavailable replicas in measured workloads\", \"\", \"\"))[1s:1s] @ end()))"
                     }
                   }
                 }
@@ -1250,7 +1246,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Are servers and applications available, and is the cluster running out of resources?** Start with readiness and missing application copies. Then review server resources, storage and the cluster database. A pod is a running unit of an application; a node is a server. Empty charts need a collection or applicability check. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Are servers and applications available, and is the cluster running out of resources?** Start with server readiness and unavailable application replicas. A replica is one instance of an application: if 3 are configured and only 2 are available, 1 is unavailable. Use the application list below to find the affected workload. Brief gaps can occur during updates. **No data is not the same as zero.** Use the description icon for measurement details."
               }
             },
             "queries": []
@@ -1549,8 +1545,8 @@
         "missingCopies": {
           "spec": {
             "display": {
-              "description": "Total gap between desired and available workload copies. Open the detail list to find the affected applications.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.",
-              "name": "Missing application copies"
+              "description": "Total number of configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. This counts instances, not applications or lost data. Check the named applications below; brief gaps during updates can be normal.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.",
+              "name": "Unavailable application replicas"
             },
             "links": [],
             "plugin": {
@@ -1576,7 +1572,7 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "Missing copies",
+                      "alias": "Unavailable replicas",
                       "query": "sum(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\"))"
                     }
                   }
@@ -1779,7 +1775,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join((label_replace((max by (cluster_name,namespace,pod_name,pod_phase) (last_over_time(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",pod_phase!~\\\"Running|Succeeded\\\"}[5m] @ end()) == 1)), \\\"reason\\\", \\\"$1\\\", \\\"pod_phase\\\", \\\"(.*)\\\") or label_replace(((max by (cluster_name,namespace,pod_name) (last_over_time(kubernetes_state_pod_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",condition=\\\"false\\\",pod_phase=\\\"Running\\\"}[5m] @ end())) == 1)), \\\"reason\\\", \\\"Running but not ready\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\", \\\"reason\\\") or on() label_replace(((0 * count(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}))), \\\"sre_series\\\", \\\"No pods need attention in this scope\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -2026,7 +2022,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_state_persistentvolumeclaim_request_storage{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})) unless on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0), \\\"item\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -2207,7 +2203,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join(((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (increase(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}[1h])))) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\") or on() label_replace((0 * count(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"sre_series\\\", \\\"No restarts observed in the last hour\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
