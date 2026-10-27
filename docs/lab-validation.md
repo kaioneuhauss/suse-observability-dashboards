@@ -133,3 +133,16 @@ Active-import age panels were empty because all eight retained imports were comp
 - **Fleet and air gap:** no new deployment in those modes was performed.
 
 Backups, tokens and raw telemetry remain outside the repository. Published examples contain no credentials or private lab addresses.
+
+## 27 October 2026 — chart 1.4.0 dashboard review
+
+This round updated the five existing central content releases and the Harvester Imports collector. It did **not** repeat the earlier clean uninstall, install a new SUSE server or Agent, or start a VMware migration. The from-zero Virtualization walkthrough is for the user to execute; the separate lab handoff preserves the existing central-content/Harvester-telemetry split.
+
+- 64 automated tests passed, including opt-in RBAC, TLS configuration, link round trips, complete offender links, integer counts, rendering and repeatable chart generation. Helm checks passed. The new Agent example was rendered against the official Agent chart 1.2.14; no second Agent was deployed.
+- The SUSE native API accepted 1,727 instant query/filter cases (up to two discovered values per variable, including multi-select and nonexistent-cluster cases) and 824 range cases. There were no API errors or nonfinite values. Empty results were retained: negative filters, no active imports and inapplicable measurements are not healthy zeroes. This is not every possible combination of filters or versions.
+- At the comparison snapshot, the memory review panel matched all **15** qualifying Pods and their percentages against independently calculated usage/limits from live metrics and Kubernetes Pod specs. Missing-setting counts also matched Kubernetes: **125** CPU requests, **184** CPU limits, **125** memory requests, **183** memory limits. These are point-in-time values, not permanent expected counts.
+- The Harvester kubelet scrape reported `up=1` with TLS verification enabled. Eighteen retained CPU/memory/network source series were received. The initial cAdvisor response exceeded 16 MiB; streaming parsing and a 64 MiB response ceiling resolved collection without disabling TLS or granting `nodes/proxy`.
+- Optional `nodes` discovery and `nodes/metrics` read access were explicitly approved for the Harvester Imports collector. No Secret, exec, proxy or write permission was added.
+- Native UI checks rejected `sort_by_label`, so it is not used. Per-series Stat cards preserve the name/value association; the unsupported dashboard Table widget and unreliable TimeSeries Last column are avoided. The Metrics Explorer link was opened successfully with filters and valid comparisons, and Table view displayed complete names and percentages. Summary counts remain integers; detail percentages are rounded for readability.
+
+The eight existing import objects were completed. The new network panels therefore validate collection and attribution to the controller/shared image Pods during idle operation, **not active VMware transfer throughput or per-VM progress**. No VM power operation, migration, volume removal, restore, failover or notification-delivery test was performed. CPU/memory configuration is not changed by these dashboards.

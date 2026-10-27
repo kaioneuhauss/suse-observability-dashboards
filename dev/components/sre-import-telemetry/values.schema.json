@@ -105,6 +105,24 @@
           "$ref": "#/definitions/componentResources"
         }
       }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled",
+        "kubeletPort"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "kubeletPort": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
     }
   },
   "definitions": {

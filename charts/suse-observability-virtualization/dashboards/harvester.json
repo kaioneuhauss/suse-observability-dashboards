@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/runningCount"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/guestCpuGauge"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -74,21 +74,12 @@
               },
               {
                 "content": {
-                  "$ref": "#/spec/panels/section_1"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 5
-              },
-              {
-                "content": {
                   "$ref": "#/spec/panels/guestUsed"
                 },
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 6
+                "y": 5
               },
               {
                 "content": {
@@ -97,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 6
+                "y": 5
               },
               {
                 "content": {
@@ -106,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 9
+                "y": 8
               },
               {
                 "content": {
@@ -115,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 9
+                "y": 8
               },
               {
                 "content": {
@@ -124,7 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 12
+                "y": 11
               },
               {
                 "content": {
@@ -133,16 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 12
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_2"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 15
+                "y": 11
               },
               {
                 "content": {
@@ -151,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 16
+                "y": 14
               },
               {
                 "content": {
@@ -160,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 16
+                "y": 14
               },
               {
                 "content": {
@@ -169,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 19
+                "y": 17
               },
               {
                 "content": {
@@ -178,16 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 19
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_3"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 22
+                "y": 17
               },
               {
                 "content": {
@@ -196,7 +169,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 23
+                "y": 20
               },
               {
                 "content": {
@@ -205,7 +178,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 23
+                "y": 20
               }
             ]
           }
@@ -587,10 +560,10 @@
             },
             "links": [
               {
-                "name": "Open details · select Table view",
+                "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28%28label_join%28%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%20unless%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_memory_available_bytes%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%7D%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_memory_usable_bytes%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%7D%29%20and%20on%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28max%20by%20%28k8s_cluster_name%2Cnamespace%2Cname%29%20%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%29%29%2C%20%5C%22item%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22k8s_cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22name%5C%22%29%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28kubevirt_vmi_info%7Bk8s_cluster_name%3D~%5C%22${vm_cluster}%5C%22%2Cnamespace%3D~%5C%22${vm_namespace}%5C%22%2Cname%3D~%5C%22${vm_name}%5C%22%2Cphase%3D%5C%22running%5C%22%7D%29%29%2C%20%5C%22item%5C%22%2C%20%5C%22No%20running%20VMs%20missing%20OS%20memory%20statistics%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22item%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})) unless on (k8s_cluster_name,namespace,name) ((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})))), \\\"item\\\", \\\" \\u00b7 \\\", \\\"k8s_cluster_name\\\", \\\"namespace\\\", \\\"name\\\")) or on() label_replace((0 * count(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})), \\\"item\\\", \\\"No running VMs missing OS memory statistics\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
             "plugin": {
@@ -967,51 +940,6 @@
                 }
               }
             ]
-          }
-        },
-        "section_1": {
-          "spec": {
-            "display": {
-              "description": "Memory and CPU inside the VMs",
-              "name": "Memory and CPU inside the VMs"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Compare used and available memory for the same VM. Assigned memory is configuration; VM process memory and host memory describe different layers."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_2": {
-          "spec": {
-            "display": {
-              "description": "Filesystems inside the VMs",
-              "name": "Filesystems inside the VMs"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Look at the VM and mount-point labels. Used bytes, total size and percentage describe the same guest filesystem; QEMU Guest Agent must provide these measurements."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_3": {
-          "spec": {
-            "display": {
-              "description": "Check the measurements",
-              "name": "Check the measurements"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Check collection and sample age before interpreting missing data. A running collector Pod alone does not prove that measurements are arriving."
-              }
-            },
-            "queries": []
           }
         },
         "vcpuUse": {

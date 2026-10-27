@@ -44,3 +44,17 @@ The implementation was checked against [KubeVirt v1.7.4 metrics](https://github.
 After a platform or Agent upgrade, check metric types, labels and values against the source API again. Lab validation does not automatically cover another version, workload or instrumentation contract.
 
 SUSE resolves `${__interval}` according to chart resolution; see its [query guidance](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). Acceptance by VictoriaMetrics alone does not prove acceptance by the SUSE API or UI. The [development guide](../dev/README.md) covers the optional native API audits.
+
+## Actionable resource details (1.4.0)
+
+CPU/memory threshold panels show each qualifying Pod and its measured percentage, at the selected end time, using the existing complete-running-container eligibility checks. Counts remain a compact summary. Missing-request/limit panels add the ten highest measured Pod usages; their **Open values table** link includes every matching measured Pod, not just the top ten. Missing usage does not become zero. CPU is mCPU, memory is working-set bytes, and threshold table queries multiply the ratio by 100.
+
+SUSE Observability 2.10.2 offers no native dashboard Table widget. We use per-series Stat cards for correctly paired names and values, and Metrics Explorer's Table view for full names. Hover truncated names or open the table. `sort_by_label` was rejected by the native API; enabling the TimeSeries legend's positional Last column is not a safe substitute on this version. Details links preserve dashboard filters, but check the Explorer time range before comparing numbers. No automatic resizing is performed.
+
+## Import infrastructure performance (optional, 1.4.0)
+
+Direct kubelet cAdvisor counters are renamed with `harvester_import_` to avoid colliding with other collectors. Network rates apply `rate(...[5m])` to each original series before deduplicating by cluster, namespace, Pod and interface. CPU is `rate(cpu_usage_seconds_total[5m])` in cores; working-set memory is a gauge in bytes. Container CPU/memory excludes the Pod sandbox. The default controller and image-service names/namespaces are allowlisted in the chart. No host-networked replacement or custom namespace is covered.
+
+The controller handles multiple imports and serves exported images; its traffic includes control requests. Longhorn backing-image managers and data sources are shared infrastructure. The panels do not honor the individual import selector and do not claim per-import attribution, logical-byte transfer percentage, elapsed total migration time, unique transferred-byte totals, remaining time or link utilization. Network interfaces are kept separate; do not add receive and transmit as a single transfer amount.
+
+Performance collection is opt-in. It requires Nodes discovery plus `nodes/metrics` read access, direct TCP/10250 and a trusted serving certificate with the node IP. No `nodes/proxy` grant is used. A failed scrape is `up=0`; no matching Pods is an empty performance chart, even if node collection is up. The inventory health check remains independent. Completed-import validation does not validate active VMware transfer throughput.

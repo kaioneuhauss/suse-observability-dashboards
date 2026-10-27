@@ -1,4 +1,8 @@
 clusterName: ''
+# Optional direct kubelet metrics; does not grant nodes/proxy or VM writes.
+performance:
+  enabled: false
+  kubeletPort: 10250
 remoteWrite:
   url: ''
   existingSecret: suse-observability-agent-secrets

@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/allocatedCpu"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/allocatedMemory"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,19 +40,10 @@
                 "content": {
                   "$ref": "#/spec/panels/hostAvailable"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 16,
                 "y": 1
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_1"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 3
               },
               {
                 "content": {
@@ -61,7 +52,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -70,16 +61,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 4
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_2"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 7
+                "y": 2
               },
               {
                 "content": {
@@ -88,7 +70,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 8
+                "y": 5
               },
               {
                 "content": {
@@ -97,7 +79,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 8
+                "y": 5
               },
               {
                 "content": {
@@ -106,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 11
+                "y": 8
               },
               {
                 "content": {
@@ -115,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 11
+                "y": 8
               }
             ]
           }
@@ -534,36 +516,6 @@
                 }
               }
             ]
-          }
-        },
-        "section_1": {
-          "spec": {
-            "display": {
-              "description": "Capacity and failure planning",
-              "name": "Capacity and failure planning"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "These estimates help planning. Assigned virtual CPUs are not actual CPU demand, and a positive memory balance does not guarantee failover."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_2": {
-          "spec": {
-            "display": {
-              "description": "Review VM sizing using the last 24 hours",
-              "name": "Review VM sizing using the last 24 hours"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Compare typical high demand, the sampled peak and collection coverage. A short history does not become a full day simply by selecting 24 hours."
-              }
-            },
-            "queries": []
           }
         }
       },

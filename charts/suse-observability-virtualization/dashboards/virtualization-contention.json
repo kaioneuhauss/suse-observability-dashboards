@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/cpuReady"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/cpuUsage"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,19 +40,10 @@
                 "content": {
                   "$ref": "#/spec/panels/memoryUse"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 16,
                 "y": 1
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_1"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 3
               },
               {
                 "content": {
@@ -61,7 +52,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -70,7 +61,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -79,7 +70,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 7
+                "y": 5
               },
               {
                 "content": {
@@ -88,7 +79,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 7
+                "y": 5
               },
               {
                 "content": {
@@ -97,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 10
+                "y": 8
               },
               {
                 "content": {
@@ -106,16 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 10
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_2"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 13
+                "y": 8
               },
               {
                 "content": {
@@ -124,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 14
+                "y": 11
               },
               {
                 "content": {
@@ -133,7 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 14
+                "y": 11
               }
             ]
           }
@@ -551,36 +533,6 @@
                 }
               }
             ]
-          }
-        },
-        "section_1": {
-          "spec": {
-            "display": {
-              "description": "CPU and memory: find the bottleneck",
-              "name": "CPU and memory: find the bottleneck"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Compare changes at the time of a slowdown. CPU use, CPU waiting and memory pressure answer different questions."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_2": {
-          "spec": {
-            "display": {
-              "description": "Disk response time",
-              "name": "Disk response time"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Compare read and write response times. Idle disks have no measured average; an empty latency chart alone is not a failure."
-              }
-            },
-            "queries": []
           }
         },
         "swap": {

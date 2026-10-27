@@ -94,6 +94,13 @@ Which VMware imports have finished, failed or are still being processed by VM Im
 | Failed or invalid imports | Import records classified as failed or invalid. Inspect the controller resource and events for the cause before retrying. |
 | Imports still in progress | Records still pending or being processed. Compare the current stage and time since the last update; a long transfer can be legitimate. |
 | Current stage of each import | The legend identifies each import and the stage recorded by the controller. A line at 1 marks the recorded stage; it is not a completion percentage. |
+| Import controller: incoming network traffic (bytes/s) | Receive bytes per second per Pod interface, averaged over five minutes. Includes all imports and control traffic; not transfer speed for one VM. |
+| Import controller: outgoing network traffic (bytes/s) | Transmit bytes per second per Pod interface, averaged over five minutes. Disk export and image serving are separate stages; do not add receive and transmit as unique migrated bytes. |
+| Import controller: CPU used | CPU cores used by each controller container over five minutes. Compare a slowdown with CPU, memory and network together. |
+| Import controller: memory used | Working-set memory per controller container. Compare the trend with its configured limit and logs. |
+| Shared image services: incoming network traffic (bytes/s) | Network receive rate for Longhorn backing-image managers and data sources. These services also handle non-import images; this is shared infrastructure traffic. |
+| Shared image services: outgoing network traffic (bytes/s) | Network transmit rate for shared image services. Interface labels keep management and storage networks separate. This is not attributed to the selected import. |
+| Can we collect import performance metrics? | 1 means the kubelet metrics endpoint answered; 0 means failure. This does not prove matching importer Pods exist. Check TLS, TCP/10250 and nodes/metrics access if collection fails. |
 | Can we read the import inventory? | 1 means recent API reads succeeded; 0 means they failed or became stale. This must work before a zero import count can be trusted. |
 | Disk images ready for the VM | Percentage of recorded disks marked ready. Even at 100%, VM creation and boot may still be pending; this is not transfer progress. |
 | Total, ready and failed disks per import | Counts of disk objects recorded for each import. Compare ready with total; a failed disk requires checking controller events. |
@@ -226,5 +233,9 @@ Are applications using the CPU and memory reserved for them, or approaching thei
 | Which pods exceed 80% of their CPU limit? | List of pods above the review threshold. It is a starting point for investigation, not an automatic resizing recommendation. |
 | Which pods exceed 80% of their memory limit? | List of pods above the review threshold. Compare sustained usage and recent memory-related restarts. |
 | Pods above 80% of their CPU limit | Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names. |
+| Top 10 pods without CPU requests: current CPU use (mCPU) | Ten highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests. |
+| Top 10 pods without CPU limits: current CPU use (mCPU) | Ten highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them. |
+| Top 10 pods without memory requests: current memory use | Ten highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests. |
+| Top 10 pods without memory limits: current memory use | Ten highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits. |
 | Pods above 80% of their memory limit | Count of measured pods above the memory review threshold. See the detail list and inspect individual containers. |
 

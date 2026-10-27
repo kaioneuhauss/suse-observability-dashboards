@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/ready"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/coverage"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/nonRunning"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 16,
                 "y": 1
@@ -49,19 +49,19 @@
                 "content": {
                   "$ref": "#/spec/panels/missingCopies"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 0,
-                "y": 3
+                "y": 2
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/restartCount"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 8,
-                "y": 3
+                "y": 2
               },
               {
                 "content": {
@@ -70,7 +70,7 @@
                 "height": 2,
                 "width": 8,
                 "x": 16,
-                "y": 3
+                "y": 2
               },
               {
                 "content": {
@@ -79,7 +79,7 @@
                 "height": 2,
                 "width": 8,
                 "x": 0,
-                "y": 5
+                "y": 4
               },
               {
                 "content": {
@@ -88,16 +88,7 @@
                 "height": 2,
                 "width": 8,
                 "x": 8,
-                "y": 5
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_1"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 7
+                "y": 4
               },
               {
                 "content": {
@@ -106,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 8
+                "y": 6
               },
               {
                 "content": {
@@ -115,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 8
+                "y": 6
               },
               {
                 "content": {
@@ -124,16 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 11
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_2"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 14
+                "y": 9
               },
               {
                 "content": {
@@ -142,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 15
+                "y": 12
               },
               {
                 "content": {
@@ -151,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 15
+                "y": 12
               },
               {
                 "content": {
@@ -160,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 18
+                "y": 15
               },
               {
                 "content": {
@@ -169,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 18
+                "y": 15
               },
               {
                 "content": {
@@ -178,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 21
+                "y": 18
               },
               {
                 "content": {
@@ -187,7 +169,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 21
+                "y": 18
               },
               {
                 "content": {
@@ -196,7 +178,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 24
+                "y": 21
               },
               {
                 "content": {
@@ -205,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 24
+                "y": 21
               },
               {
                 "content": {
@@ -214,7 +196,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 27
+                "y": 24
               },
               {
                 "content": {
@@ -223,16 +205,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 27
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_3"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 30
+                "y": 24
               },
               {
                 "content": {
@@ -241,7 +214,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 31
+                "y": 27
               },
               {
                 "content": {
@@ -250,7 +223,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 31
+                "y": 27
               },
               {
                 "content": {
@@ -259,7 +232,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 34
+                "y": 30
               },
               {
                 "content": {
@@ -268,7 +241,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 34
+                "y": 30
               },
               {
                 "content": {
@@ -277,7 +250,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 37
+                "y": 33
               },
               {
                 "content": {
@@ -286,16 +259,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 37
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_4"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 40
+                "y": 33
               },
               {
                 "content": {
@@ -304,7 +268,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 41
+                "y": 36
               },
               {
                 "content": {
@@ -313,7 +277,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 41
+                "y": 36
               },
               {
                 "content": {
@@ -322,7 +286,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 44
+                "y": 39
               },
               {
                 "content": {
@@ -331,7 +295,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 44
+                "y": 39
               },
               {
                 "content": {
@@ -340,7 +304,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 47
+                "y": 42
               },
               {
                 "content": {
@@ -349,7 +313,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 47
+                "y": 42
               },
               {
                 "content": {
@@ -358,7 +322,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 50
+                "y": 45
               },
               {
                 "content": {
@@ -367,7 +331,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 50
+                "y": 45
               },
               {
                 "content": {
@@ -376,7 +340,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 53
+                "y": 48
               },
               {
                 "content": {
@@ -385,16 +349,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 53
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_5"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 56
+                "y": 48
               },
               {
                 "content": {
@@ -403,7 +358,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 57
+                "y": 51
               },
               {
                 "content": {
@@ -412,7 +367,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 57
+                "y": 51
               }
             ]
           }
@@ -427,10 +382,10 @@
             },
             "links": [
               {
-                "name": "Open details · select Table view",
+                "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22label_join%28%28%28label_replace%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cdeployment%29%20%28kubernetes_state_deployment_replicas_unavailable%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%2C%20%5C%22workload%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22deployment%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%29%2C%20%5C%22kind%5C%22%2C%20%5C%22Deployment%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%20or%20label_replace%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cdaemonset%29%20%28kubernetes_state_daemonset_daemons_unavailable%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%2C%20%5C%22workload%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22daemonset%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%29%2C%20%5C%22kind%5C%22%2C%20%5C%22DaemonSet%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%20or%20label_replace%28label_replace%28%28clamp_min%28max%20by%20%28cluster_name%2Cnamespace%2Cstatefulset%29%20%28kubernetes_state_statefulset_replicas_desired%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%20-%20max%20by%20%28cluster_name%2Cnamespace%2Cstatefulset%29%20%28kubernetes_state_statefulset_replicas_ready%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%2C0%29%29%2C%20%5C%22workload%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22statefulset%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%2C%20%5C%22kind%5C%22%2C%20%5C%22StatefulSet%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%29%20%3E%200%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22kind%5C%22%2C%20%5C%22workload%5C%22%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28label_replace%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cdeployment%29%20%28kubernetes_state_deployment_replicas_unavailable%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%2C%20%5C%22workload%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22deployment%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%29%2C%20%5C%22kind%5C%22%2C%20%5C%22Deployment%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%20or%20label_replace%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cdaemonset%29%20%28kubernetes_state_daemonset_daemons_unavailable%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%2C%20%5C%22workload%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22daemonset%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%29%2C%20%5C%22kind%5C%22%2C%20%5C%22DaemonSet%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%20or%20label_replace%28label_replace%28%28clamp_min%28max%20by%20%28cluster_name%2Cnamespace%2Cstatefulset%29%20%28kubernetes_state_statefulset_replicas_desired%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%20-%20max%20by%20%28cluster_name%2Cnamespace%2Cstatefulset%29%20%28kubernetes_state_statefulset_replicas_ready%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%2C0%29%29%2C%20%5C%22workload%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22statefulset%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%2C%20%5C%22kind%5C%22%2C%20%5C%22StatefulSet%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20missing%20application%20copies%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "url": "./#/metrics?metrics=[[[\"label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\")) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"kind\\\", \\\"workload\\\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\"))), \\\"sre_series\\\", \\\"No missing application copies\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
             "plugin": {
@@ -1793,10 +1748,10 @@
             },
             "links": [
               {
-                "name": "Open details · select Table view",
+                "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22label_join%28%28label_replace%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Cpod_phase%29%20%28last_over_time%28kubernetes_state_pod_status_phase%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%2Cpod_phase%21~%5C%22Running%7CSucceeded%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%20%3D%3D%201%29%29%2C%20%5C%22reason%5C%22%2C%20%5C%22%241%5C%22%2C%20%5C%22pod_phase%5C%22%2C%20%5C%22%28.%2A%29%5C%22%29%20or%20label_replace%28%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28last_over_time%28kubernetes_state_pod_ready%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%2Ccondition%3D%5C%22false%5C%22%2Cpod_phase%3D%5C%22Running%5C%22%7D%5B5m%5D%20%40%20end%28%29%29%29%20%3D%3D%201%29%29%2C%20%5C%22reason%5C%22%2C%20%5C%22Running%20but%20not%20ready%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%2C%20%5C%22reason%5C%22%29%20or%20on%28%29%20label_replace%28%28%280%20%2A%20count%28kubernetes_state_pod_status_phase%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20pods%20need%20attention%20in%20this%20scope%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "url": "./#/metrics?metrics=[[[\"label_join((label_replace((max by (cluster_name,namespace,pod_name,pod_phase) (last_over_time(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",pod_phase!~\\\"Running|Succeeded\\\"}[5m] @ end()) == 1)), \\\"reason\\\", \\\"$1\\\", \\\"pod_phase\\\", \\\"(.*)\\\") or label_replace(((max by (cluster_name,namespace,pod_name) (last_over_time(kubernetes_state_pod_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",condition=\\\"false\\\",pod_phase=\\\"Running\\\"}[5m] @ end())) == 1)), \\\"reason\\\", \\\"Running but not ready\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\", \\\"reason\\\") or on() label_replace(((0 * count(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}))), \\\"sre_series\\\", \\\"No pods need attention in this scope\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
             "plugin": {
@@ -2036,10 +1991,10 @@
             },
             "links": [
               {
-                "name": "Open details · select Table view",
+                "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22max%20by%20%28sre_series%29%20%28label_join%28%28label_join%28%28max%20by%20%28cluster_name%2Cnamespace%2Cpersistentvolumeclaim%29%20%28kubernetes_state_persistentvolumeclaim_request_storage%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%20unless%20on%20%28cluster_name%2Cnamespace%2Cpersistentvolumeclaim%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpersistentvolumeclaim%29%20%28kubernetes_kubelet_volume_stats_inodes%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%20%3E%200%29%2C%20%5C%22item%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22persistentvolumeclaim%5C%22%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22item%5C%22%29%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_state_persistentvolumeclaim_request_storage{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})) unless on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0), \\\"item\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
             "plugin": {
@@ -2214,10 +2169,10 @@
             },
             "links": [
               {
-                "name": "Open details · select Table view",
+                "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "Open the query with these filters. Enable Table view for values and labels in columns. Reselect the time period if needed.",
-                "url": "./#/metrics?metrics=%5B%5B%5B%22label_join%28%28%28sum%20by%20%28cluster_name%2Cnamespace%2Cpod_name%29%20%28max%20by%20%28cluster_name%2Cnamespace%2Cpod_name%2Ccontainer%29%20%28increase%28kubernetes_state_container_restarts%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%5B1h%5D%29%29%29%29%20%3E%200%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22%20%5Cu00b7%20%5C%22%2C%20%5C%22cluster_name%5C%22%2C%20%5C%22namespace%5C%22%2C%20%5C%22pod_name%5C%22%29%20or%20on%28%29%20label_replace%28%280%20%2A%20count%28kubernetes_state_container_restarts%7Bcluster_name%3D~%5C%22${platform_cluster}%5C%22%2Cnamespace%3D~%5C%22${platform_namespace}%5C%22%7D%29%29%2C%20%5C%22sre_series%5C%22%2C%20%5C%22No%20restarts%20observed%20in%20the%20last%20hour%5C%22%2C%20%5C%22%5C%22%2C%20%5C%22%5C%22%29%22%5D%5D%2C%5B0%2C%5B6%2C%5Btrue%2C%22%22%5D%5D%5D%5D"
+                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "url": "./#/metrics?metrics=[[[\"label_join(((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (increase(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}[1h])))) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\") or on() label_replace((0 * count(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"sre_series\\\", \\\"No restarts observed in the last hour\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
             "plugin": {
@@ -2259,81 +2214,6 @@
                 }
               }
             ]
-          }
-        },
-        "section_1": {
-          "spec": {
-            "display": {
-              "description": "Applications needing attention",
-              "name": "Applications needing attention"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "A pod can be starting, waiting or failing. Read the observed state and inspect events and previous logs before declaring an incident."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_2": {
-          "spec": {
-            "display": {
-              "description": "Server resources",
-              "name": "Server resources"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Host CPU, memory, filesystems and I/O include both applications and platform services. Compare sustained changes with application availability and response time."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_3": {
-          "spec": {
-            "display": {
-              "description": "Application storage",
-              "name": "Application storage"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Filesystem usage is available only for supported volume modes and drivers. Missing measurements for a raw block volume can be expected."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_4": {
-          "spec": {
-            "display": {
-              "description": "Cluster database: etcd (optional collection)",
-              "name": "Cluster database: etcd (optional collection)"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "etcd stores the cluster configuration. Begin with leader visibility, then check queues, disk latency and quota. Empty charts are expected when optional collection is disabled; one member has no peer traffic or redundancy."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_5": {
-          "spec": {
-            "display": {
-              "description": "Check metric delivery",
-              "name": "Check metric delivery"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "A growing delivery queue or repeated retries can make the dashboard stale. Check collector logs, network connectivity and the SUSE backend."
-              }
-            },
-            "queries": []
           }
         }
       },

@@ -352,6 +352,34 @@
   },
   {
     "dashboard": "imports",
+    "panel": "controllerCPU",
+    "title": "Import controller: CPU used",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "controllerMemory",
+    "title": "Import controller: memory used",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "controllerRx",
+    "title": "Import controller: incoming network traffic (bytes/s)",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "controllerTx",
+    "title": "Import controller: outgoing network traffic (bytes/s)",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "imports",
     "panel": "diskReadiness",
     "title": "Disk images ready for the VM",
     "monitors": [],
@@ -373,6 +401,20 @@
   },
   {
     "dashboard": "imports",
+    "panel": "imageRx",
+    "title": "Shared image services: incoming network traffic (bytes/s)",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "imageTx",
+    "title": "Shared image services: outgoing network traffic (bytes/s)",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "imports",
     "panel": "lastCondition",
     "title": "Time since an active import last changed status (seconds)",
     "monitors": [],
@@ -384,6 +426,13 @@
     "title": "Source disk capacity recorded by the import",
     "monitors": [],
     "guidance": "Decision support; inspect source health, coverage and the metric contract."
+  },
+  {
+    "dashboard": "imports",
+    "panel": "performanceHealth",
+    "title": "Can we collect import performance metrics?",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
   },
   {
     "dashboard": "imports",
@@ -835,6 +884,13 @@
   },
   {
     "dashboard": "resources",
+    "panel": "cpuLimitMissingValues",
+    "title": "Top 10 pods without CPU limits: current CPU use (mCPU)",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "resources",
     "panel": "cpuLimitReview",
     "title": "Which pods exceed 80% of their CPU limit?",
     "monitor_slugs": [],
@@ -868,6 +924,13 @@
     "guidance": [
       "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
     ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "cpuRequestMissingValues",
+    "title": "Top 10 pods without CPU requests: current CPU use (mCPU)",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
   },
   {
     "dashboard": "resources",
@@ -925,6 +988,13 @@
   },
   {
     "dashboard": "resources",
+    "panel": "memLimitMissingValues",
+    "title": "Top 10 pods without memory limits: current memory use",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "resources",
     "panel": "memLimitReview",
     "title": "Which pods exceed 80% of their memory limit?",
     "monitor_slugs": [
@@ -962,6 +1032,13 @@
     "guidance": [
       "Operational context: no standalone alert; compare with the related error, latency, capacity or collection monitor"
     ]
+  },
+  {
+    "dashboard": "resources",
+    "panel": "memRequestMissingValues",
+    "title": "Top 10 pods without memory requests: current memory use",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
   },
   {
     "dashboard": "resources",

@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/unhealthy"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/neverBackup"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -40,19 +40,10 @@
                 "content": {
                   "$ref": "#/spec/panels/staleBackup"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 8,
                 "x": 16,
                 "y": 1
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_1"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 3
               },
               {
                 "content": {
@@ -61,7 +52,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -70,7 +61,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -79,7 +70,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 7
+                "y": 5
               },
               {
                 "content": {
@@ -88,7 +79,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 7
+                "y": 5
               },
               {
                 "content": {
@@ -97,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 10
+                "y": 8
               },
               {
                 "content": {
@@ -106,16 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 10
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_2"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 13
+                "y": 8
               },
               {
                 "content": {
@@ -124,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 14
+                "y": 11
               },
               {
                 "content": {
@@ -133,16 +115,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 14
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_3"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 17
+                "y": 11
               },
               {
                 "content": {
@@ -151,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 18
+                "y": 14
               },
               {
                 "content": {
@@ -160,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 18
+                "y": 14
               }
             ]
           }
@@ -705,51 +678,6 @@
                 }
               }
             ]
-          }
-        },
-        "section_1": {
-          "spec": {
-            "display": {
-              "description": "Volume health and storage space",
-              "name": "Volume health and storage space"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Health states and storage sizes are different measurements. Physical bytes used, provisioned volume size and scheduled replicas must not be added together."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_2": {
-          "spec": {
-            "display": {
-              "description": "Storage activity and speed",
-              "name": "Storage activity and speed"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Operations per second measure activity; response time measures how long an operation takes. Compare them to identify delays under load."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_3": {
-          "spec": {
-            "display": {
-              "description": "Backup records",
-              "name": "Backup records"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Check the backup policy for the selected volumes. Backup timestamps and statuses are useful records, but only a restore test demonstrates recoverability."
-              }
-            },
-            "queries": []
           }
         },
         "snapshotSpace": {

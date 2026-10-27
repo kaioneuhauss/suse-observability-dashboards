@@ -19,6 +19,8 @@ Installation uses **kubectl and Helm only**. You do not need to clone this repos
 
 Each module has its own chart. If you only have Harvester, install `virtualization`. You do not need Traefik or the applications module. Add `imports` to follow VMware imports. Coriolis is not included.
 
+**Installing only SUSE Virtualization from zero? Start with [this complete walkthrough](docs/virtualization.md).** It covers the Agent, credentials, OTLP, the three settings to fill in, installation checks and removal. If your SUSE server already has these dashboards, add only collectors to the new cluster.
+
 ## 1. Prepare once
 
 You need:
@@ -69,7 +71,7 @@ Replace `/path/to/harvester.yaml` and the context `harvester` with your own kube
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.3.0 --values virtualization.yaml \
+  --version 1.4.0 --values virtualization.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -97,7 +99,7 @@ For more than one cluster, publish each module's dashboards **once** and add col
 
 ## 5. Remove when you no longer need it
 
-With version **1.3.0**, one command removes this module's collectors, dashboards and monitors. Keep the publishing Secret available until removal finishes:
+With version **1.3.0 or later**, one command removes this module's collectors, dashboards and monitors. Keep the publishing Secret available until removal finishes:
 
 ```sh
 helm uninstall obs-virtualization \

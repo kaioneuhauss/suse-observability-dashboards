@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/registered"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 6,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/succeeded"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 6,
                 "x": 6,
                 "y": 1
@@ -40,7 +40,7 @@
                 "content": {
                   "$ref": "#/spec/panels/failed"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 6,
                 "x": 12,
                 "y": 1
@@ -49,19 +49,10 @@
                 "content": {
                   "$ref": "#/spec/panels/active"
                 },
-                "height": 2,
+                "height": 1,
                 "width": 6,
                 "x": 18,
                 "y": 1
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_1"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 3
               },
               {
                 "content": {
@@ -70,7 +61,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -79,7 +70,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 4
+                "y": 2
               },
               {
                 "content": {
@@ -88,16 +79,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 7
-              },
-              {
-                "content": {
-                  "$ref": "#/spec/panels/section_2"
-                },
-                "height": 1,
-                "width": 24,
-                "x": 0,
-                "y": 10
+                "y": 5
               },
               {
                 "content": {
@@ -106,7 +88,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 11
+                "y": 8
               },
               {
                 "content": {
@@ -115,7 +97,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 11
+                "y": 8
               },
               {
                 "content": {
@@ -124,7 +106,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 14
+                "y": 11
               },
               {
                 "content": {
@@ -133,16 +115,70 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
+                "y": 11
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/controllerRx"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
                 "y": 14
               },
               {
                 "content": {
-                  "$ref": "#/spec/panels/section_3"
+                  "$ref": "#/spec/panels/controllerTx"
                 },
-                "height": 1,
-                "width": 24,
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 14
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/controllerCPU"
+                },
+                "height": 3,
+                "width": 12,
                 "x": 0,
                 "y": 17
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/controllerMemory"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 17
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/imageRx"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 20
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/imageTx"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 12,
+                "y": 20
+              },
+              {
+                "content": {
+                  "$ref": "#/spec/panels/performanceHealth"
+                },
+                "height": 3,
+                "width": 12,
+                "x": 0,
+                "y": 23
               },
               {
                 "content": {
@@ -151,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 18
+                "y": 26
               }
             ]
           }
@@ -284,6 +320,196 @@
                     "spec": {
                       "alias": "${cluster_name}",
                       "query": "max by (cluster_name) (harvester_import_inventory_up{cluster_name=~\"${import_cluster}\"})"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "controllerCPU": {
+          "spec": {
+            "display": {
+              "description": "CPU cores used by each controller container over five minutes. Compare a slowdown with CPU, memory and network together.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
+              "name": "Import controller: CPU used"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${pod} · ${container}",
+                      "query": "max by (cluster_name,node,namespace,pod,container) (rate(harvester_import_cpu_usage_seconds_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",container!=\"\",container!=\"POD\"}[5m]))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "controllerMemory": {
+          "spec": {
+            "display": {
+              "description": "Working-set memory per controller container. Compare the trend with its configured limit and logs.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
+              "name": "Import controller: memory used"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes(IEC)"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${pod} · ${container}",
+                      "query": "max by (cluster_name,node,namespace,pod,container) (harvester_import_memory_working_set_bytes{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",container!=\"\",container!=\"POD\"})"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "controllerRx": {
+          "spec": {
+            "display": {
+              "description": "Receive bytes per second per Pod interface, averaged over five minutes. Includes all imports and control traffic; not transfer speed for one VM.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
+              "name": "Import controller: incoming network traffic (bytes/s)"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes/sec"
+                  },
+                  "label": "Bytes per second",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${pod} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_receive_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",interface!=\"lo\"}[5m]))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "controllerTx": {
+          "spec": {
+            "display": {
+              "description": "Transmit bytes per second per Pod interface, averaged over five minutes. Disk export and image serving are separate stages; do not add receive and transmit as unique migrated bytes.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
+              "name": "Import controller: outgoing network traffic (bytes/s)"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes/sec"
+                  },
+                  "label": "Bytes per second",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${pod} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_transmit_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",interface!=\"lo\"}[5m]))"
                     }
                   }
                 }
@@ -462,6 +688,102 @@
             "queries": []
           }
         },
+        "imageRx": {
+          "spec": {
+            "display": {
+              "description": "Network receive rate for Longhorn backing-image managers and data sources. These services also handle non-import images; this is shared infrastructure traffic.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
+              "name": "Shared image services: incoming network traffic (bytes/s)"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes/sec"
+                  },
+                  "label": "Bytes per second",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${pod} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_receive_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"longhorn-system\",pod=~\"(bim-|backing-image-manager-|backing-image-ds-).+\",interface!=\"lo\"}[5m]))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "imageTx": {
+          "spec": {
+            "display": {
+              "description": "Network transmit rate for shared image services. Interface labels keep management and storage networks separate. This is not attributed to the selected import.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
+              "name": "Shared image services: outgoing network traffic (bytes/s)"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "bytes/sec"
+                  },
+                  "label": "Bytes per second",
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${pod} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_transmit_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"longhorn-system\",pod=~\"(bim-|backing-image-manager-|backing-image-ds-).+\",interface!=\"lo\"}[5m]))"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
         "lastCondition": {
           "spec": {
             "display": {
@@ -557,6 +879,53 @@
             ]
           }
         },
+        "performanceHealth": {
+          "spec": {
+            "display": {
+              "description": "1 means the kubelet metrics endpoint answered; 0 means failure. This does not prove matching importer Pods exist. Check TLS, TCP/10250 and nodes/metrics access if collection fails.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
+              "name": "Can we collect import performance metrics?"
+            },
+            "plugin": {
+              "kind": "TimeSeriesChart",
+              "spec": {
+                "legend": {
+                  "mode": "table",
+                  "position": "bottom",
+                  "show": true,
+                  "values": []
+                },
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": []
+                },
+                "visual": {
+                  "connectNulls": false
+                },
+                "yAxis": {
+                  "format": {
+                    "decimalPlaces": 1,
+                    "unit": "decimal"
+                  },
+                  "show": true
+                }
+              }
+            },
+            "queries": [
+              {
+                "kind": "TimeSeriesQuery",
+                "spec": {
+                  "plugin": {
+                    "kind": "PrometheusTimeSeriesQuery",
+                    "spec": {
+                      "alias": "${cluster_name} · ${node}",
+                      "query": "max by (cluster_name,node,namespace,pod,container) (up{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\"})"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
         "phases": {
           "spec": {
             "display": {
@@ -640,51 +1009,6 @@
                 }
               }
             ]
-          }
-        },
-        "section_1": {
-          "spec": {
-            "display": {
-              "description": "Current progress",
-              "name": "Current progress"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "The stage is recorded by VM Import Controller. Disk readiness covers disk preparation, not transfer percentage or application acceptance."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_2": {
-          "spec": {
-            "display": {
-              "description": "Time and disk capacity",
-              "name": "Time and disk capacity"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Elapsed times include only the recorded stages or object age. Disk capacity is logical source size, not bytes transferred; no completion time is predicted."
-              }
-            },
-            "queries": []
-          }
-        },
-        "section_3": {
-          "spec": {
-            "display": {
-              "description": "Check the measurements",
-              "name": "Check the measurements"
-            },
-            "plugin": {
-              "kind": "Markdown",
-              "spec": {
-                "text": "Check collection and sample age before interpreting missing data. A running collector Pod alone does not prove that measurements are arriving."
-              }
-            },
-            "queries": []
           }
         },
         "stageTimes": {

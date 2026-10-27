@@ -89,6 +89,13 @@ succeeded|Completed imports|Imports for which the controller recorded the VM sta
 failed|Failed or invalid imports|Import records classified as failed or invalid. Inspect the controller resource and events for the cause before retrying.
 active|Imports still in progress|Records still pending or being processed. Compare the current stage and time since the last update; a long transfer can be legitimate.
 phases|Current stage of each import|The legend identifies each import and the stage recorded by the controller. A line at 1 marks the recorded stage; it is not a completion percentage.
+controllerRx|Import controller: incoming network traffic|Receive bytes per second per Pod interface, averaged over five minutes. Includes all imports and control traffic; not transfer speed for one VM.
+controllerTx|Import controller: outgoing network traffic|Transmit bytes per second per Pod interface, averaged over five minutes. Disk export and image serving are separate stages; do not add receive and transmit as unique migrated bytes.
+controllerCPU|Import controller: CPU used|CPU cores used by each controller container over five minutes. Compare a slowdown with CPU, memory and network together.
+controllerMemory|Import controller: memory used|Working-set memory per controller container. Compare the trend with its configured limit and logs.
+imageRx|Shared image services: incoming network traffic|Network receive rate for Longhorn backing-image managers and data sources. These services also handle non-import images; this is shared infrastructure traffic.
+imageTx|Shared image services: outgoing network traffic|Network transmit rate for shared image services. Interface labels keep management and storage networks separate. This is not attributed to the selected import.
+performanceHealth|Can we collect import performance metrics?|1 means the kubelet metrics endpoint answered; 0 means failure. This does not prove matching importer Pods exist. Check TLS, TCP/10250 and nodes/metrics access if collection fails.
 collection|Can we read the import inventory?|1 means recent API reads succeeded; 0 means they failed or became stale. This must work before a zero import count can be trusted.
 diskReadiness|Disk images ready for the VM|Percentage of recorded disks marked ready. Even at 100%, VM creation and boot may still be pending; this is not transfer progress.
 disks|Total, ready and failed disks per import|Counts of disk objects recorded for each import. Compare ready with total; a failed disk requires checking controller events.
@@ -160,6 +167,10 @@ inventoryHealth|Can we read pod resource settings?|1 means pod configuration col
 cpuLimitReview|Which pods exceed 80% of their CPU limit?|List of pods above the review threshold. It is a starting point for investigation, not an automatic resizing recommendation.
 memLimitReview|Which pods exceed 80% of their memory limit?|List of pods above the review threshold. Compare sustained usage and recent memory-related restarts.
 cpuOver80Count|Pods above 80% of their CPU limit|Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names.
+cpuRequestMissingValues|Top 10 pods without CPU requests: current CPU use (mCPU)|Ten highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests.
+cpuLimitMissingValues|Top 10 pods without CPU limits: current CPU use (mCPU)|Ten highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them.
+memRequestMissingValues|Top 10 pods without memory requests: current memory use|Ten highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests.
+memLimitMissingValues|Top 10 pods without memory limits: current memory use|Ten highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits.
 memOver80Count|Pods above 80% of their memory limit|Count of measured pods above the memory review threshold. See the detail list and inspect individual containers.
 ''',
 'platform': '''
@@ -223,10 +234,10 @@ SECTIONS = {
  'virtualization-contention': [('Summary','cpuReady cpuUsage memoryUse'),('CPU and memory: find the bottleneck','ready cpu ioWait memory faults swap'),('Disk response time','readLatency writeLatency')],
  'virtualization-capacity': [('Assigned resources and headroom','allocatedCpu allocatedMemory hostAvailable'),('Capacity and failure planning','cpuRatio nMinusOne'),('Review VM sizing using the last 24 hours','cpuP95 cpuPeak memoryP95 coverage')],
  'virtualization-storage': [('What needs review?','unhealthy neverBackup staleBackup'),('Volume health and storage space','volumeHealth attachment physicalStorage scheduledStorage logicalCapacity snapshotSpace'),('Storage activity and speed','iops latency'),('Backup records','backupAge backupState')],
- 'imports': [('Import summary','registered succeeded failed active'),('Current progress','phases diskReadiness disks'),('Time and disk capacity','activeAge lastCondition stageTimes logicalDisks'),('Check the measurements','collection')],
+ 'imports': [('Import summary','registered succeeded failed active'),('Current progress','phases diskReadiness disks'),('Time and disk capacity','activeAge lastCondition stageTimes logicalDisks'),('Import infrastructure performance','controllerRx controllerTx controllerCPU controllerMemory imageRx imageTx performanceHealth'),('Check the measurements','collection')],
  'applications': [('Traffic, errors and speed','rps requests1h requests24h success error5xx p95_1h'),('Find affected routes and applications','throughput outcomes errorRoutes latency slowServices errorTotals routeTotals'),('Availability target and data freshness','availability5m burnRate sampleAge')],
  'traefik': [('Traffic, errors and speed','rps client4xx error5xx requests1h meanLatency p95 p99'),('Find affected applications','requestRate serviceTraffic byCode latency serviceLatency errorTimeline clientErrorTimeline bandwidth'),('Selected-period summaries','serviceRequests24h serviceErrorRatio codeTotals'),('Connections, certificates and data collection','connections tlsExpiry scrapeHealth')],
- 'resources': [('Resource limits and missing settings','cpuUseGauge memUseGauge cpuOver80Count memOver80Count cpuRequestMissingList cpuLimitMissingList memRequestMissingList memLimitMissingList'),('Compare the same five pods: CPU','cpuUsageTop cpuRequestTop cpuLimitTop'),('Compare the same five pods: memory','memUsageTop memRequestTop memLimitTop'),('Investigate settings and resource pressure','missingSettingsPods cpuLimitReview memLimitReview memoryRisk cpuReservation throttling workingSetRSS'),('Check the measurements','inventoryHealth')],
+ 'resources': [('Resource limits and missing settings','cpuUseGauge memUseGauge cpuOver80Count memOver80Count'),('Pods needing review','memLimitReview cpuLimitReview cpuRequestMissingList cpuRequestMissingValues cpuLimitMissingList cpuLimitMissingValues memRequestMissingList memRequestMissingValues memLimitMissingList memLimitMissingValues'),('Compare the same five pods: CPU','cpuUsageTop cpuRequestTop cpuLimitTop'),('Compare the same five pods: memory','memUsageTop memRequestTop memLimitTop'),('Investigate settings and resource pressure','missingSettingsPods memoryRisk cpuReservation throttling workingSetRSS'),('Check the measurements','inventoryHealth')],
  'platform': [('Cluster summary','ready coverage nonRunning missingCopies restartCount cpuGauge memoryGauge diskGauge'),('Applications needing attention','nonRunningList availability restarts'),('Server resources','hostCPU hostMemory filesystem inodeRisk nodeUsed nodeTotal diskLatency ioPressure memoryPressure networkErrors'),('Application storage','pvcRisk pvcUsed pvcCapacity pvcUnmeasured pvPhases pvcPhases'),('Cluster database: etcd (optional collection)','etcdLeader etcdLeaderChanges etcdPending etcdApplyLag etcdFailed etcdDB etcdWAL etcdCommit etcdPeer etcdScrape'),('Check metric delivery','collectorQueue collectorRetries')],
 }
 
@@ -272,6 +283,54 @@ UNITS = {
 def query(panel, expression, alias):
     panel['spec']['queries'] = [{'kind':'TimeSeriesQuery','spec':{'plugin':{'kind':'PrometheusTimeSeriesQuery','spec':{'query':expression,'alias':alias}}}}]
 
+# Native SUSE 2.10.2 has no Table widget. StatChart preserves each series/value
+# pair; its TimeSeries legend Last column can misattribute values.
+ACTION_LISTS = {'resources': {'memLimitReview','cpuLimitReview','cpuRequestMissingValues',
+    'cpuLimitMissingValues','memRequestMissingValues','memLimitMissingValues'}}
+
+def add_actionable_panels(slug, panels):
+    if slug == 'resources':
+        selector='cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"'
+        keys='cluster_name,namespace,pod_name,container'; pods='cluster_name,namespace,pod_name'
+        running=f'max by ({keys}) (last_over_time(sre_pod_container_running{{{selector}}}[5m] @ end()) == 1)'
+        for resource, short in [('cpu','cpu'),('memory','mem')]:
+            usage=(f'avg_over_time(container_cpu_usage{{{selector}}}[5m] @ end()) / 1000000' if resource=='cpu'
+                   else f'avg_over_time(container_memory_working_set{{{selector}}}[5m] @ end())')
+            used=f'sum by ({pods}) ((max by ({keys}) ({usage})) and on ({keys}) ({running}))'
+            for setting, label in [('requested','Request'),('limit','Limit')]:
+                missing=f'max by ({pods}) (({running}) unless on ({keys}) (max by ({keys}) (last_over_time(sre_pod_container_{resource}_{setting}{{{selector}}}[5m] @ end())) > 0))'
+                expression=f'({used}) and on ({pods}) ({missing})'
+                key=short+label+'MissingValues'
+                panels[key]=copy.deepcopy(panels['memoryRisk'])
+                panels[key]['spec'].pop('links',None)
+                panels[key]['spec']['display']={'name':key,'description':'Latest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.'}
+                panels[key]['spec']['plugin']['spec']['yAxis']['format']={'unit':'none' if resource=='cpu' else 'bytes(IEC)'}
+                query(panels[key],f'max by (sre_series) (label_join(({expression}), "sre_series", " · ", "cluster_name", "namespace", "pod_name"))','${sre_series}')
+        for key in ACTION_LISTS[slug]:
+            p=panels[key]['spec']; q=p['queries'][0]['spec']['plugin']['spec']
+            if q['query'].startswith('sort_by_label('):
+                q['query']=q['query'][14:-15]
+            if key.endswith('MissingValues'): q['query']='topk(10, '+q['query']+')'
+            unit='percentunit' if key.endswith('LimitReview') else ('none' if key.startswith('cpu') else 'bytes(IEC)')
+            p['plugin']={'kind':'StatChart','spec':{'calculation':'last','sparkline':False,'valueFontSize':20,'format':{'unit':unit,'decimalPlaces':1},'thresholds':{'defaultColor':'#1976B9','steps':[]}}}
+            if key.endswith('LimitReview'):p['plugin']['spec']['thresholds']={'defaultColor':'#1976B9','steps':[{'value':0.8,'color':'#E5A000'},{'value':0.95,'color':'#D3443B'}]}
+
+            p['display']['description']=p['display'].get('description','').replace('use the details link for columns','read the value beside each name')
+    if slug == 'imports':
+        select='cluster_name=~"${import_cluster}",job="sre-import-performance"'
+        controller=select+',namespace="harvester-system",pod=~"harvester-vm-import-controller-.+"'
+        images=select+',namespace="longhorn-system",pod=~"(bim-|backing-image-manager-|backing-image-ds-).+"'
+        for key,sel,direction in [('controllerRx',controller,'receive'),('controllerTx',controller,'transmit'),('imageRx',images,'receive'),('imageTx',images,'transmit')]:
+            panels[key]=copy.deepcopy(panels['activeAge']); p=panels[key]['spec'];p.pop('links',None)
+            p['display']={'name':key,'description':'cAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.'}
+            p['plugin']['spec']['yAxis']['format']={'unit':'bytes/sec'}
+            query(panels[key],f'max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_{direction}_bytes_total{{{sel},interface!="lo"}}[5m]))','${cluster_name} · ${pod} · ${interface}')
+        for key,metric,unit in [('controllerCPU','rate(harvester_import_cpu_usage_seconds_total{'+controller+',container!="",container!="POD"}[5m])','decimal'),('controllerMemory','harvester_import_memory_working_set_bytes{'+controller+',container!="",container!="POD"}','bytes(IEC)'),('performanceHealth','up{'+select+'}','decimal')]:
+            panels[key]=copy.deepcopy(panels['activeAge']);p=panels[key]['spec'];p.pop('links',None)
+            p['display']={'name':key,'description':'Direct TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.'}
+            p['plugin']['spec']['yAxis']['format']={'unit':unit}
+            query(panels[key],f'max by (cluster_name,node,namespace,pod,container) ({metric})','${cluster_name} · ${pod} · ${container}' if key!='performanceHealth' else '${cluster_name} · ${node}')
+
 guide_rows = ['# Dashboard reading guide', '', 'Each row explains what a panel shows. Open its description in SUSE for the formula, time window and measurement limits.', '', 'Counts use whole numbers; rates can be fractional. Missing data is not proof of health. Period-total panels summarize the selected window and do not show a trend. This is a community lab project, not recommended for production.', '']
 reviewed = {}
 for slug, (name, purpose, guide) in META.items():
@@ -281,6 +340,7 @@ for slug, (name, purpose, guide) in META.items():
     for key in list(panels):
         if key in REMOVE.get(slug, []) or key.startswith('section_') or key == 'etcdGuide':
             del panels[key]
+    add_actionable_panels(slug, panels)
     rows = {r.split('|',2)[0]:r.split('|',2)[1:] for r in READING[slug].strip().splitlines()}
     assert set(rows) == set(panels) - {'guide'}, (slug, set(rows) ^ (set(panels)-{'guide'}))
     reviewed[slug] = rows
@@ -358,9 +418,22 @@ for slug, (name, purpose, guide) in META.items():
         if key in COUNTS.get(slug,set()): fmt['unit']='none' if plug['kind']=='StatChart' else 'decimal'
         if plug['kind']=='TimeSeriesChart':
             spec['legend']['values']=[]
+
             spec.setdefault('visual',{})['connectNulls']=False
         if slug=='traefik' and key in ('errorTimeline','clientErrorTimeline'):
             plug['kind']='TimeSeriesChart'; spec['visual']={'connectNulls':False}
+        if p.get('queries') and (p.get('links') or key in ACTION_LISTS.get(slug,set())):
+            # SUSE expands variables and URL-encodes this parameter itself.
+            # Pre-encoding it produces %255B and breaks the explorer link.
+            expressions=[q['spec']['plugin']['spec']['query'] for q in p['queries']]
+            if key.endswith('MissingValues') and expressions[0].startswith('topk(10, '): expressions[0]=expressions[0][9:-1]
+            if key in ('memLimitReview','cpuLimitReview'):expressions[0]='round(100 * ('+expressions[0]+'), 0.1)'
+            state=[[[expression] for expression in expressions], [0,[6,[True,'']]]]
+            encoded=json.dumps(state,separators=(',',':'))
+            for char in '<>%&+#':encoded=encoded.replace(char,'\\u'+format(ord(char),'04x'))
+            p['links']=[{'name':'Open values table','targetBlank':True,
+              'tooltip':'All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.',
+              'url':'./#/metrics?metrics='+encoded}]
         guide_rows.append('| '+title+' | '+intro+' |')
     guide_rows.append('')
     panels['guide']['spec']['display']={'name':'What this dashboard tells you','description':purpose}
@@ -368,17 +441,14 @@ for slug, (name, purpose, guide) in META.items():
     items=[{'x':0,'y':0,'width':24,'height':1,'content':{'$ref':'#/spec/panels/guide'}}]; y=1
     seen=[]
     for index,(heading,keys) in enumerate(SECTIONS[slug]):
-        if index:
-            section='section_'+str(index)
-            panels[section]=copy.deepcopy(panels['guide']); panels[section]['spec']['display']={'name':heading,'description':heading}
-            panels[section]['spec']['plugin']['spec']['text']=SECTION_HELP[heading]
-            items.append({'x':0,'y':y,'width':24,'height':1,'content':{'$ref':'#/spec/panels/'+section}});y+=1
         x=0; row_height=0
         for key in keys.split():
             kind=panels[key]['spec']['plugin']['kind'];width=8 if kind in ('StatChart','GaugeChart') else 12
             if slug=='imports' and key in ('registered','succeeded','failed','active'):width=6
             if slug=='traefik' and key in ('requests1h','meanLatency','p95','p99'):width=12
-            height=2 if kind in ('StatChart','GaugeChart') else 3
+            height=1 if kind=='StatChart' else (2 if kind=='GaugeChart' else 3)
+            if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=6;height=2
+            if key in ACTION_LISTS.get(slug, set()): width=24; height=3
             if x+width>24:y+=row_height;x=0;row_height=0
             items.append({'x':x,'y':y,'width':width,'height':height,'content':{'$ref':'#/spec/panels/'+key}})
             x+=width;row_height=max(row_height,height);seen.append(key)
@@ -389,6 +459,10 @@ for slug, (name, purpose, guide) in META.items():
 
 coverage_path=CONTENT/'files/panel-monitor-coverage.json'
 coverage=json.loads(coverage_path.read_text())
+known={(r['dashboard'],r['panel']) for r in coverage}
+for slug,rows in reviewed.items():
+    for key in rows:
+        if (slug,key) not in known:coverage.append({'dashboard':slug,'panel':key,'title':rows[key][0],'monitors':[],'guidance':'Investigation context; verify collection and source data before acting.'})
 coverage=[r for r in coverage if r['panel'] in reviewed[r['dashboard']]]
 for row in coverage:row['title']=reviewed[row['dashboard']][row['panel']][0]
 coverage.sort(key=lambda r:(r['dashboard'],r['panel']))

@@ -13,6 +13,14 @@ rules:
   - apiGroups: [migration.harvesterhci.io]
     resources: [virtualmachineimports]
     verbs: [list]
+  {{- if .Values.performance.enabled }}
+  - apiGroups: [""]
+    resources: [nodes]
+    verbs: [get, list, watch]
+  - apiGroups: [""]
+    resources: [nodes/metrics]
+    verbs: [get]
+  {{- end }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -40,6 +48,39 @@ data:
       - job_name: sre-import-inventory
         static_configs:
           - targets: ['127.0.0.1:9103']
+      {{- if .Values.performance.enabled }}
+      - job_name: sre-import-performance
+        stream_parse: true
+        max_scrape_size: 64MiB
+        scheme: https
+        metrics_path: /metrics/cadvisor
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          insecure_skip_verify: false
+        kubernetes_sd_configs:
+          - role: node
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_node_address_InternalIP]
+            regex: '(.+)'
+            target_label: __address__
+            replacement: '${1}:{{ .Values.performance.kubeletPort }}'
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+        metric_relabel_configs:
+          - source_labels: [__name__]
+            regex: 'container_(network_(receive|transmit)_bytes_total|cpu_usage_seconds_total|memory_working_set_bytes)'
+            action: keep
+          - source_labels: [namespace, pod]
+            regex: 'harvester-system;harvester-vm-import-controller-.+|longhorn-system;(bim-|backing-image-manager-|backing-image-ds-).+'
+            action: keep
+          - source_labels: [__name__]
+            regex: 'container_(.+)'
+            target_label: __name__
+            replacement: 'harvester_import_${1}'
+          - regex: 'image|name'
+            action: labeldrop
+      {{- end }}
       {{- if .Values.vmagent.selfMonitoring }}
       - job_name: sre-collector
         static_configs:
@@ -68,6 +109,7 @@ spec:
       labels: {app: {{ $name }}, app.kubernetes.io/name: sre-import-telemetry, app.kubernetes.io/component: imports}
       annotations:
         telemetry/inventory-hash: {{ .Files.Get "files/import_inventory.py" | sha256sum | quote }}
+        telemetry/chart-version: {{ .Chart.Version | quote }}
         telemetry/config-hash: {{ toJson .Values | sha256sum | quote }}
     spec:
       automountServiceAccountToken: false
@@ -128,6 +170,9 @@ spec:
             - {name: config, mountPath: /config, readOnly: true}
             - {name: auth, mountPath: /auth, readOnly: true}
             - {name: queue, mountPath: /queue}
+            {{- if .Values.performance.enabled }}
+            - {name: api-access, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
+            {{- end }}
             {{- if .Values.remoteWrite.caSecret }}
             - {name: ca, mountPath: /ca, readOnly: true}
             {{- end }}

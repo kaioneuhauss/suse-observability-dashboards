@@ -58,6 +58,9 @@ content:
   slo:
     availabilityTarget: 99.9
 imports:
+  performance:
+    enabled: false
+    kubeletPort: 10250
   remoteWrite:
     username: apikey
     caSecret: ''

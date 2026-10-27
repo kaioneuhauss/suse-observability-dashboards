@@ -26,7 +26,7 @@ kubectl edit addons.harvesterhci.io vm-import-controller --namespace harvester-s
 
 Confirm the namespace with `kubectl get addons.harvesterhci.io --all-namespaces` using your kubeconfig and context if it differs. Follow the [Harvester VM Import guide](https://docs.harvesterhci.io/v1.8/advanced/addons/vmimport/) to configure the controller and prepare actual migrations. Enabling the add-on does not start an import.
 
-The collector needs only permission to list `virtualmachineimports`; the chart supplies that RBAC. It does not read VMware credentials. It uses HTTPS remote write, so it does not need an OTLP endpoint or the Application Collection image Secret.
+By default, the collector needs only permission to list `virtualmachineimports`; the chart supplies that RBAC. It does not read VMware credentials. It uses HTTPS remote write, so it does not need an OTLP endpoint or the Application Collection image Secret.
 
 ## 2. Add the repository
 
@@ -55,7 +55,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.3.0 --values imports.yaml \
+  --version 1.4.0 --values imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -103,3 +103,40 @@ helm uninstall obs-imports \
 **Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
 
 To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.
+
+## Optional: CPU, memory and network during imports
+
+To investigate slow imports, add this to `imports.yaml`, then repeat the Helm install command:
+
+```yaml
+imports:
+  performance:
+    enabled: true
+```
+
+This is disabled by default because it grants the collector extra cluster permissions: `get/list/watch` on Nodes and `get` on `nodes/metrics`. The kubelet permission can read metrics for other Pods too; the collector discards them before sending data. It does not grant `nodes/proxy`, Pod exec, Secret access or write access. The Harvester administrator must approve this access.
+
+The collector connects directly to each node's InternalIP on TCP/10250, with its ServiceAccount token and TLS certificate verification. The kubelet certificate must be trusted by the cluster CA and cover the node IP. Do not disable TLS verification to work around a certificate error. IPv4 InternalIP endpoints were validated; IPv6-only nodes need a reviewed discovery configuration.
+
+The chart retains only CPU, working-set memory and network byte counters for the default `harvester-vm-import-controller-*` Pods in `harvester-system`, and `bim-*`, `backing-image-manager-*`, `backing-image-ds-*` Pods in `longhorn-system`. Custom namespaces/names and host-networked replacements are outside this contract. It parses the kubelet response as a stream, with a 64 MiB response limit. Large clusters may need a separate capacity review.
+
+| New panels | How to use them |
+|---|---|
+| Import controller: incoming/outgoing network traffic | Bytes/s per Pod interface, averaged over five minutes. Compare drops in traffic with import stages and controller logs. |
+| Import controller: CPU and memory | Identify resource pressure while exporting disks or serving images. CPU is cores, memory is working-set bytes. |
+| Shared image services: incoming/outgoing network traffic | Longhorn image infrastructure activity. Includes other image operations; do not attribute it exclusively to one import. |
+| Can we collect import performance metrics? | Each expected node should report `1`. No series means no discovered target or missing delivery; `0` means a failed scrape. |
+
+These panels follow the **Cluster** filter only. Import name and namespace filters apply to the import inventory, not shared infrastructure. Receive and transmit describe different directions and must not be added as unique bytes migrated. No per-import bandwidth, transfer percentage, link utilization percentage or ETA is claimed.
+
+Check the collector after enabling it:
+
+```sh
+kubectl logs deployment/obs-imports-imports --container vmagent --since=5m \
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+kubectl auth can-i get nodes --subresource=metrics \
+  --as=system:serviceaccount:suse-observability:obs-imports-imports \
+  --kubeconfig /path/to/harvester.yaml --context harvester
+```
+
+The authorization check requires impersonation permission on your own account. Confirm fresh values in SUSE as well. The collector being Ready alone does not validate its scrape. Disabling `imports.performance.enabled` with the same Helm command removes these extra RBAC rules and stops performance collection; import progress remains available.
