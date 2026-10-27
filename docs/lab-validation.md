@@ -152,3 +152,11 @@ The eight existing import objects were completed. The new network panels therefo
 The first 1.4.0 native-query sweep did not treat expected-positive empty panels as a failure. Visual acceptance then caught SUSE ingestion's `pod` → `pod_name` normalization. The 1.4.1 dashboard selectors and legends were corrected. All seven performance panels were tested again through the native API with explicit nonempty assertions: one controller receive series, one transmit series, one CPU series, one memory series, two shared-image receive interfaces, two transmit interfaces and one healthy node target. The seven nonexistent-cluster controls returned no series. The full automated suite now contains 65 tests.
 
 The final Harvester inventory contained 429 VM/PV/PVC objects with the same UIDs and specifications as the prior clean-install evidence. The Imports ServiceAccount authorization check allows `get nodes --subresource=metrics` and denies `get nodes --subresource=proxy`.
+
+### 1.4.2 collector sizing correction
+
+A later readiness check found repeated `OOMKilled` restarts in the optional performance collector. The initial successful scrape and nonempty queries had not proved continuous collection. The kubelet response was approximately 20 MiB, and the inventory-only 128 MiB container limit left insufficient parsing headroom even with streaming enabled.
+
+The performance profile now automatically requests 128 MiB and allows 512 MiB, with 50m/500m CPU. The Harvester telemetry release was upgraded to 1.4.2. The same seven positive and seven negative native queries passed again; explicit freshness checks found `up=1`, four scrapes in the previous two minutes, and controller memory samples approximately 11 seconds old. Historic gaps from the earlier restarts remain visible; they were not filled or deleted. The CPU/memory and receive/transmit pairs were also checked in the native UI.
+
+Fifteen readiness/resource snapshots over seven minutes showed both containers ready with zero restarts. The vmagent working set reported by the Metrics API ranged from 104 to 127 MiB against the new 512 MiB limit. This is a short idle-operation check, not a prolonged load or active-migration test. All 65 automated tests and Helm checks passed for 1.4.2.

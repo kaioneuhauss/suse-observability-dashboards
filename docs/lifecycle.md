@@ -64,7 +64,7 @@ Use the same module guide and saved values. For the backup from step 1:
 ```sh
 helm repo update obs-dashboards
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.4.1 --values virtualization-backup.yaml \
+  --version 1.4.2 --values virtualization-backup.yaml \
   --set lifecycle.action=apply --set-string lifecycle.confirmDelete= \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m

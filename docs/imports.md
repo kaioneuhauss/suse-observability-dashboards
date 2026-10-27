@@ -55,7 +55,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.4.1 --values imports.yaml \
+  --version 1.4.2 --values imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -117,6 +117,8 @@ imports:
 This is disabled by default because it grants the collector extra cluster permissions: `get/list/watch` on Nodes and `get` on `nodes/metrics`. The kubelet permission can read metrics for other Pods too; the collector discards them before sending data. It does not grant `nodes/proxy`, Pod exec, Secret access or write access. The Harvester administrator must approve this access.
 
 The collector connects directly to each node's InternalIP on TCP/10250, with its ServiceAccount token and TLS certificate verification. The kubelet certificate must be trusted by the cluster CA and cover the node IP. Do not disable TLS verification to work around a certificate error. IPv4 InternalIP endpoints were validated; IPv6-only nodes need a reviewed discovery configuration.
+
+Enabling performance also selects a larger collector budget automatically: 128 MiB requested and 512 MiB maximum memory, with 50m requested and 500m maximum CPU. The inventory-only profile stays smaller. Override `imports.performance.resources` if the size or number of your nodes requires it. The kubelet sends its full response before Pod filtering, so retaining only a few series does not eliminate parsing costs. See [vmagent memory usage](https://docs.victoriametrics.com/vmagent/#troubleshooting) for tuning.
 
 The chart retains only CPU, working-set memory and network byte counters for the default `harvester-vm-import-controller-*` Pods in `harvester-system`, and `bim-*`, `backing-image-manager-*`, `backing-image-ds-*` Pods in `longhorn-system`. Custom namespaces/names and host-networked replacements are outside this contract. It parses the kubelet response as a stream, with a 64 MiB response limit. Large clusters may need a separate capacity review.
 

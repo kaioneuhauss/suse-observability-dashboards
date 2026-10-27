@@ -3,6 +3,6 @@ name: suse-observability-imports
 description: Independent imports dashboards, monitors and applicable collectors for
   SUSE Observability
 type: application
-version: 1.4.1
+version: 1.4.2
 appVersion: 2.10.2
 home: https://github.com/kaioneuhauss/suse-observability-dashboards

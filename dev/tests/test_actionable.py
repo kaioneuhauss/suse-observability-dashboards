@@ -38,6 +38,10 @@ class ActionableTests(unittest.TestCase):
    resources={r for rule in role['rules'] for r in rule['resources']}
    self.assertEqual('nodes/metrics' in resources,enabled)
    self.assertFalse(resources & {'nodes/proxy','pods/exec','secrets'})
+   deploy=next(d for d in docs if d['kind']=='Deployment')
+   vmagent=next(c for c in deploy['spec']['template']['spec']['containers'] if c['name']=='vmagent')
+   self.assertEqual(vmagent['resources']['limits']['memory'],'512Mi' if enabled else '128Mi')
+   self.assertEqual(vmagent['resources']['requests']['memory'],'128Mi' if enabled else '32Mi')
    config=next(d for d in docs if d['kind']=='ConfigMap' and 'scrape.yaml' in d.get('data',{}))
    jobs=yaml.safe_load(config['data']['scrape.yaml'])['scrape_configs']
    performance=[j for j in jobs if j['job_name']=='sre-import-performance']

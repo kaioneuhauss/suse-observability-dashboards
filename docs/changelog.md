@@ -1,8 +1,12 @@
 # Changelog
 
+## 1.4.2 — Size the optional Imports collector for cAdvisor
+
+The inventory-only memory limit could trigger OOMKilled when performance collection parsed the kubelet response. Enabling `imports.performance.enabled` now automatically selects a separate 128 MiB request / 512 MiB limit and 50m / 500m CPU budget. Customize `imports.performance.resources` for larger environments. Collection remains opt-in with the same read-only permissions and TLS verification.
+
 ## 1.4.1 — Match SUSE's stored Pod label
 
-SUSE normalizes the cAdvisor `pod` label to `pod_name`. Import performance selectors and legends now use the stored label; 1.4.0 could collect the data while showing empty performance panels. Seven positive native queries and seven nonexistent-cluster queries were checked explicitly after correction. Use 1.4.1 for new installs; existing immutable packages remain available.
+SUSE normalizes the cAdvisor `pod` label to `pod_name`. Import performance selectors and legends now use the stored label; 1.4.0 could collect the data while showing empty performance panels. Seven positive native queries and seven nonexistent-cluster queries were checked explicitly after correction. The selector correction first shipped in 1.4.1; existing immutable packages remain available.
 
 CPU is shown in mCPU so small values remain readable. Unpaired Imports panels use the full row, keeping paired CPU/memory and receive/transmit charts aligned.
 

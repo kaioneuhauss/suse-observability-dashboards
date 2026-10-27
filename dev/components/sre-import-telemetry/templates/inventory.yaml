@@ -165,7 +165,11 @@ spec:
             - -memory.allowedBytes={{ .Values.vmagent.memoryAllowedBytes }}
           securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
           resources:
+            {{- if .Values.performance.enabled }}
+            {{- toYaml .Values.performance.resources | nindent 12 }}
+            {{- else }}
             {{- toYaml .Values.vmagent.resources | nindent 12 }}
+            {{- end }}
           volumeMounts:
             - {name: config, mountPath: /config, readOnly: true}
             - {name: auth, mountPath: /auth, readOnly: true}

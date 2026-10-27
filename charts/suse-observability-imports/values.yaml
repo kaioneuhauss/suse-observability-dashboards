@@ -61,6 +61,15 @@ imports:
   performance:
     enabled: false
     kubeletPort: 10250
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+        ephemeral-storage: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+        ephemeral-storage: 1536Mi
   remoteWrite:
     username: apikey
     caSecret: ''
