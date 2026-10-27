@@ -62,3 +62,15 @@ kubectl logs POD_NAME --all-containers --since=10m \
 ```
 
 Recorded lab checks are in [Lab validation](lab-validation.md). Maintainers can find optional API audit tools in [Development](../dev/README.md); they are not required for installation.
+
+## Unsaved changes after viewing a dashboard
+
+Version 1.5.0 fixes native grid gaps and threshold ordering that could make opening a dashboard look like an edit. After updating, open **Dashboards → All** and use the current dashboard link. A tab left open before the update may point at a replaced ID or retain an older draft. Do not save that old draft over the managed definition. Preserve intentional edits in a separately owned copy.
+
+Normal time/filter changes use the viewer URL. If a current dashboard still shows an asterisk without an intentional edit, record the dashboard, browser size and steps before saving anything. See the [tested paths and limits](lab-validation.md#150--navigation-actionable-volumes-and-alert-coverage).
+
+## Identify a storage problem
+
+In **Virtualization · Storage & Backups**, use **Which volumes need attention?**. The state and volume appear in the series name; hover for the full PVC identity, or use **Open values table → Table view** for separate state, cluster, volume, PVC and PVC-namespace columns. Backup review lists use the same path. The panel previews at most 10 matches; the linked query has no Top 10 restriction.
+
+`pvc_namespace` identifies the application/VM namespace. It differs from the Longhorn collector's `longhorn-system` namespace. A blank PVC label means no claim identity is reported; do not infer a VM from the namespace. Compare the volume with Longhorn before remediation. See [alerts and their limits](alerts.md).

@@ -53,8 +53,11 @@ content:
     - imports
     updateStrategy: replace
   monitors:
-    enabled: false
-    include: []
+    enabled: true
+    include:
+    - import-failed
+    - import-inventory
+    - import-performance-scrape
   slo:
     availabilityTarget: 99.9
 imports:

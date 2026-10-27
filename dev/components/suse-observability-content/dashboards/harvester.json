@@ -22,7 +22,7 @@
                 "content": {
                   "$ref": "#/spec/panels/runningCount"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
                 "y": 1
@@ -31,7 +31,7 @@
                 "content": {
                   "$ref": "#/spec/panels/guestCpuGauge"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
                 "y": 1
@@ -191,6 +191,7 @@
               "description": "RAM configured for the guest operating system. This is the assigned amount, not how much the application is using.\n\nMeasurement details:\nMemory assigned to the guest. It is not automatically the same as the scheduling request.",
               "name": "Memory assigned to each VM"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -238,6 +239,7 @@
               "description": "Memory that the guest can use without swapping, including reclaimable cache. A falling trend can explain application slowdown.\n\nMeasurement details:\nMemory the guest expects to use without swapping. This comes from the KubeVirt usable_bytes metric.",
               "name": "Memory available inside each VM"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -285,6 +287,7 @@
               "description": "CPU use of the busiest selected VM compared with its configured virtual CPUs. If high, open VM Performance to check whether CPU is actually waiting.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU cores used divided by configured guest vCPUs, not the smaller scheduling request. The VM and namespace filters apply.",
               "name": "Busiest VM: CPU used"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -323,6 +326,7 @@
               "description": "Total capacity of each measured filesystem inside the VM. Compare the same VM and mount point with space used.\n\nMeasurement details:\nCapacity reported by the guest agent. Reserved blocks and metadata can differ from other disk measurements. Loop-mounted OS images are excluded.",
               "name": "Size of VM filesystems"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -370,6 +374,7 @@
               "description": "Highest measured filesystem use inside a VM. Review the named VM and mount point before it fills up. Requires QEMU Guest Agent statistics.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by filesystem capacity from QEMU Guest Agent. Reserved blocks mean this may differ from df Use%. The VM and namespace filters apply. Loop-mounted OS images are excluded.",
               "name": "Fullest VM filesystem"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -384,12 +389,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -417,6 +422,7 @@
               "description": "Percentage used in each measured guest filesystem. A sustained rise toward full requires a guest filesystem review.\n\nMeasurement details:\nUsed space divided by capacity reported by the guest agent. This can differ from df Use%, which excludes reserved blocks. Loop-mounted OS images are excluded.",
               "name": "VM filesystem space used"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -464,6 +470,7 @@
               "description": "Bytes used in each reported guest filesystem. The VM operating system sees this space; it differs from Longhorn physical disk usage.\n\nMeasurement details:\nQEMU Guest Agent reports each mount. This is not PVC allocation or physical space occupied by Longhorn replicas. Loop-mounted OS images are excluded.",
               "name": "Space used inside VM filesystems"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -511,6 +518,7 @@
               "description": "Highest memory-use percentage inside a selected VM. This counts memory the guest cannot readily reclaim; check the VM trend before adding RAM.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Guest OS total minus available memory, divided by guest OS total. Requires balloon statistics. The VM and namespace filters apply.",
               "name": "Busiest VM: memory used"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -525,12 +533,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -562,7 +570,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})) unless on (k8s_cluster_name,namespace,name) ((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})))), \\\"item\\\", \\\" \\u00b7 \\\", \\\"k8s_cluster_name\\\", \\\"namespace\\\", \\\"name\\\")) or on() label_replace((0 * count(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})), \\\"item\\\", \\\"No running VMs missing OS memory statistics\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -613,6 +621,7 @@
               "description": "Memory currently needed inside each selected VM. Compare with available memory; this differs from the VM process memory on the host.\n\nMeasurement details:\nGuest OS total minus available memory, from KubeVirt balloon statistics. This differs from QEMU memory resident on the host.",
               "name": "Memory used inside each VM"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -660,6 +669,7 @@
               "description": "Are my virtual machines and their hosts running out of resources?",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -675,6 +685,7 @@
               "description": "RAM still available on Harvester servers, including reclaimable cache. Includes every workload on the host, regardless of the VM filter.\n\nMeasurement details:\nMemory the host considers available for use. VM and namespace filters do not apply.",
               "name": "Memory available on each host"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -722,6 +733,7 @@
               "description": "Highest CPU use on a Harvester server. Includes VMs and platform processes, even when a single VM is selected.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Five-minute CPU utilization on the virtualization host. It includes VMs and host services. VM and namespace filters do not apply.",
               "name": "Busiest host: CPU used"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -736,12 +748,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -769,6 +781,7 @@
               "description": "Highest memory use on a Harvester server. Review available memory before starting another VM; host use includes platform overhead.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Host OS total minus available memory, divided by host OS total. It includes VMs and host services. VM and namespace filters do not apply.",
               "name": "Busiest host: memory used"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -783,12 +796,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -816,6 +829,7 @@
               "description": "Physical host memory used by the VM process, including virtualization overhead. Do not add this to guest memory: they describe different layers of the same VM.\n\nMeasurement details:\nResident memory of the process running the VM. It does not directly measure application memory inside the guest.",
               "name": "VM process memory on the host"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -863,6 +877,7 @@
               "description": "Number of running VM instances currently reported by KubeVirt. Powered-off VM definitions are not included; compare this with the running list in Harvester.\n\nMeasurement details:\nCount of unique cluster, namespace and VM names with kubevirt_vmi_info phase=\"running\". Missing input stays empty; it is not a count of stopped VM definitions.",
               "name": "Running VMs"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -901,6 +916,7 @@
               "description": "1 means the endpoint answered successfully; 0 means collection failed. Missing lines can mean discovery failed. Check this before trusting an empty chart.\n\nMeasurement details:\nPer-target KubeVirt and Longhorn scrape status. TLS errors, API discovery permissions, NetworkPolicies or stale CA bundles can break collection even when the collector Pod is Running. Cluster scope; VM filters do not apply.",
               "name": "Can we collect VM and storage metrics?"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -948,6 +964,7 @@
               "description": "Average CPU demand in virtual CPU cores. A value of 1 means one core fully occupied over the measurement window, not one configured CPU.\n\nMeasurement details:\nFive-minute average. A value of 1 means one core used continuously; this value is not in millicores.",
               "name": "CPU used by each VM (CPU cores)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -996,6 +1013,7 @@
               "description": "Seconds since the most recent VM identity sample. Compare with the 30-second collection interval; an old sample is a visibility problem.\n\nMeasurement details:\nAge of the latest VM identity sample. Compare with scrape interval and expected VMs. No data must not be interpreted as healthy or powered off without checking Harvester.",
               "name": "How old are the VM measurements? (seconds)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {

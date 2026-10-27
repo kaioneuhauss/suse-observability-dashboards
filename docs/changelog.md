@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 — Resource names, stable navigation and clearer module steps
+
+- Added named PVC/volume lists for degraded/faulted volumes, missing backup records and old backups, with full Metrics Explorer links.
+- Filled native dashboard grid gaps and normalized threshold ordering to prevent automatic edits when opening dashboards.
+- Added two Longhorn health monitors and three import/collection monitors; 39 monitors total. Notification routing remains separate.
+- Expanded the README with prerequisites, each module, a worked second-module example, collector ownership, updates and individual/full removal.
+- Added explicit alert coverage and validation limits.
+
 ## 1.4.2 — Size the optional Imports collector for cAdvisor
 
 The inventory-only memory limit could trigger OOMKilled when performance collection parsed the kubelet response. Enabling `imports.performance.enabled` now automatically selects a separate 128 MiB request / 512 MiB limit and 50m / 500m CPU budget. Customize `imports.performance.resources` for larger environments. Collection remains opt-in with the same read-only permissions and TLS verification.

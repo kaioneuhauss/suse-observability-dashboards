@@ -269,7 +269,11 @@
               "type": "boolean"
             },
             "include": {
-              "const": []
+              "const": [
+                "import-failed",
+                "import-inventory",
+                "import-performance-scrape"
+              ]
             }
           }
         }

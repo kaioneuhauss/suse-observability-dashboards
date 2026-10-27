@@ -278,7 +278,9 @@
                 "vm-cpu-delay",
                 "vm-disk-latency",
                 "vm-filesystem-used",
-                "virtualization-scrape"
+                "virtualization-scrape",
+                "longhorn-degraded",
+                "longhorn-faulted"
               ]
             }
           }

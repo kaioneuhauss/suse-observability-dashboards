@@ -347,8 +347,10 @@
     "dashboard": "imports",
     "panel": "collection",
     "title": "Can we read the import inventory?",
-    "monitors": [],
-    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+    "monitors": [
+      "import-inventory"
+    ],
+    "guidance": "Check the named import or collector. Notification routing is separate; missing telemetry is not healthy."
   },
   {
     "dashboard": "imports",
@@ -396,8 +398,10 @@
     "dashboard": "imports",
     "panel": "failed",
     "title": "Failed or invalid imports",
-    "monitors": [],
-    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+    "monitors": [
+      "import-failed"
+    ],
+    "guidance": "Check the named import or collector. Notification routing is separate; missing telemetry is not healthy."
   },
   {
     "dashboard": "imports",
@@ -431,15 +435,19 @@
     "dashboard": "imports",
     "panel": "performanceHealth",
     "title": "Can we collect import performance metrics?",
-    "monitors": [],
-    "guidance": "Investigation context; verify collection and source data before acting."
+    "monitors": [
+      "import-performance-scrape"
+    ],
+    "guidance": "Check the named import or collector. Notification routing is separate; missing telemetry is not healthy."
   },
   {
     "dashboard": "imports",
     "panel": "phases",
     "title": "Current stage of each import",
-    "monitors": [],
-    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+    "monitors": [
+      "import-failed"
+    ],
+    "guidance": "Check the named import or collector. Notification routing is separate; missing telemetry is not healthy."
   },
   {
     "dashboard": "imports",
@@ -1503,6 +1511,13 @@
   },
   {
     "dashboard": "virtualization-storage",
+    "panel": "neverBackupDetails",
+    "title": "Which volumes have no recorded backup?",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "virtualization-storage",
     "panel": "physicalStorage",
     "title": "Physical storage used and available capacity",
     "monitors": [],
@@ -1531,16 +1546,39 @@
   },
   {
     "dashboard": "virtualization-storage",
+    "panel": "staleBackupDetails",
+    "title": "Which backups are older than 7 days?",
+    "monitors": [],
+    "guidance": "Investigation context; verify collection and source data before acting."
+  },
+  {
+    "dashboard": "virtualization-storage",
     "panel": "unhealthy",
     "title": "Volumes needing attention",
-    "monitors": [],
-    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+    "monitors": [
+      "longhorn-degraded",
+      "longhorn-faulted"
+    ],
+    "guidance": "PVC-backed volumes: degraded for 5m or faulted for 1m. Inspect the named volume and replica conditions."
+  },
+  {
+    "dashboard": "virtualization-storage",
+    "panel": "unhealthyDetails",
+    "title": "Which volumes need attention?",
+    "monitors": [
+      "longhorn-degraded",
+      "longhorn-faulted"
+    ],
+    "guidance": "PVC-backed volumes: degraded for 5m or faulted for 1m. Inspect the named volume and replica conditions."
   },
   {
     "dashboard": "virtualization-storage",
     "panel": "volumeHealth",
     "title": "Volume count by health",
-    "monitors": [],
-    "guidance": "Decision support; inspect source health, coverage and the metric contract."
+    "monitors": [
+      "longhorn-degraded",
+      "longhorn-faulted"
+    ],
+    "guidance": "PVC-backed volumes: degraded for 5m or faulted for 1m. Inspect the named volume and replica conditions."
   }
 ]

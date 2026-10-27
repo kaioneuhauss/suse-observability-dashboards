@@ -72,6 +72,9 @@ coverage|VM CPU samples collected over 24 hours|Number of CPU measurements avail
 unhealthy|Volumes needing attention|Volumes marked degraded or faulted by Longhorn. Open Longhorn to inspect replicas and scheduling; detached volumes with unknown health are counted separately in the health chart.
 neverBackup|Volumes with no recorded backup|Volumes whose last successful backup timestamp is zero. Check which ones actually need backups; this includes non-VM volumes.
 staleBackup|Volumes last backed up over 7 days ago|Volumes with a successful backup older than seven days. Compare this review window with your own recovery requirement; never-backed-up volumes appear separately.
+unhealthyDetails|Which volumes need attention?|Up to 10 volumes degraded or faulted at the end of the selected period. Each entry names the PVC and Longhorn volume; 1 means that state is active. Check replicas and scheduling in Longhorn. Open the values table for every affected volume.
+neverBackupDetails|Which volumes have no recorded backup?|Up to 10 volumes with no successful backup timestamp. Each entry identifies the PVC and Longhorn volume; 1 means no recorded backup. Open the values table for the complete list, then compare it with your backup policy.
+staleBackupDetails|Which backups are older than 7 days?|Days since the last recorded successful backup, with PVC and volume names. Up to 10 oldest entries; open the values table for all matches. Check the backup schedule and destination against your recovery requirement.
 volumeHealth|Volume count by health|Number of volumes in each Longhorn health state. Unknown often occurs for detached volumes and does not mean healthy. Select a volume to investigate it.
 attachment|Volume count by attachment state|How many volumes are attached, detached or changing state. Detached can be normal for stopped VMs and does not mean that a disk should be deleted.
 latency|Time to read or write a storage volume|Current average response time reported by Longhorn for active volumes, in milliseconds. Compare with VM disk latency to locate storage delays.
@@ -222,7 +225,7 @@ REMOVE = {
 }
 COUNTS = {
  'harvester': {'runningCount','scrapeHealth','guestMissing'}, 'virtualization-capacity': {'allocatedCpu','coverage'},
- 'virtualization-storage': {'unhealthy','neverBackup','staleBackup','volumeHealth','attachment','backupState'},
+ 'virtualization-storage': {'unhealthy','neverBackup','staleBackup','unhealthyDetails','neverBackupDetails','volumeHealth','attachment','backupState'},
  'imports': {'registered','succeeded','failed','active','disks','phases','collection'},
  'applications': {'requests1h','requests24h','errorTotals','routeTotals'},
  'traefik': {'requests1h','client4xx','error5xx','serviceRequests24h','codeTotals','connections','scrapeHealth','errorTimeline','clientErrorTimeline'},
@@ -233,7 +236,7 @@ SECTIONS = {
  'harvester': [('Summary','runningCount guestCpuGauge guestMemoryGauge guestDiskGauge hostCpuGauge hostMemoryGauge'),('Memory and CPU inside the VMs','guestUsed guestAvailable configuredGuest resident vcpuUse hostAvailable'),('Filesystems inside the VMs','guestDiskRatio guestDiskUsed guestDiskCapacity guestMissing'),('Check the measurements','scrapeHealth vmSampleAge')],
  'virtualization-contention': [('Summary','cpuReady cpuUsage memoryUse'),('CPU and memory: find the bottleneck','ready cpu ioWait memory faults swap'),('Disk response time','readLatency writeLatency')],
  'virtualization-capacity': [('Assigned resources and headroom','allocatedCpu allocatedMemory hostAvailable'),('Capacity and failure planning','cpuRatio nMinusOne'),('Review VM sizing using the last 24 hours','cpuP95 cpuPeak memoryP95 coverage')],
- 'virtualization-storage': [('What needs review?','unhealthy neverBackup staleBackup'),('Volume health and storage space','volumeHealth attachment physicalStorage scheduledStorage logicalCapacity snapshotSpace'),('Storage activity and speed','iops latency'),('Backup records','backupAge backupState')],
+ 'virtualization-storage': [('What needs review?','unhealthy neverBackup staleBackup'),('Find the affected volume','unhealthyDetails staleBackupDetails neverBackupDetails'),('Volume health and storage space','volumeHealth attachment physicalStorage scheduledStorage logicalCapacity snapshotSpace'),('Storage activity and speed','iops latency'),('Backup records','backupAge backupState')],
  'imports': [('Import summary','registered succeeded failed active'),('Current progress','phases diskReadiness disks'),('Time and disk capacity','activeAge lastCondition stageTimes logicalDisks'),('Import infrastructure performance','controllerRx controllerTx controllerCPU controllerMemory imageRx imageTx performanceHealth'),('Check the measurements','collection')],
  'applications': [('Traffic, errors and speed','rps requests1h requests24h success error5xx p95_1h'),('Find affected routes and applications','throughput outcomes errorRoutes latency slowServices errorTotals routeTotals'),('Availability target and data freshness','availability5m burnRate sampleAge')],
  'traefik': [('Traffic, errors and speed','rps client4xx error5xx requests1h meanLatency p95 p99'),('Find affected applications','requestRate serviceTraffic byCode latency serviceLatency errorTimeline clientErrorTimeline bandwidth'),('Selected-period summaries','serviceRequests24h serviceErrorRatio codeTotals'),('Connections, certificates and data collection','connections tlsExpiry scrapeHealth')],
@@ -287,9 +290,28 @@ def query(panel, expression, alias):
 # Native SUSE 2.10.2 has no Table widget. StatChart preserves each series/value
 # pair; its TimeSeries legend Last column can misattribute values.
 ACTION_LISTS = {'resources': {'memLimitReview','cpuLimitReview','cpuRequestMissingValues',
-    'cpuLimitMissingValues','memRequestMissingValues','memLimitMissingValues'}}
+    'cpuLimitMissingValues','memRequestMissingValues','memLimitMissingValues'},
+    'virtualization-storage': {'unhealthyDetails','neverBackupDetails','staleBackupDetails'}}
 
 def add_actionable_panels(slug, panels):
+    if slug == 'virtualization-storage':
+        selector='k8s_cluster_name=~"${storage_cluster}",volume=~"${storage_volume}"'
+        labels='k8s_cluster_name,pvc_namespace,pvc,volume'
+        stamp=f'max by ({labels}) (longhorn_volume_last_backup_at{{{selector}}})'
+        health=f'max by ({labels},state) (longhorn_volume_robustness{{{selector},state=~"degraded|faulted"}}) == 1'
+        expressions={'unhealthyDetails':health,'neverBackupDetails':f'({stamp} == 0) + 1',
+            'staleBackupDetails':f'((time() - ({stamp} > 0)) / 86400) > 7'}
+        for key,expression in expressions.items():
+            panels[key]=copy.deepcopy(panels['unhealthy']);p=panels[key]['spec']
+            p.pop('links',None)
+            p['display']={'name':key,'description':'Latest matching observations, deduplicated by cluster, PVC namespace, PVC and volume. PVC metadata can be empty for volumes without a claim. The PVC namespace is not the longhorn-system namespace of the collector. No matching series is not proof of health: check the summary and collection first. Hover for full names or open the values table. No VM association is inferred from a namespace.'}
+            p['plugin']={'kind':'StatChart','spec':{'calculation':'last','sparkline':False,'valueFontSize':20,'format':{'unit':'none','decimalPlaces':1 if key=='staleBackupDetails' else 0},'thresholds':{'defaultColor':'#E5A000','steps':[]}}}
+            alias='${volume} · ${pvc_namespace}/${pvc} · ${k8s_cluster_name}'
+            if key=='unhealthyDetails':alias='${state} · '+alias
+            # StatChart uses the last non-null sample of every returned series.
+            # Freeze the offender set at the selected end so recovered volumes
+            # do not linger in a range query just because they failed earlier.
+            query(panels[key],f'topk(10, last_over_time(({expression})[1s:1s] @ end()))',alias)
     if slug == 'resources':
         selector='cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"'
         keys='cluster_name,namespace,pod_name,container'; pods='cluster_name,namespace,pod_name'
@@ -376,6 +398,7 @@ for slug, (name, purpose, guide) in META.items():
         panels['guestCpuGauge']['spec']['plugin']={'kind':'StatChart','spec':{'calculation':'last','format':{'unit':'percentunit','decimalPlaces':1},'sparkline':False,'valueFontSize':40,'thresholds':{'defaultColor':'#1976B9','steps':[]}}}
     if slug == 'virtualization-storage':
         selector='k8s_cluster_name=~"${storage_cluster}",volume=~"${storage_volume}"'
+        panels['unhealthy']['spec']['plugin']['spec']['thresholds']={'defaultColor':'#1976B9','steps':[{'value':1,'color':'#E5A000'}]}
         for key,metric in [('volumeHealth','longhorn_volume_robustness'),('attachment','longhorn_volume_state')]:
             query(panels[key],f'sum by (k8s_cluster_name,state) (max by (k8s_cluster_name,volume,state) ({metric}{{{selector}}}))','${k8s_cluster_name} · ${state}')
         base=f'max by (k8s_cluster_name,volume,backup) (longhorn_backup_state{{{selector}}})'
@@ -399,6 +422,11 @@ for slug, (name, purpose, guide) in META.items():
             details={'volumeHealth':'Sum of deduplicated 0/1 health-state gauges, grouped by cluster and state. All selected volumes are included. Missing source metrics remain empty.', 'attachment':'Sum of deduplicated 0/1 attachment-state gauges by cluster and state. Not a deletion list. Missing source metrics remain empty.', 'backupState':'Longhorn 1.11.2 codes are counted and named: 0 New, 1 Pending, 2 In progress, 3 Completed, 4 Error, 5 Unknown. Zeros appear only when backup-state metrics exist.'}[key]
         if slug=='harvester' and key=='runningCount': details='Count of unique cluster, namespace and VM names with kubevirt_vmi_info phase="running". Missing input stays empty; it is not a count of stopped VM definitions.'
         plug=p['plugin']; spec=plug['spec']
+        # The native editor stores thresholds highest first. Publishing the
+        # reverse order makes opening a dashboard count as an unsaved edit.
+        if 'thresholds' in spec:
+            spec['thresholds']['steps'].sort(key=lambda step:step['value'],reverse=True)
+        p.setdefault('links',[])
         fmt=spec.get('format', spec.get('yAxis',{}).get('format',{}))
         label=''
         if 'yAxis' in spec:spec['yAxis'].pop('label',None)
@@ -427,16 +455,17 @@ for slug, (name, purpose, guide) in META.items():
             # SUSE expands variables and URL-encodes this parameter itself.
             # Pre-encoding it produces %255B and breaks the explorer link.
             expressions=[q['spec']['plugin']['spec']['query'] for q in p['queries']]
-            if key.endswith('MissingValues') and expressions[0].startswith('topk(10, '): expressions[0]=expressions[0][9:-1]
+            if key in ACTION_LISTS.get(slug,set()) and expressions[0].startswith('topk(10, '): expressions[0]=expressions[0][9:-1]
             if key in ('memLimitReview','cpuLimitReview'):expressions[0]='round(100 * ('+expressions[0]+'), 0.1)'
             state=[[[expression] for expression in expressions], [0,[6,[True,'']]]]
             encoded=json.dumps(state,separators=(',',':'))
             for char in '<>%&+#':encoded=encoded.replace(char,'\\u'+format(ord(char),'04x'))
             p['links']=[{'name':'Open values table','targetBlank':True,
-              'tooltip':'All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.',
+              'tooltip':'All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.',
               'url':'./#/metrics?metrics='+encoded}]
         guide_rows.append('| '+title+' | '+intro+' |')
     guide_rows.append('')
+    panels['guide']['spec'].setdefault('links',[])
     panels['guide']['spec']['display']={'name':'What this dashboard tells you','description':purpose}
     panels['guide']['spec']['plugin']['spec']['text']='**'+purpose+'** '+guide+' **No data is not the same as zero.** Use the description icon for measurement details.'
     items=[{'x':0,'y':0,'width':24,'height':1,'content':{'$ref':'#/spec/panels/guide'}}]; y=1
@@ -451,10 +480,22 @@ for slug, (name, purpose, guide) in META.items():
             height=1 if kind=='StatChart' else (2 if kind=='GaugeChart' else 3)
             if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=6;height=2
             if key in ACTION_LISTS.get(slug, set()): width=24; height=3
+            if slug=='virtualization-storage' and key in ('unhealthyDetails','staleBackupDetails'):height=2
             if x+width>24:y+=row_height;x=0;row_height=0
             items.append({'x':x,'y':y,'width':width,'height':height,'content':{'$ref':'#/spec/panels/'+key}})
             x+=width;row_height=max(row_height,height);seen.append(key)
         y+=row_height
+    # Fill every row and use one height per row. The native grid compacts gaps
+    # on load, which otherwise produces a false "unsaved changes" warning.
+    layout_rows={}
+    for item in items:layout_rows.setdefault(item['y'],[]).append(item)
+    y=0
+    for row in layout_rows.values():
+        height=max(item['height'] for item in row)
+        width=24//len(row)
+        for index,item in enumerate(row):
+            item.update(x=index*width,y=y,width=width if index<len(row)-1 else 24-index*width,height=height)
+        y+=height
     assert len(seen)==len(set(seen)) and set(seen)==set(rows),slug
     s['layouts'][0]['spec']['items']=items
     path.write_text(json.dumps(d,ensure_ascii=False,indent=2,sort_keys=True)+'\n')
@@ -466,7 +507,14 @@ for slug,rows in reviewed.items():
     for key in rows:
         if (slug,key) not in known:coverage.append({'dashboard':slug,'panel':key,'title':rows[key][0],'monitors':[],'guidance':'Investigation context; verify collection and source data before acting.'})
 coverage=[r for r in coverage if r['panel'] in reviewed[r['dashboard']]]
-for row in coverage:row['title']=reviewed[row['dashboard']][row['panel']][0]
+for row in coverage:
+    row['title']=reviewed[row['dashboard']][row['panel']][0]
+    if row['dashboard']=='virtualization-storage' and row['panel'] in ('unhealthy','unhealthyDetails','volumeHealth'):
+        row['monitors']=['longhorn-degraded','longhorn-faulted']
+        row['guidance']='PVC-backed volumes: degraded for 5m or faulted for 1m. Inspect the named volume and replica conditions.'
+    if row['dashboard']=='imports' and row['panel'] in ('failed','phases','collection','performanceHealth'):
+        row['monitors']=[{'failed':'import-failed','phases':'import-failed','collection':'import-inventory','performanceHealth':'import-performance-scrape'}[row['panel']]]
+        row['guidance']='Check the named import or collector. Notification routing is separate; missing telemetry is not healthy.'
 coverage.sort(key=lambda r:(r['dashboard'],r['panel']))
 coverage_path.write_text(json.dumps(coverage,ensure_ascii=False,indent=2)+'\n')
 (ROOT.parent/'docs/panel-guide.md').write_text('\n'.join(guide_rows)+'\n')

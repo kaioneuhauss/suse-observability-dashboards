@@ -128,6 +128,7 @@
               "description": "CPU demand as a percentage of configured virtual CPUs. High use can be productive work; CPU waiting time provides the contention context.\n\nMeasurement details:\nCPU demand relative to configured VM topology, not Kubernetes CPU request.",
               "name": "CPU used by each VM"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -175,6 +176,7 @@
               "description": "Highest average CPU scheduling wait among selected VMs. A sustained increase means virtual CPUs are waiting for processing time on the host.\n\nMeasurement details:\nMean run-queue delay across vCPUs, then worst selected VM. A scheduling-pressure analogue to CPU Ready; not VMware-identical accounting. No factor of 1000: KubeVirt exports seconds.",
               "name": "Longest wait for CPU"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -213,6 +215,7 @@
               "description": "Highest CPU use relative to the VM's configured virtual CPUs. Compare with CPU waiting time before concluding that the host is overloaded.\n\nMeasurement details:\nDomain CPU seconds per second divided by configured cores × sockets × threads. Includes hypervisor/domain CPU accounting; inspect the time series before resizing.",
               "name": "Busiest VM: CPU used"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -251,6 +254,7 @@
               "description": "Major page faults per second inside each VM. These reads can slow an application; compare with swap and available memory.\n\nMeasurement details:\nRate of major page faults; investigate together with swap activity and guest memory headroom.",
               "name": "Memory pages fetched from disk (pages/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -299,6 +303,7 @@
               "description": "Why is a virtual machine slow? Compare CPU waiting time, memory pressure and disk response.",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -314,6 +319,7 @@
               "description": "Time virtual CPUs spend blocked on input/output. Compare with disk response time; it is different from waiting for a turn on the CPU.\n\nMeasurement details:\nTime blocked on I/O, distinct from runnable CPU scheduler delay.",
               "name": "Time VMs spend waiting for disk I/O"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -361,6 +367,7 @@
               "description": "Guest memory use after allowing for reclaimable memory. A rising value together with swap or page reads can indicate memory pressure.\n\nMeasurement details:\nGuest MemAvailable-based use; different from QEMU RSS and host RAM.",
               "name": "Memory used inside each VM"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -408,6 +415,7 @@
               "description": "Highest guest memory-use percentage. Compare with swap activity and page reads to see whether memory pressure is affecting performance.\n\nMeasurement details:\n100 × (available - usable) / available. Usable corresponds to guest MemAvailable; reclaimable cache is not counted as used. Missing statistics remain empty.",
               "name": "Busiest VM: memory used"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -446,6 +454,7 @@
               "description": "Average milliseconds per completed disk read. Lower is faster. Idle disks have no measured average and remain empty.\n\nMeasurement details:\nMean seconds spent on I/O divided by completed I/Os, converted to milliseconds. One series per VM disk. Idle disks have no mean latency and remain empty.",
               "name": "Time to read from a VM disk (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -494,6 +503,7 @@
               "description": "Average percentage of time each VM's virtual CPUs wait to be scheduled. Look for increases that coincide with a slowdown.\n\nMeasurement details:\nAverage per-vCPU scheduling delay over 5 minutes, deduplicated by VM and vCPU ID.",
               "name": "Time VMs spend waiting for CPU"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -541,6 +551,7 @@
               "description": "Estimated bytes per second moved into or out of swap. Repeated activity can indicate insufficient guest memory; a guest reset can distort the estimate.\n\nMeasurement details:\nKubeVirt exposes cumulative swap traffic as gauges. Positive 5-minute delta / 300 estimates traffic; a guest reset may invalidate this window. Not a counter rate.",
               "name": "VM swap traffic (bytes/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -601,6 +612,7 @@
               "description": "Average milliseconds per completed disk write. Compare a rise with I/O wait and Longhorn storage latency.\n\nMeasurement details:\nMean seconds spent on I/O divided by completed I/Os, converted to milliseconds. One series per VM disk. Idle disks have no mean latency and remain empty.",
               "name": "Time to write to a VM disk (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {

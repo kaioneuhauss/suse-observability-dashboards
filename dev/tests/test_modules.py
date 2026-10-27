@@ -15,7 +15,7 @@ class ModuleTests(unittest.TestCase):
    for d in dashboards:self.assertNotIn(d['name'],names);names.add(d['name'])
    cm=next((o for o in objs if o['kind']=='ConfigMap' and 'catalog.json' in o.get('data',{})),None)
    for r in json.loads(cm['data']['catalog.json']) if cm else []:self.assertNotIn(r['slug'],slugs);slugs.add(r['slug'])
-  self.assertEqual(len(slugs),34)
+  self.assertEqual(len(slugs),39)
  def test_traefik_never_installs_host_or_etcd(self):
   objs=self.render('traefik');self.assertFalse(any(o['kind']=='DaemonSet' for o in objs))
   self.render('traefik','--set','telemetry.etcd.enabled=true',ok=False)

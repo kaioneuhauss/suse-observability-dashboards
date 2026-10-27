@@ -131,7 +131,7 @@
                   "$ref": "#/spec/panels/routeTotals"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 12
               },
@@ -158,7 +158,7 @@
                   "$ref": "#/spec/panels/sampleAge"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 18
               }
@@ -173,6 +173,7 @@
               "description": "Share of completed requests that did not return HTTP 5xx over the last five minutes. This is request-based availability, not measured uptime.\n\nMeasurement details:\n1 minus the fraction of completed HTTP requests with 5xx responses. Excludes health/metrics routes. This is not uptime; timeouts before instrumentation and no traffic are not measured. Missing input stays empty.",
               "name": "Requests without server errors"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -220,6 +221,7 @@
               "description": "1 means errors consume the allowed budget at the planned rate; 10 means ten times that rate. Compare both windows and your agreed availability target.\n\nMeasurement details:\nError fraction divided by the configured error budget. 1x consumes budget at the allowed rate; 14.4x sustained in both windows is a common fast-burn investigation signal. The default target is 99.9%; set slo.availabilityTarget to your agreed objective. This chart alone does not prove a 30-day SLO or trigger paging.",
               "name": "How quickly errors use the allowed budget (times the allowed rate)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -280,6 +282,7 @@
               "description": "Percentage of completed requests with an HTTP 5xx response. Timeouts before instrumentation may not be counted.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Requests ending in a server error"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -293,12 +296,12 @@
                   "defaultColor": "#2E8540",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.01
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.05
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.01
                     }
                   ]
                 },
@@ -328,6 +331,7 @@
               "description": "Error requests per second by route. Select a time with an increase and inspect that application's logs or traces.\n\nMeasurement details:\nFind the application, normalized route and exact HTTP code. Each point averages the chart rate interval, which grows when you zoom out. Zoom in to narrow down the event window. 400/404 can be invalid client input or an unknown path; 500/503 can come from the application or its dependencies. These are possibilities, not a diagnosis. Use logs or traces for the exact event and cause.",
               "name": "Where and when requests fail"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -376,6 +380,7 @@
               "description": "Estimated errors in the selected period, grouped by application, route and code. Read the legend or open details to identify repeated failures.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Errors by route and response code"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -424,6 +429,7 @@
               "description": "How many requests reach the application, how often do they fail, and how long do they take?",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -439,6 +445,7 @@
               "description": "Compare typical and slow-request response times. A rising tail can reveal slow requests hidden by the average.\n\nMeasurement details:\np50 covers half the calls, p95 covers 95%, and p99 covers 99%. Without completed calls, no response time can be calculated.",
               "name": "Response time over time (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -511,6 +518,7 @@
               "description": "Traffic grouped by response type. HTTP 4xx usually indicates a rejected client request; HTTP 5xx indicates a server-side failure.\n\nMeasurement details:\n2xx means success; 3xx means redirection; 4xx needs client or authentication context; 5xx means a server error.",
               "name": "Successful responses and errors over time"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -559,6 +567,7 @@
               "description": "About 95% of measured requests completed within this time. This estimate uses histogram buckets; a few slow requests can still take longer.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. Percentiles use histogram buckets and are estimates. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Response time for 95% of requests (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -572,12 +581,12 @@
                   "defaultColor": "#2E8540",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 500
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 1000
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 500
                     }
                   ]
                 },
@@ -607,6 +616,7 @@
               "description": "Estimated number of completed requests in the selected time range. Counter sampling can make the estimate fractional; the display rounds to whole requests.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Requests in the selected period"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -646,6 +656,7 @@
               "description": "Estimated number of HTTP 5xx responses in the selected range. Check affected routes and application logs.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Server errors in the selected period"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -690,6 +701,7 @@
               "description": "Estimated requests per application route. These totals describe the selected period; a flat line is a period summary, not a traffic trend.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Requests by route in the selected period"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -738,6 +750,7 @@
               "description": "Average application traffic during the selected period. Fractional values are normal: 0.5 requests/s means about one request every two seconds.\n\nMeasurement details:\nEstimated completed requests divided by the duration selected in the top toolbar. For example, 600 requests over 60 seconds average 10 requests/s. Compare this with the five-minute or recent rate only when using the same time window and application.",
               "name": "Requests per second"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -777,6 +790,7 @@
               "description": "Seconds since the newest request-counter sample. A counter may stay unchanged with no traffic while its samples remain fresh.\n\nMeasurement details:\nAge of the newest counter sample per service. Compare with the collection interval; an empty result means missing telemetry, not a healthy service. A counter can stay unchanged while timestamps remain fresh.",
               "name": "How old are the request measurements? (seconds)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -825,6 +839,7 @@
               "description": "Applications with the highest response time for 95% of requests. Compare traffic volume because low sample counts can make this estimate unstable.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. Percentiles use histogram buckets and are estimates. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Slowest applications (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -874,6 +889,7 @@
               "description": "Percentage of measured requests with HTTP 2xx or 3xx responses during the selected period. Compare with both client and server errors; no traffic cannot establish success.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Successful responses and redirects"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -887,12 +903,12 @@
                   "defaultColor": "#D32F2F",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.95
-                    },
-                    {
                       "color": "#2E8540",
                       "value": 0.99
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.95
                     }
                   ]
                 },
@@ -922,6 +938,7 @@
               "description": "Requests per second for each measured route, such as an API endpoint. Compare traffic changes with errors and response time.\n\nMeasurement details:\nA route is an application endpoint. This chart shows which functions receive the most calls.",
               "name": "Traffic by application route"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {

@@ -55,7 +55,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.4.2 --values imports.yaml \
+  --version 1.5.0 --values imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -88,7 +88,7 @@ Open **Virtualization · VMware Import Progress**. Compare import names, phases 
 
 There is no reliable global completion percentage or ETA in this contract. `virtualMachineRunning` is controller success; still check the guest OS, networking and application. Deleting an import object removes it from current inventory, while old metrics follow SUSE retention.
 
-Validated with VM Import Controller **1.8.2**, API `migration.harvesterhci.io/v1beta1`. Existing completed imports were checked live; no new migration was started. No automatic monitors are included. See [metric limits](metric-contracts.md), [multiple clusters](multiple-clusters.md) and [removal](lifecycle.md).
+Validated with VM Import Controller **1.8.2**, API `migration.harvesterhci.io/v1beta1`. Existing completed imports were checked live; no new migration was started. Three monitors cover failed/invalid imports, inventory failure and optional performance scrape failure. See [alert coverage](alerts.md). See [metric limits](metric-contracts.md), [multiple clusters](multiple-clusters.md) and [removal](lifecycle.md).
 
 ## 6. Remove this module
 

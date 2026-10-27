@@ -3,6 +3,20 @@ import importlib.util,json,pathlib,subprocess,unittest,yaml,copy,shutil,tempfile
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('pub',ROOT/'components/suse-observability-content/files/publisher.py');pub=importlib.util.module_from_spec(spec);spec.loader.exec_module(pub)
 class LayoutTests(unittest.TestCase):
+ def test_native_grid_does_not_need_compaction_or_threshold_sort(self):
+  for path in (ROOT/'components/suse-observability-content/dashboards').glob('*.json'):
+   s=json.loads(path.read_text())['dashboard']['spec'];rows={}
+   for item in s['layouts'][0]['spec']['items']:rows.setdefault(item['y'],[]).append(item)
+   y=0
+   for start,row in sorted(rows.items()):
+    self.assertEqual(start,y,path.name);x=0
+    for item in sorted(row,key=lambda i:i['x']):
+     self.assertEqual(item['x'],x,path.name);x+=item['width']
+     self.assertEqual(item['height'],row[0]['height'])
+    self.assertEqual(x,24,path.name);y+=row[0]['height']
+   for p in s['panels'].values():
+    steps=p['spec']['plugin']['spec'].get('thresholds',{}).get('steps',[])
+    self.assertEqual(steps,sorted(steps,key=lambda step:step['value'],reverse=True))
  def test_enhancement_preserves_layout_on_repeat(self):
   with tempfile.TemporaryDirectory() as directory:
    temporary=pathlib.Path(directory)/'dev'

@@ -63,6 +63,8 @@ content:
     - vm-disk-latency
     - vm-filesystem-used
     - virtualization-scrape
+    - longhorn-degraded
+    - longhorn-faulted
   slo:
     availabilityTarget: 99.9
 telemetry:

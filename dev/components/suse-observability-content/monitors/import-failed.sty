@@ -1,0 +1,31 @@
+nodes:
+- _type: Monitor
+  name: SRE · VMware import failed or invalid · 5m
+  identifier: urn:custom:monitor:sre-dashboards:import-failed
+  description: A retained VM Import Controller record reports failure or invalid input
+    for 5 minutes of observed samples. The event is attached to its namespace; the
+    title identifies the import. Historical failed records stay alerting until handled.
+    Missing inventory is not a healthy zero.
+  arguments:
+    metric:
+      query: min_over_time((max by (cluster_name,namespace,import_name,phase) (harvester_import_info{outcome="failed"}))[5m:30s])
+        and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up)
+        == 1)
+      unit: none
+      aliasTemplate: ${cluster_name} · ${namespace}/${import_name} · ${phase}
+    comparator: GT
+    threshold: 0
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:namespace/${namespace}
+    titleTemplate: SRE · VMware import failed or invalid · 5m · ${cluster_name} ·
+      ${namespace}/${import_name} · ${phase}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Inspect the named VirtualMachineImport, its conditions and controller
+    logs. Check source access, disk image preparation, storage and target VM events.
+    Verify whether the record is current before retrying; retrying can have workload
+    side effects. Do not delete the record just to clear the alert.
+  tags:
+  - sre-dashboards
+  - dashboard-imports
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

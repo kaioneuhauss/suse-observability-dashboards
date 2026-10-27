@@ -200,6 +200,7 @@
               "description": "Records still pending or being processed. Compare the current stage and time since the last update; a long transfer can be legitimate.\n\nMeasurement details:\nCount of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.",
               "name": "Imports still in progress"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -238,6 +239,7 @@
               "description": "Elapsed time including queueing and all processing stages. This does not predict when the import will finish.\n\nMeasurement details:\nElapsed time from object creation for active imports only. Includes queueing and all stages; no promised completion time is inferred.",
               "name": "Time since an active import was created (seconds)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -286,6 +288,7 @@
               "description": "1 means recent API reads succeeded; 0 means they failed or became stale. This must work before a zero import count can be trusted.\n\nMeasurement details:\nAPI read success and exporter freshness. HTTP scrape success alone is insufficient: this signal becomes 0 on API errors or stale polling.",
               "name": "Can we read the import inventory?"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -333,6 +336,7 @@
               "description": "CPU used by each controller container over five minutes. 1000 mCPU equals one CPU core. Compare a slowdown with CPU, memory and network together.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
               "name": "Import controller: CPU used (mCPU)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -381,6 +385,7 @@
               "description": "Working-set memory per controller container. Compare the trend with its configured limit and logs.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
               "name": "Import controller: memory used"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -428,6 +433,7 @@
               "description": "Receive bytes per second per Pod interface, averaged over five minutes. Includes all imports and control traffic; not transfer speed for one VM.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
               "name": "Import controller: incoming network traffic (bytes/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -476,6 +482,7 @@
               "description": "Transmit bytes per second per Pod interface, averaged over five minutes. Disk export and image serving are separate stages; do not add receive and transmit as unique migrated bytes.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
               "name": "Import controller: outgoing network traffic (bytes/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -524,6 +531,7 @@
               "description": "Percentage of recorded disks marked ready. Even at 100%, VM creation and boot may still be pending; this is not transfer progress.\n\nMeasurement details:\nNumber of disk records with VirtualMachineImageReady=True divided by recorded disks. A 100% value covers the disk-image stage only; VM creation and boot can still be pending. No disks means undefined, not 100%.",
               "name": "Disk images ready for the VM"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -571,6 +579,7 @@
               "description": "Counts of disk objects recorded for each import. Compare ready with total; a failed disk requires checking controller events.\n\nMeasurement details:\nCounts recorded total, ready and failed disks. Ready takes precedence over an old failed condition after recovery. These are disk objects, not bytes transferred.",
               "name": "Total, ready and failed disks per import"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -642,6 +651,7 @@
               "description": "Import records classified as failed or invalid. Inspect the controller resource and events for the cause before retrying.\n\nMeasurement details:\nCount of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.",
               "name": "Failed or invalid imports"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -680,6 +690,7 @@
               "description": "Which VMware imports have finished, failed or are still being processed by VM Import Controller?",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -695,6 +706,7 @@
               "description": "Network receive rate for Longhorn backing-image managers and data sources. These services also handle non-import images; this is shared infrastructure traffic.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
               "name": "Shared image services: incoming network traffic (bytes/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -743,6 +755,7 @@
               "description": "Network transmit rate for shared image services. Interface labels keep management and storage networks separate. This is not attributed to the selected import.\n\nMeasurement details:\ncAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.",
               "name": "Shared image services: outgoing network traffic (bytes/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -791,6 +804,7 @@
               "description": "Age of the latest recorded condition. Long copy stages may have no updates, so an old condition alone does not prove a stalled transfer.\n\nMeasurement details:\nAge of the newest condition timestamp for active imports. Long copy operations may legitimately have no condition updates; this is an investigation signal, not proof that transfer stalled.",
               "name": "Time since an active import last changed status (seconds)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -839,6 +853,7 @@
               "description": "Logical disk sizes read from the controller. These are not bytes already transferred or measured storage usage.\n\nMeasurement details:\nSum diskSize from the controller API. Logical source disk capacity, not bytes copied, allocated storage or measured throughput. Missing sizes remain absent.",
               "name": "Source disk capacity recorded by the import"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -886,6 +901,7 @@
               "description": "1 means the kubelet metrics endpoint answered; 0 means failure. This does not prove matching importer Pods exist. Check TLS, TCP/10250 and nodes/metrics access if collection fails.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
               "name": "Can we collect import performance metrics?"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -933,6 +949,7 @@
               "description": "The legend identifies each import and the stage recorded by the controller. A line at 1 marks the recorded stage; it is not a completion percentage.\n\nMeasurement details:\nEach visible series has value 1 and names the controller phase. virtualMachineRunning is the terminal controller status; it is not a current guest-health check.",
               "name": "Current stage of each import"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -980,6 +997,7 @@
               "description": "Number of import records retained by VM Import Controller. Deleting a record removes it from this current inventory, even if the VM still exists.\n\nMeasurement details:\nCount of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.",
               "name": "Import records"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -1018,6 +1036,7 @@
               "description": "Duration of stages with explicit start and end timestamps. These intervals do not measure the entire migration or application acceptance.\n\nMeasurement details:\npoweroff_to_export: VMPoweredOff → VMExported. images_submitted_to_ready: earliest submitted → latest ready across all disks, only when every disk has timestamps. These intervals do not include full boot/application acceptance and are not end-to-end migration duration.",
               "name": "Time spent in recorded import stages (seconds)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1066,6 +1085,7 @@
               "description": "Imports for which the controller recorded the VM starting. Check the guest and application separately before accepting the migration.\n\nMeasurement details:\nCount of retained import objects in the selected scope. Unknown/new phases are not silently classified as succeeded. A zero is produced only while inventory collection is healthy.",
               "name": "Completed imports"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {

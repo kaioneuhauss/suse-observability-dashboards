@@ -110,6 +110,7 @@
               "description": "Total configured virtual CPUs of running VMs. This is an integer allocation count, not measured CPU consumption.\n\nMeasurement details:\nSum cores × sockets × threads for VMs with a currently running VMI. Stopped definitions are excluded.",
               "name": "Virtual CPUs assigned to running VMs"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -148,6 +149,7 @@
               "description": "Total guest RAM configured for running VMs. Host processes and virtualization overhead need additional memory.\n\nMeasurement details:\nConfigured guest RAM of running VMs, not used RAM, QEMU overhead or Kubernetes requests.",
               "name": "RAM assigned to running VMs"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -186,6 +188,7 @@
               "description": "Number of CPU measurements available for each current VM. At one sample every 30 seconds, an uninterrupted day is about 2880 samples.\n\nMeasurement details:\nCount of raw CPU samples per current VM. At 30 seconds, a full uninterrupted day is approximately 2880 samples; verify cadence and restarts before treating p95 as a full-day estimate. This is coverage, not availability.",
               "name": "VM CPU samples collected over 24 hours"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -233,6 +236,7 @@
               "description": "CPU demand that a VM stayed below for about 95% of measured points in the last day. Compare with peak demand and sample coverage before resizing.\n\nMeasurement details:\n95th percentile of 5-minute sampled demand over the available part of 24 hours. No automatic size recommendation. Inspect peak demand, business cycles, telemetry gaps and resize events first. Only currently running VMs are shown.",
               "name": "Typical high CPU demand over 24 hours (CPU cores)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -281,6 +285,7 @@
               "description": "Largest observed CPU demand in the last day. This is a sampled peak, not every brief spike between collections.\n\nMeasurement details:\nMaximum of 5-minute mean CPU demand in the available 24-hour history; shorter bursts can be hidden. Compare against p95.",
               "name": "Peak CPU demand over 24 hours (CPU cores)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -329,6 +334,7 @@
               "description": "Configured VM virtual CPUs divided by host logical CPUs. For example, 2 means two assigned vCPUs per logical CPU; whether that is suitable depends on actual demand.\n\nMeasurement details:\nConfiguration ratio, not utilization or an admission recommendation. Hyperthreading, CPU pinning and workload behavior affect usable capacity.",
               "name": "Assigned virtual CPUs per host CPU"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -377,6 +383,7 @@
               "description": "How much capacity is assigned to running VMs, and how much room is left?",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -392,6 +399,7 @@
               "description": "RAM available across the selected Harvester hosts. Check each host as well: free memory on another host may not be usable by the next VM.\n\nMeasurement details:\nMemAvailable from Linux includes reclaimable cache and reflects all host workloads. Use this before starting additional VMs.",
               "name": "Host memory available now"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -430,6 +438,7 @@
               "description": "Guest memory use that stayed below this value for about 95% of measured points. Incomplete collection does not represent a full day.\n\nMeasurement details:\n95th percentile of 5-minute sampled demand over the available part of 24 hours. No automatic size recommendation. Inspect peak demand, business cycles, telemetry gaps and resize events first. Only currently running VMs are shown.",
               "name": "Typical high memory use over 24 hours"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -477,6 +486,7 @@
               "description": "Estimated memory remaining after losing the largest host and accounting for running VM allocations. A negative value means a shortfall even before overhead. A positive value does not guarantee failover.\n\nMeasurement details:\nTotal host RAM minus largest host RAM minus configured RAM of running VMs. Negative means guest allocation exceeds this upper bound. System overhead and usable allocatable memory are not deducted; positive does not certify HA or successful evacuation.",
               "name": "Memory balance if the largest host fails"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {

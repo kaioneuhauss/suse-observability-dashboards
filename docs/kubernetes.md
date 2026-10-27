@@ -39,7 +39,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
-  --version 1.4.2 --values kubernetes.yaml \
+  --version 1.5.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```

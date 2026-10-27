@@ -645,5 +645,100 @@
       "sre-dashboards",
       "dashboard-harvester"
     ]
+  },
+  {
+    "slug": "longhorn-degraded",
+    "name": "SRE · Longhorn volume degraded · 5m",
+    "query": "min_over_time((max by (k8s_cluster_name,pvc_namespace,pvc,volume) (longhorn_volume_robustness{state=\"degraded\",pvc!=\"\",pvc_namespace!=\"\"}))[5m:30s])",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${k8s_cluster_name}:${pvc_namespace}:persistent-volume-claim/${pvc}",
+    "titleTemplate": "SRE · Longhorn volume degraded · 5m · ${k8s_cluster_name} · ${pvc_namespace}/${pvc} · ${volume}",
+    "alias": "${k8s_cluster_name} · ${pvc_namespace}/${pvc} · ${volume}",
+    "description": "Longhorn reports the volume as degraded throughout observed samples in 5m. Evaluated every minute. Only volumes with PVC identity are attached to topology; other volumes remain visible in Storage & Backups. Missing telemetry is not healthy.",
+    "remediation": "Open Storage & Backups and identify the named PVC and Longhorn volume. Inspect replica health, scheduling conditions, free disk space and node availability in Longhorn. Check the affected workload before repair. Do not delete the volume or replicas based only on this alert.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-harvester"
+    ]
+  },
+  {
+    "slug": "longhorn-faulted",
+    "name": "SRE · Longhorn volume faulted · 1m",
+    "query": "min_over_time((max by (k8s_cluster_name,pvc_namespace,pvc,volume) (longhorn_volume_robustness{state=\"faulted\",pvc!=\"\",pvc_namespace!=\"\"}))[1m:30s])",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "CRITICAL",
+    "urnTemplate": "urn:kubernetes:/${k8s_cluster_name}:${pvc_namespace}:persistent-volume-claim/${pvc}",
+    "titleTemplate": "SRE · Longhorn volume faulted · 1m · ${k8s_cluster_name} · ${pvc_namespace}/${pvc} · ${volume}",
+    "alias": "${k8s_cluster_name} · ${pvc_namespace}/${pvc} · ${volume}",
+    "description": "Longhorn reports the volume as faulted throughout observed samples in 1m. Evaluated every minute. Only volumes with PVC identity are attached to topology; other volumes remain visible in Storage & Backups. Missing telemetry is not healthy.",
+    "remediation": "Open Storage & Backups and identify the named PVC and Longhorn volume. Inspect replica health, scheduling conditions, free disk space and node availability in Longhorn. Check the affected workload before repair. Do not delete the volume or replicas based only on this alert.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-harvester"
+    ]
+  },
+  {
+    "slug": "import-failed",
+    "name": "SRE · VMware import failed or invalid · 5m",
+    "query": "min_over_time((max by (cluster_name,namespace,import_name,phase) (harvester_import_info{outcome=\"failed\"}))[5m:30s]) and on (cluster_name) (max by (cluster_name) (harvester_import_inventory_up) == 1)",
+    "comparator": "GT",
+    "threshold": 0,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:namespace/${namespace}",
+    "titleTemplate": "SRE · VMware import failed or invalid · 5m · ${cluster_name} · ${namespace}/${import_name} · ${phase}",
+    "alias": "${cluster_name} · ${namespace}/${import_name} · ${phase}",
+    "description": "A retained VM Import Controller record reports failure or invalid input for 5 minutes of observed samples. The event is attached to its namespace; the title identifies the import. Historical failed records stay alerting until handled. Missing inventory is not a healthy zero.",
+    "remediation": "Inspect the named VirtualMachineImport, its conditions and controller logs. Check source access, disk image preparation, storage and target VM events. Verify whether the record is current before retrying; retrying can have workload side effects. Do not delete the record just to clear the alert.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-imports"
+    ]
+  },
+  {
+    "slug": "import-inventory",
+    "name": "SRE · VMware import inventory unavailable · 3m",
+    "query": "max_over_time((max by (cluster_name) (harvester_import_inventory_up))[3m:30s])",
+    "comparator": "LT",
+    "threshold": 1,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:cluster:/kubernetes:${cluster_name}",
+    "titleTemplate": "SRE · VMware import inventory unavailable · 3m · ${cluster_name}",
+    "alias": "${cluster_name}",
+    "description": "The inventory collector reports unsuccessful or stale reads for 3 minutes of observed samples. A completely missing collector produces no series; also check the official Agent workload health. No successful import is inferred from absent data.",
+    "remediation": "Check the obs-imports-imports workload, import-inventory logs, VM Import Controller CRD and read permissions. Check metric delivery and the ingestion Secret without printing its value. No VMware login or new import is needed to repair inventory.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-imports"
+    ]
+  },
+  {
+    "slug": "import-performance-scrape",
+    "name": "SRE · Import performance collection failing · 3m",
+    "query": "max_over_time((min by (cluster_name,node) (up{job=\"sre-import-performance\"}))[3m:30s])",
+    "comparator": "LT",
+    "threshold": 1,
+    "severity": "DEVIATING",
+    "urnTemplate": "urn:kubernetes:/${cluster_name}:node/${node}",
+    "titleTemplate": "SRE · Import performance collection failing · 3m · ${cluster_name} · ${node}",
+    "alias": "${cluster_name} · ${node}",
+    "description": "An observed kubelet target failed performance collection for 3 minutes. Applies only when imports.performance.enabled is true. Disabled collection or disappeared discovery has no series and is not evaluated as healthy.",
+    "remediation": "Check vmagent logs, TLS trust, node connectivity on TCP/10250 and authorized nodes/metrics access. Check collector memory and restarts. Do not disable TLS verification or grant nodes/proxy.",
+    "enabled": true,
+    "unit": "none",
+    "tags": [
+      "sre-dashboards",
+      "dashboard-imports"
+    ]
   }
 ]

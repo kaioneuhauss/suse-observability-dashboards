@@ -1,0 +1,27 @@
+nodes:
+- _type: Monitor
+  name: SRE · Import performance collection failing · 3m
+  identifier: urn:custom:monitor:sre-dashboards:import-performance-scrape
+  description: An observed kubelet target failed performance collection for 3 minutes.
+    Applies only when imports.performance.enabled is true. Disabled collection or
+    disappeared discovery has no series and is not evaluated as healthy.
+  arguments:
+    metric:
+      query: max_over_time((min by (cluster_name,node) (up{job="sre-import-performance"}))[3m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name} · ${node}
+    comparator: LT
+    threshold: 1
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${cluster_name}:node/${node}
+    titleTemplate: SRE · Import performance collection failing · 3m · ${cluster_name}
+      · ${node}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Check vmagent logs, TLS trust, node connectivity on TCP/10250 and
+    authorized nodes/metrics access. Check collector memory and restarts. Do not disable
+    TLS verification or grant nodes/proxy.
+  tags:
+  - sre-dashboards
+  - dashboard-imports
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

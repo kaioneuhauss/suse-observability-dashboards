@@ -3,6 +3,15 @@ import json,pathlib,subprocess,unittest,yaml
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 CONTENT=ROOT/'dev/components/suse-observability-content/dashboards'
 class ActionableTests(unittest.TestCase):
+ def test_storage_details_preserve_consumer_identity_and_full_list(self):
+  panels=json.loads((CONTENT/'virtualization-storage.json').read_text())['dashboard']['spec']['panels']
+  for key in ['unhealthyDetails','neverBackupDetails','staleBackupDetails']:
+   p=panels[key]['spec'];detail=json.loads(p['links'][0]['url'].split('metrics=',1)[1])[0][0][0]
+   self.assertNotIn('topk(',detail)
+   self.assertIn('@ end()',detail)
+   for label in ['k8s_cluster_name','pvc_namespace','pvc','volume']:
+    self.assertIn(label,detail);self.assertIn('${'+label+'}',p['queries'][0]['spec']['plugin']['spec']['alias'])
+  self.assertIn('degraded|faulted',panels['unhealthyDetails']['spec']['queries'][0]['spec']['plugin']['spec']['query'])
  def test_detail_links_roundtrip_and_keep_all_offenders(self):
   panels=json.loads((CONTENT/'resources.json').read_text())['dashboard']['spec']['panels']
   for key in ['memLimitReview','cpuLimitReview','cpuRequestMissingValues','cpuLimitMissingValues','memRequestMissingValues','memLimitMissingValues']:

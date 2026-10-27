@@ -46,7 +46,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
-  --version 1.4.2 --values applications.yaml \
+  --version 1.5.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -90,6 +90,6 @@ helm uninstall obs-applications \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
+**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. Applications has no telemetry mode or collectors.
 
 To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.

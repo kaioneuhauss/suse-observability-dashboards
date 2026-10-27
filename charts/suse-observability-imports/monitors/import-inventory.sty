@@ -1,0 +1,28 @@
+nodes:
+- _type: Monitor
+  name: SRE · VMware import inventory unavailable · 3m
+  identifier: urn:custom:monitor:sre-dashboards:import-inventory
+  description: The inventory collector reports unsuccessful or stale reads for 3 minutes
+    of observed samples. A completely missing collector produces no series; also check
+    the official Agent workload health. No successful import is inferred from absent
+    data.
+  arguments:
+    metric:
+      query: max_over_time((max by (cluster_name) (harvester_import_inventory_up))[3m:30s])
+      unit: none
+      aliasTemplate: ${cluster_name}
+    comparator: LT
+    threshold: 1
+    failureState: DEVIATING
+    urnTemplate: urn:cluster:/kubernetes:${cluster_name}
+    titleTemplate: SRE · VMware import inventory unavailable · 3m · ${cluster_name}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Check the obs-imports-imports workload, import-inventory logs,
+    VM Import Controller CRD and read permissions. Check metric delivery and the ingestion
+    Secret without printing its value. No VMware login or new import is needed to
+    repair inventory.
+  tags:
+  - sre-dashboards
+  - dashboard-imports
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

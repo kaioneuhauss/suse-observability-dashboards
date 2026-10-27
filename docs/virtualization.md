@@ -1,6 +1,6 @@
 # Install only SUSE Virtualization dashboards
 
-The result is **four dashboards**: VM & Host Overview, VM Performance, Capacity Planning, and Storage & Backups. The same chart installs their collectors and five monitors. You do not need the Kubernetes, Traefik, Applications or Imports charts.
+The result is **four dashboards**: VM & Host Overview, VM Performance, Capacity Planning, and Storage & Backups. The same chart installs their collectors and seven monitors. You do not need the Kubernetes, Traefik, Applications or Imports charts.
 
 > [!WARNING]
 > Community project for labs and learning. **Not recommended for production and not an officially supported SUSE integration.** Alert thresholds need review; notifications are not configured by this chart.
@@ -144,12 +144,12 @@ This grants access to the collector's namespace **and** Pod labels together. Wit
 helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
 helm repo update obs-dashboards
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.4.2 --values virtualization.yaml \
+  --version 1.5.0 --values virtualization.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Check:** Helm reports `STATUS: deployed`. The chart creates the collectors and publishes four dashboards plus five monitors. Successful publishing Jobs disappear automatically. Keep this values file and the same release name for future updates.
+**Check:** Helm reports `STATUS: deployed`. The chart creates the collectors and publishes four dashboards plus seven monitors. Successful publishing Jobs disappear automatically. Keep this values file and the same release name for future updates.
 
 ## 6. Confirm that the numbers make sense
 

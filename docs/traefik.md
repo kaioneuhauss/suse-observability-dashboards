@@ -92,7 +92,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.4.2 --values traefik.yaml \
+  --version 1.5.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```

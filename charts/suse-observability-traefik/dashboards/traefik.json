@@ -176,7 +176,7 @@
                   "$ref": "#/spec/panels/codeTotals"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 19
               },
@@ -203,7 +203,7 @@
                   "$ref": "#/spec/panels/scrapeHealth"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 25
               }
@@ -218,6 +218,7 @@
               "description": "Request and response bytes per second measured by Traefik. Compare with traffic to spot unusually large payloads.\n\nMeasurement details:\nRequest and response payload bytes for selected services. This is not total network-interface traffic.",
               "name": "Data transferred per second (bytes/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -278,6 +279,7 @@
               "description": "Requests per second grouped by response code. Use this to distinguish successful responses, redirects, rejected requests and server errors.\n\nMeasurement details:\n2xx means success; 3xx redirection; 4xx client error or rejection; 5xx server failure. Code zero is a proxy or connection outcome.",
               "name": "Traffic by HTTP response code"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -326,6 +328,7 @@
               "description": "Estimated HTTP 4xx responses in the selected period. Check authentication, permissions and invalid paths; these are not automatically server outages.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Rejected requests: HTTP 4xx"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -370,6 +373,7 @@
               "description": "Estimated HTTP 4xx responses per chart interval and application. Compare bursts with authentication changes, invalid requests or scans.\n\nMeasurement details:\nEach point estimates the counter increase over one chart step (SUSE ${__interval}, minimum one minute). The interval grows when zooming out. Labels identify cluster, namespace, application and response code. These are sampled counts, not exact request timestamps. Use the period-total panels for the complete selected range and access logs for individual requests.",
               "name": "Rejected requests in each time interval"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -418,6 +422,7 @@
               "description": "Estimated request totals for the selected period. Use the labels to identify which application, HTTP code and method account for the traffic.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Requests by application, code and method"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -466,6 +471,7 @@
               "description": "Concurrent connections by Traefik entry point and protocol. This is not a request count and is not narrowed by application filters.\n\nMeasurement details:\nConcurrent connections are a saturation signal, not completed requests. This is cluster scope; namespace and application filters do not apply. Compare with latency, CPU and connection capacity.",
               "name": "Open connections"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -513,6 +519,7 @@
               "description": "Estimated HTTP 5xx responses in the selected period. Review backend availability and logs for the affected application.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Server errors: HTTP 5xx"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -557,6 +564,7 @@
               "description": "Estimated HTTP 5xx responses per chart interval and application. Each point covers the interval ending at its timestamp; inspect logs at the same time.\n\nMeasurement details:\nEach point estimates the counter increase over one chart step (SUSE ${__interval}, minimum one minute). The interval grows when zooming out. Labels identify cluster, namespace, application and response code. These are sampled counts, not exact request timestamps. Use the period-total panels for the complete selected range and access logs for individual requests.",
               "name": "Server errors in each time interval"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -605,6 +613,7 @@
               "description": "Are requests reaching applications through Traefik, and where are errors or delays occurring?",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -620,6 +629,7 @@
               "description": "Average and percentile response times through Traefik. A higher 99% line reveals slow requests that the average may hide.\n\nMeasurement details:\nEach point summarizes the preceding five minutes. Average adds all response times and divides by completed requests. Half of calls (p50) finished within that line's time; 95 of 100 (p95) and 99 of 100 (p99) show how long slower calls took. Example: p95 of 200 ms means about 95% finished within 200 ms and 5% took longer. Rising lines mean slower responses. Traefik estimates these percentiles from timing buckets; without calls, no response time can be calculated.",
               "name": "Response time over time (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -704,6 +714,7 @@
               "description": "Average time for completed requests over five minutes. Compare with the 95% and 99% response-time tiles to find slow outliers.\n\nMeasurement details:\nHow long a request takes on average to get a response, measured by Traefik for the selected applications. Add all response times and divide by the number of completed requests. Example: calls taking 50, 100, and 150 ms give an average of 100 ms. Lower means faster responses. A few slow calls can be hidden by this average; also check the 95-of-100 response time. Browser timing includes extra network time. Without completed requests, this value is unavailable.",
               "name": "Average response time (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -742,6 +753,7 @@
               "description": "About 95% of requests completed within this time over the last five minutes. Some requests can be slower; compare the 99% tile.\n\nMeasurement details:\nIf this shows 200 ms, about 95 out of 100 calls finished within 200 ms and the other five took longer. This is the p95 response time: it helps spot slow experiences that an average can hide. It is estimated from Traefik measurements for the selected applications over the last hour, including earlier tests. Lower means faster responses. Browser measurements can differ because they include extra network time. Uses the same five-minute window as average response time. The average can exceed p95 when a few requests take an exceptionally long time, such as long polling.",
               "name": "95% of requests within (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -755,12 +767,12 @@
                   "defaultColor": "#2E8540",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 500.0
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 1000.0
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 500.0
                     }
                   ]
                 },
@@ -789,6 +801,7 @@
               "description": "About 99% of requests completed within this time over five minutes. This highlights the slowest requests and is less stable with little traffic.\n\nMeasurement details:\n99% of observed completed requests finish within this latency estimate. Uses histogram buckets; compare p95, request volume and backend errors. Low traffic makes quantiles unstable.",
               "name": "99% of requests within (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -827,6 +840,7 @@
               "description": "Requests per second averaged over five minutes. Look for traffic changes at the same time as errors or delays.\n\nMeasurement details:\nEach point is the average number of requests per second over the previous five minutes. Short tests are spread across that window; this is not the achieved rate during the browser benchmark.",
               "name": "Incoming traffic over time"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -875,6 +889,7 @@
               "description": "Estimated completed requests during the selected time range. Sampling estimates are displayed as whole requests.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Requests in the selected period"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -914,6 +929,7 @@
               "description": "Incoming traffic averaged over the last five minutes. Fractional rates are normal and do not imply a fractional request.\n\nMeasurement details:\nRequests averaged over five minutes. A brief load test is diluted by the quiet part of that window. Select its application before comparing traffic.",
               "name": "Requests per second"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -952,6 +968,7 @@
               "description": "1 means the endpoint answered; 0 means collection failed. No series can mean no discovered target. This is a collection check, not application health.\n\nMeasurement details:\nEvery discovered Traefik endpoint should report 1. No series can mean no discovered targets, blocked telemetry, or incorrect cluster selection. A successful HTTP scrape alone does not validate request labels.",
               "name": "Can we collect Traefik metrics?"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -999,6 +1016,7 @@
               "description": "Percentage of completed requests returning HTTP 5xx per application during the selected period. Inspect the busiest and highest-error applications together.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Server-error percentage by application"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1047,6 +1065,7 @@
               "description": "Response time for 95% of requests by application. Includes the path measured by Traefik, which differs from time measured inside an application.\n\nMeasurement details:\nCompare applications over five-minute windows. If an application shows 200 ms, about 95 out of 100 calls finished within 200 ms and five took longer. This estimate is called p95. Higher values identify applications whose slower responses need investigation.",
               "name": "Slowest applications through Traefik (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1095,6 +1114,7 @@
               "description": "Estimated traffic totals per application. A flat line is a summary for the selected period, not a trend.\n\nMeasurement details:\nUses the time period selected in the top toolbar. Sums non-overlapping counter changes at the chart resolution (minimum one minute) across the selected period. This is a metric estimate, not a per-request audit. Scrape gaps, new series and unavailable history can undercount activity. Totals are rounded for display. Scrape timing and partial interval boundaries affect the result. A longer selected period includes more history; it does not change the alert evaluation windows.",
               "name": "Requests per application in the selected period"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1143,6 +1163,7 @@
               "description": "Requests per second sent through Traefik to each application. Compare with application instrumentation when investigating a difference.\n\nMeasurement details:\nTraffic distribution and changes across the selected services.",
               "name": "Traffic by application"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1191,6 +1212,7 @@
               "description": "Time remaining before Traefik TLS certificates expire. A negative value means expired. This covers the whole selected cluster.\n\nMeasurement details:\nCertificate names (SAN) and serial number identify each certificate. Lower values need attention; negative means expired. Namespace and application filters do not apply.",
               "name": "Days until certificates expire"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {

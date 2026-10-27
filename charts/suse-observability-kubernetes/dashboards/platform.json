@@ -49,7 +49,7 @@
                 "content": {
                   "$ref": "#/spec/panels/missingCopies"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 0,
                 "y": 2
@@ -58,7 +58,7 @@
                 "content": {
                   "$ref": "#/spec/panels/restartCount"
                 },
-                "height": 1,
+                "height": 2,
                 "width": 8,
                 "x": 8,
                 "y": 2
@@ -77,7 +77,7 @@
                   "$ref": "#/spec/panels/memoryGauge"
                 },
                 "height": 2,
-                "width": 8,
+                "width": 12,
                 "x": 0,
                 "y": 4
               },
@@ -86,8 +86,8 @@
                   "$ref": "#/spec/panels/diskGauge"
                 },
                 "height": 2,
-                "width": 8,
-                "x": 8,
+                "width": 12,
+                "x": 12,
                 "y": 4
               },
               {
@@ -113,7 +113,7 @@
                   "$ref": "#/spec/panels/restarts"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 9
               },
@@ -384,7 +384,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\")) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"kind\\\", \\\"workload\\\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\"))), \\\"sre_series\\\", \\\"No missing application copies\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -435,6 +435,7 @@
               "description": "Bytes queued by collectors for delivery to SUSE Observability. A growing queue can indicate a network, authentication or backend issue.\n\nMeasurement details:\nBytes buffered by collectors before delivery to SUSE Observability. Zero is healthy: no backlog is waiting to be sent. A growing or persistent queue suggests network, authentication or receiver trouble. An absent series is not zero.\n\nBytes buffered by collectors before delivery to SUSE Observability. Zero is healthy: no backlog is waiting to be sent. A growing or persistent queue suggests network, authentication or receiver trouble. An absent series is not zero.\n\nSmall temporary peaks are normal. Persistent growth suggests a receiver or connection problem. If sending stops completely, this series also stops arriving.",
               "name": "Metrics waiting to be delivered"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -482,6 +483,7 @@
               "description": "Estimated retry attempts by collectors. Inspect collector logs and delivery queues when retries persist.\n\nMeasurement details:\nZero is expected in a stable period. Logs distinguish DNS, certificates, authentication, and HTTP 503 receiver failures.",
               "name": "Metric delivery retries in 15 minutes"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -529,6 +531,7 @@
               "description": "Percentage of known servers with successful operating-system collection. Missing visibility is different from an unavailable server.\n\nMeasurement details:\nHealthy OS collectors divided by known nodes. Below 100% means at least one server is missing visibility.",
               "name": "Servers with working OS metrics"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -567,6 +570,7 @@
               "description": "Highest measured server CPU-use percentage. Colors are review thresholds; inspect duration and user impact before acting.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Five-minute CPU utilization averaged across the server logical processors. Namespace does not filter servers.",
               "name": "Busiest server: CPU used"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -581,12 +585,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -614,6 +618,7 @@
               "description": "Highest filesystem-use percentage among measured hosts and mounts. The label identifies the filesystem to investigate.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by used plus space available to applications, matching df. The mount and device identify the filesystem. Namespace does not filter host disks. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data. Each device appears once per server; bind mounts of the same filesystem are not counted as separate disks. Use findmnt -S DEVICE on the server to locate its mounts. Operational view: excludes boot, OEM, runtime mounts and kubelet volume mounts. The Harvester persistent partition and all Harvester data disks remain included. Duplicate bind mounts count once per device. Raw collection and space monitors still cover other writable filesystems.",
               "name": "Fullest host filesystem"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -628,12 +633,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -661,6 +666,7 @@
               "description": "Average response time per completed host disk operation. Idle disks have no meaningful response-time average.\n\nMeasurement details:\nRead plus write time divided by completed operations. No value for idle devices. Namespace filters do not apply to server disks.",
               "name": "Time to read or write a host disk (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -709,6 +715,7 @@
               "description": "Difference between committed and applied proposals. A growing gap suggests the database is struggling to apply changes.\n\nMeasurement details:\nCommitted proposals minus applied proposals, per member. Sustained growth means the stored state is falling behind agreed changes.",
               "name": "Agreed database writes not yet applied"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -756,6 +763,7 @@
               "description": "99th-percentile etcd backend commit time. Compare with disk latency and pending operations.\n\nMeasurement details:\n99% of database commits completed within this time. Above 25 ms for five minutes is an initial investigation threshold.",
               "name": "Database commit time: slowest 1% (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -804,6 +812,7 @@
               "description": "Percentage of etcd's configured storage quota used. Review compaction and maintenance procedures before the quota is exhausted.\n\nMeasurement details:\nPhysical database size divided by its quota. Near 100% risks blocking new writes. The initial monitor warns above 80% for ten minutes.",
               "name": "Database size compared with its quota"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -851,6 +860,7 @@
               "description": "Estimated failed proposals recorded by each etcd member. Correlate with API errors, leader changes and storage latency.\n\nMeasurement details:\nProposals that did not complete through consensus. Compare with elections, connectivity, and logs.",
               "name": "Failed database operations in 15 minutes"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -898,6 +908,7 @@
               "description": "Each etcd member should report 1 when it sees a leader. A single healthy member does not provide redundancy.\n\nMeasurement details:\nEach etcd member should observe a leader. A healthy single-node cluster has no redundancy. Empty results require checking whether etcd collection was enabled and the local endpoint exists.",
               "name": "Can database members see a leader?"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -945,6 +956,7 @@
               "description": "Leader changes observed by each database member. Repeated changes may indicate instability; do not sum members as distinct elections.\n\nMeasurement details:\nDo not add the same election observed by multiple members. Repeated elections can indicate instability; restarts also affect the history.",
               "name": "Database leader changes in the last hour"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -992,6 +1004,7 @@
               "description": "99th-percentile network round-trip time between etcd members. A single-member cluster may have no peer measurements.\n\nMeasurement details:\nTime to contact another member and receive a response. A single-member cluster has no peers, so this chart does not apply. Too few observations can also leave it empty.",
               "name": "Time for database members to communicate (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1040,6 +1053,7 @@
               "description": "Proposals waiting for consensus in etcd. A sustained queue can explain slow cluster API operations.\n\nMeasurement details:\nProposals waiting for consensus. A growing queue can indicate slow disks, network problems, or difficulty reaching a majority of members.",
               "name": "Database writes waiting for agreement"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1087,6 +1101,7 @@
               "description": "1 means an etcd endpoint was collected successfully. Empty data is expected when optional etcd collection is disabled.\n\nMeasurement details:\nShows whether each metrics endpoint answered the collector. This does not prove healthy consensus. Also check leadership and expected member count.",
               "name": "Can we collect cluster database metrics?"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1134,6 +1149,7 @@
               "description": "99th-percentile time to flush the etcd write-ahead log, in milliseconds. Slow storage can affect the whole cluster control plane.\n\nMeasurement details:\n99% of write-ahead log flushes completed within this time. Above 10 ms for five minutes is an initial investigation threshold.",
               "name": "Database log write time: slowest 1% (ms)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1182,6 +1198,7 @@
               "description": "Percentage used on monitored host filesystems. Review the device and mount point; not every exposed device is a separate physical disk.\n\nMeasurement details:\nUsed space divided by used plus space available to applications. Reserved blocks are excluded from this denominator. Each mount is identified. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data. Each device appears once per server; bind mounts of the same filesystem are not counted as separate disks. Use findmnt -S DEVICE on the server to locate its mounts. Operational view: excludes boot, OEM, runtime mounts and kubelet volume mounts. The Harvester persistent partition and all Harvester data disks remain included. Duplicate bind mounts count once per device. Raw collection and space monitors still cover other writable filesystems.",
               "name": "Host filesystem space used"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1229,6 +1246,7 @@
               "description": "Are servers and applications available, and is the cluster running out of resources?",
               "name": "What this dashboard tells you"
             },
+            "links": [],
             "plugin": {
               "kind": "Markdown",
               "spec": {
@@ -1244,6 +1262,7 @@
               "description": "Percentage of server CPU time spent busy. Includes applications and platform processes.\n\nMeasurement details:\nAverage utilization across logical processors. Compare sustained high values with CPU limits and slow applications.",
               "name": "CPU used on each server"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1291,6 +1310,7 @@
               "description": "Percentage of RAM the operating system considers available, including reclaimable cache. Lower means less headroom.\n\nMeasurement details:\nLinux MemAvailable divided by MemTotal. Lower values mean less headroom. Kubernetes requests are not used in this calculation.",
               "name": "Memory available on each server"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1338,6 +1358,7 @@
               "description": "Percentage of inode entries used. A filesystem can run out of file entries even when bytes remain available.\n\nMeasurement details:\nInodes represent files. They can run out even when bytes remain free. This percentage is calculated only when the inode total is positive. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data. Each device appears once per server; bind mounts of the same filesystem are not counted as separate disks. Use findmnt -S DEVICE on the server to locate its mounts. Operational view: excludes boot, OEM, runtime mounts and kubelet volume mounts. The Harvester persistent partition and all Harvester data disks remain included. Duplicate bind mounts count once per device. Raw collection and space monitors still cover other writable filesystems.",
               "name": "Filesystem file entries used"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1385,6 +1406,7 @@
               "description": "Average disk operations in progress over the measurement window. Compare with disk response time to interpret a sustained queue.\n\nMeasurement details:\nAverage outstanding I/O at the Linux block layer, including queued and in-service operations. A sustained rise with disk latency suggests contention. On a Kubernetes VM this is its guest block device; on Harvester this is the host device. Do not sum partitions and their parent disks.",
               "name": "Disk operations waiting or in progress (operations)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1433,6 +1455,7 @@
               "description": "Highest server memory-use percentage after allowing for reclaimable memory. Review available RAM and workload growth.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Linux total minus available memory, divided by total. Reclaimable cache is accounted for in available memory. Namespace does not filter servers.",
               "name": "Busiest server: memory used"
             },
+            "links": [],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -1447,12 +1470,12 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "#E69F00",
-                      "value": 0.8
-                    },
-                    {
                       "color": "#D32F2F",
                       "value": 0.9
+                    },
+                    {
+                      "color": "#E69F00",
+                      "value": 0.8
                     }
                   ]
                 }
@@ -1480,6 +1503,7 @@
               "description": "Major page faults per second on each host. Compare with available memory and application latency.\n\nMeasurement details:\nMajor page faults require disk I/O; file-backed pages also count. Compare this with available RAM and VM swap charts before concluding memory shortage. Linux PSI panels are omitted because these kernels do not expose PSI.",
               "name": "Host memory pages fetched from disk (pages/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1528,6 +1552,7 @@
               "description": "Total gap between desired and available workload copies. Open the detail list to find the affected applications.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.",
               "name": "Missing application copies"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -1566,6 +1591,7 @@
               "description": "Receive and transmit errors per second by interface. Sustained increases need a network and host review.\n\nMeasurement details:\nReceive plus transmit errors. Interface names help distinguish physical and virtual networks.",
               "name": "Network interface errors (errors/s)"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1614,6 +1640,7 @@
               "description": "Total measured filesystem capacity. Device filters exclude several duplicate or irrelevant mounts.\n\nMeasurement details:\nFormatted size of the identified mount. It can differ from raw device capacity or the size requested by a PVC. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data. Each device appears once per server; bind mounts of the same filesystem are not counted as separate disks. Use findmnt -S DEVICE on the server to locate its mounts. Operational view: excludes boot, OEM, runtime mounts and kubelet volume mounts. The Harvester persistent partition and all Harvester data disks remain included. Duplicate bind mounts count once per device. Raw collection and space monitors still cover other writable filesystems.",
               "name": "Size of host filesystems"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1661,6 +1688,7 @@
               "description": "Bytes used on each monitored server filesystem. Compare the same filesystem with capacity and percentage used.\n\nMeasurement details:\nFilesystem capacity minus free space. Includes the Harvester data disk and distinguishes partitions. Do not add repeated mounts of one device. Loop devices are excluded: OS images such as Harvester active.img do not represent growing application data. Each device appears once per server; bind mounts of the same filesystem are not counted as separate disks. Use findmnt -S DEVICE on the server to locate its mounts. Operational view: excludes boot, OEM, runtime mounts and kubelet volume mounts. The Harvester persistent partition and all Harvester data disks remain included. Duplicate bind mounts count once per device. Raw collection and space monitors still cover other writable filesystems.",
               "name": "Space used on host filesystems"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1708,6 +1736,7 @@
               "description": "Count of pods in concerning states, excluding completed jobs. Use the detail list to see whether the issue is scheduling, startup or readiness.\n\nMeasurement details:\nCounts each Pod once when Pending, Failed, Unknown, or Running but not ready. Completed Jobs are excluded. The list beside this card identifies each Pod. A newly starting Pod may appear briefly; this is a triage list, not an incident declaration.",
               "name": "Pods needing attention"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -1750,7 +1779,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join((label_replace((max by (cluster_name,namespace,pod_name,pod_phase) (last_over_time(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",pod_phase!~\\\"Running|Succeeded\\\"}[5m] @ end()) == 1)), \\\"reason\\\", \\\"$1\\\", \\\"pod_phase\\\", \\\"(.*)\\\") or label_replace(((max by (cluster_name,namespace,pod_name) (last_over_time(kubernetes_state_pod_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",condition=\\\"false\\\",pod_phase=\\\"Running\\\"}[5m] @ end())) == 1)), \\\"reason\\\", \\\"Running but not ready\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\", \\\"reason\\\") or on() label_replace(((0 * count(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}))), \\\"sre_series\\\", \\\"No pods need attention in this scope\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -1801,6 +1830,7 @@
               "description": "Current Kubernetes PV status listed by volume. Released requires an ownership and retention review; it is not permission to delete data.\n\nMeasurement details:\nBound means attached to a claim; Available means available for a claim; Released requires checking retention policy and data ownership. Released is not always a failure.",
               "name": "Storage volumes by status"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1848,6 +1878,7 @@
               "description": "Reported filesystem capacity for measured PVCs. This is not the total physical capacity of the storage system.\n\nMeasurement details:\nFormatted capacity reported by the kubelet. Filesystem metadata can make it smaller than the requested PVC size.",
               "name": "Size of measured application volumes"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1895,6 +1926,7 @@
               "description": "Current PVC status listed by claim. Pending means the requested storage is not yet bound; inspect provisioning and scheduling events.\n\nMeasurement details:\nNamespace, claim name, phase, and storage class. Investigate claims that remain Pending.",
               "name": "Application storage requests by status"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1942,6 +1974,7 @@
               "description": "Percentage used in PVC filesystems that expose usage metrics. Raw block volumes and some drivers cannot supply this measurement.\n\nMeasurement details:\nOnly PVCs with positive inode statistics are included. Block and unmounted volumes are not treated as full.",
               "name": "Application volume space used"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1993,7 +2026,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_state_persistentvolumeclaim_request_storage{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})) unless on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0), \\\"item\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -2044,6 +2077,7 @@
               "description": "Bytes used in measured PVC filesystems. Match the namespace and volume when comparing with capacity.\n\nMeasurement details:\nUsage reported by the kubelet and storage driver. This is not Longhorn replica storage or the filesystem inside a VM backed by a Block PVC.",
               "name": "Space used in application volumes"
             },
+            "links": [],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -2091,6 +2125,7 @@
               "description": "Percentage of known nodes reporting Ready. A missing or unready server needs investigation before capacity planning.\n\nMeasurement details:\nShare of known nodes with the Ready condition. This does not prove that every metrics collector is working.",
               "name": "Servers ready to run workloads"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -2129,6 +2164,7 @@
               "description": "Estimated restart count across selected pods. Rounded to whole restarts for display; counter sampling can affect estimates.\n\nMeasurement details:\nSums container restarts within each Pod during a moving hour. The table identifies Pod and namespace. A restart does not prove OOM: inspect Last State, previous logs, readiness/liveness probes and events. Counter resets and scrape intervals affect the estimate.",
               "name": "Container restarts in the last hour"
             },
+            "links": [],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -2171,7 +2207,7 @@
               {
                 "name": "Open values table",
                 "targetBlank": true,
-                "tooltip": "All matching measured resources, including those outside Top 10. Select Table view. Check the time range; percentages use 0–100, CPU mCPU, memory bytes.",
+                "tooltip": "All matching resources, including those outside Top 10. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join(((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (increase(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}[1h])))) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\") or on() label_replace((0 * count(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"sre_series\\\", \\\"No restarts observed in the last hour\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
               }
             ],

@@ -1,0 +1,29 @@
+nodes:
+- _type: Monitor
+  name: SRE · Longhorn volume degraded · 5m
+  identifier: urn:custom:monitor:sre-dashboards:longhorn-degraded
+  description: Longhorn reports the volume as degraded throughout observed samples
+    in 5m. Evaluated every minute. Only volumes with PVC identity are attached to
+    topology; other volumes remain visible in Storage & Backups. Missing telemetry
+    is not healthy.
+  arguments:
+    metric:
+      query: min_over_time((max by (k8s_cluster_name,pvc_namespace,pvc,volume) (longhorn_volume_robustness{state="degraded",pvc!="",pvc_namespace!=""}))[5m:30s])
+      unit: none
+      aliasTemplate: ${k8s_cluster_name} · ${pvc_namespace}/${pvc} · ${volume}
+    comparator: GT
+    threshold: 0
+    failureState: DEVIATING
+    urnTemplate: urn:kubernetes:/${k8s_cluster_name}:${pvc_namespace}:persistent-volume-claim/${pvc}
+    titleTemplate: SRE · Longhorn volume degraded · 5m · ${k8s_cluster_name} · ${pvc_namespace}/${pvc}
+      · ${volume}
+  intervalSeconds: 60
+  status: ENABLED
+  remediationHint: Open Storage & Backups and identify the named PVC and Longhorn
+    volume. Inspect replica health, scheduling conditions, free disk space and node
+    availability in Longhorn. Check the affected workload before repair. Do not delete
+    the volume or replicas based only on this alert.
+  tags:
+  - sre-dashboards
+  - dashboard-harvester
+  function: {{ get "urn:stackpack:common:monitor-function:threshold" }}

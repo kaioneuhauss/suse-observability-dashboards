@@ -23,7 +23,7 @@ class UninstallHooks(unittest.TestCase):
                              '--set', 'auth.monitors.existingSecret=monitor-owner')
             jobs = {obj['metadata']['name']: obj for obj in objects if obj['kind'] == 'Job'}
             cleanups = [job for job in jobs.values() if job['metadata']['annotations']['helm.sh/hook'] == 'pre-delete']
-            self.assertEqual(len(cleanups), 1 if module == 'imports' else 2)
+            self.assertEqual(len(cleanups), 2)
             for job in cleanups:
                 name = job['metadata']['name'].removesuffix('-delete')
                 publish = jobs[name]

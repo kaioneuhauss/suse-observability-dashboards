@@ -356,7 +356,7 @@ def sync_monitors(cli: CLI, catalog: list[dict], action: str) -> None:
             old_tags = set(old.get('tags', []))
             project_tags = {'sre-dashboards', 'platform', 'dashboard-applications',
                             'dashboard-platform', 'dashboard-traefik',
-                            'dashboard-resources', 'dashboard-harvester'}
+                            'dashboard-resources', 'dashboard-harvester', 'dashboard-imports'}
             if old.get('identifier') not in allowed or 'sre-dashboards' not in old_tags or not old_tags <= project_tags:
                 raise PublishError('Monitor com nome igual mas identifier/tags fora do catalogo: ' + name)
         ident = old['identifier'] if old else packaged_identifier

@@ -18,7 +18,7 @@ helm get manifest obs-virtualization \
 
 ## 2. Remove the module
 
-For chart **1.3.0**, run:
+For chart **1.3.0 or later**, run:
 
 ```sh
 helm uninstall obs-virtualization \
@@ -64,7 +64,7 @@ Use the same module guide and saved values. For the backup from step 1:
 ```sh
 helm repo update obs-dashboards
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.4.2 --values virtualization-backup.yaml \
+  --version 1.5.0 --values virtualization-backup.yaml \
   --set lifecycle.action=apply --set-string lifecycle.confirmDelete= \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
@@ -78,7 +78,7 @@ Use step 4 while the release is installed. Keep its release name, namespace, `mo
 
 ## Moving from 1.2.0 or 1.2.1
 
-These versions do not clean up external content during `helm uninstall`. Before using the shorter removal command, save their values with step 1 and run the upgrade in step 4. The 1.3.0 dashboard and monitor catalog is unchanged from 1.2.0/1.2.1. This upgrade adds the cleanup hooks while keeping the existing owner and module selection. **Only continue to step 2 after the upgrade succeeds.**
+These versions do not clean up external content during `helm uninstall`. Before using the shorter removal command, save their values with step 1 and run the upgrade in step 4. Version 1.3.0 introduced cleanup hooks. The current version also updates managed dashboards and monitors; review the changelog and preserve personal dashboard copies before upgrading. Keep the same owner and module selection. **Only continue to step 2 after the upgrade succeeds.**
 
 If an old completed publishing Job remains, remove only its exact name after the release is gone:
 
