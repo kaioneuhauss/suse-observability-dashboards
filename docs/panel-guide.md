@@ -96,7 +96,7 @@ Which VMware imports have finished, failed or are still being processed by VM Im
 | Current stage of each import | The legend identifies each import and the stage recorded by the controller. A line at 1 marks the recorded stage; it is not a completion percentage. |
 | Import controller: incoming network traffic (bytes/s) | Receive bytes per second per Pod interface, averaged over five minutes. Includes all imports and control traffic; not transfer speed for one VM. |
 | Import controller: outgoing network traffic (bytes/s) | Transmit bytes per second per Pod interface, averaged over five minutes. Disk export and image serving are separate stages; do not add receive and transmit as unique migrated bytes. |
-| Import controller: CPU used | CPU cores used by each controller container over five minutes. Compare a slowdown with CPU, memory and network together. |
+| Import controller: CPU used (mCPU) | CPU used by each controller container over five minutes. 1000 mCPU equals one CPU core. Compare a slowdown with CPU, memory and network together. |
 | Import controller: memory used | Working-set memory per controller container. Compare the trend with its configured limit and logs. |
 | Shared image services: incoming network traffic (bytes/s) | Network receive rate for Longhorn backing-image managers and data sources. These services also handle non-import images; this is shared infrastructure traffic. |
 | Shared image services: outgoing network traffic (bytes/s) | Network transmit rate for shared image services. Interface labels keep management and storage networks separate. This is not attributed to the selected import. |

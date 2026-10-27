@@ -18,6 +18,13 @@ class ActionableTests(unittest.TestCase):
    if key.endswith('LimitReview'):
     self.assertIn('> 0.8',q);self.assertTrue(detail.startswith('round(100 * ('))
     self.assertNotIn('topk(',q)
+ def test_import_selectors_use_normalized_pod_label(self):
+  panels=json.loads((CONTENT/'imports.json').read_text())['dashboard']['spec']['panels']
+  for key in ['controllerRx','controllerTx','controllerCPU','controllerMemory','imageRx','imageTx']:
+   q=panels[key]['spec']['queries'][0]['spec']['plugin']['spec']
+   self.assertIn('pod_name=~',q['query'])
+   self.assertNotIn('pod=~',q['query'])
+   self.assertIn('${pod_name}',q['alias'])
  def test_no_spacer_sections(self):
   for path in CONTENT.glob('*.json'):
    panels=json.loads(path.read_text())['dashboard']['spec']['panels']

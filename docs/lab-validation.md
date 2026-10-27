@@ -146,3 +146,9 @@ This round updated the five existing central content releases and the Harvester 
 - Native UI checks rejected `sort_by_label`, so it is not used. Per-series Stat cards preserve the name/value association; the unsupported dashboard Table widget and unreliable TimeSeries Last column are avoided. The Metrics Explorer link was opened successfully with filters and valid comparisons, and Table view displayed complete names and percentages. Summary counts remain integers; detail percentages are rounded for readability.
 
 The eight existing import objects were completed. The new network panels therefore validate collection and attribution to the controller/shared image Pods during idle operation, **not active VMware transfer throughput or per-VM progress**. No VM power operation, migration, volume removal, restore, failover or notification-delivery test was performed. CPU/memory configuration is not changed by these dashboards.
+
+### 1.4.1 correction during visual acceptance
+
+The first 1.4.0 native-query sweep did not treat expected-positive empty panels as a failure. Visual acceptance then caught SUSE ingestion's `pod` → `pod_name` normalization. The 1.4.1 dashboard selectors and legends were corrected. All seven performance panels were tested again through the native API with explicit nonempty assertions: one controller receive series, one transmit series, one CPU series, one memory series, two shared-image receive interfaces, two transmit interfaces and one healthy node target. The seven nonexistent-cluster controls returned no series. The full automated suite now contains 65 tests.
+
+The final Harvester inventory contained 429 VM/PV/PVC objects with the same UIDs and specifications as the prior clean-install evidence. The Imports ServiceAccount authorization check allows `get nodes --subresource=metrics` and denies `get nodes --subresource=proxy`.

@@ -353,7 +353,7 @@
   {
     "dashboard": "imports",
     "panel": "controllerCPU",
-    "title": "Import controller: CPU used",
+    "title": "Import controller: CPU used (mCPU)",
     "monitors": [],
     "guidance": "Investigation context; verify collection and source data before acting."
   },

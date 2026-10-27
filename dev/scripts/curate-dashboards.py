@@ -91,7 +91,7 @@ active|Imports still in progress|Records still pending or being processed. Compa
 phases|Current stage of each import|The legend identifies each import and the stage recorded by the controller. A line at 1 marks the recorded stage; it is not a completion percentage.
 controllerRx|Import controller: incoming network traffic|Receive bytes per second per Pod interface, averaged over five minutes. Includes all imports and control traffic; not transfer speed for one VM.
 controllerTx|Import controller: outgoing network traffic|Transmit bytes per second per Pod interface, averaged over five minutes. Disk export and image serving are separate stages; do not add receive and transmit as unique migrated bytes.
-controllerCPU|Import controller: CPU used|CPU cores used by each controller container over five minutes. Compare a slowdown with CPU, memory and network together.
+controllerCPU|Import controller: CPU used|CPU used by each controller container over five minutes. 1000 mCPU equals one CPU core. Compare a slowdown with CPU, memory and network together.
 controllerMemory|Import controller: memory used|Working-set memory per controller container. Compare the trend with its configured limit and logs.
 imageRx|Shared image services: incoming network traffic|Network receive rate for Longhorn backing-image managers and data sources. These services also handle non-import images; this is shared infrastructure traffic.
 imageTx|Shared image services: outgoing network traffic|Network transmit rate for shared image services. Interface labels keep management and storage networks separate. This is not attributed to the selected import.
@@ -270,6 +270,7 @@ SECTION_HELP = {
 }
 
 UNITS = {
+ 'imports': {'controllerCPU':('none','mCPU (1000 = 1 CPU)','mCPU')},
  'resources': {key:('none','mCPU (1000 = 1 CPU)','mCPU') for key in ('cpuUsageTop','cpuRequestTop','cpuLimitTop')},
  'harvester': {'vcpuUse':('decimal','CPU cores','CPU cores')},
  'virtualization-contention': {'faults':('decimal','Pages per second','pages/s')},
@@ -318,18 +319,18 @@ def add_actionable_panels(slug, panels):
             p['display']['description']=p['display'].get('description','').replace('use the details link for columns','read the value beside each name')
     if slug == 'imports':
         select='cluster_name=~"${import_cluster}",job="sre-import-performance"'
-        controller=select+',namespace="harvester-system",pod=~"harvester-vm-import-controller-.+"'
-        images=select+',namespace="longhorn-system",pod=~"(bim-|backing-image-manager-|backing-image-ds-).+"'
+        controller=select+',namespace="harvester-system",pod_name=~"harvester-vm-import-controller-.+"'
+        images=select+',namespace="longhorn-system",pod_name=~"(bim-|backing-image-manager-|backing-image-ds-).+"'
         for key,sel,direction in [('controllerRx',controller,'receive'),('controllerTx',controller,'transmit'),('imageRx',images,'receive'),('imageTx',images,'transmit')]:
             panels[key]=copy.deepcopy(panels['activeAge']); p=panels[key]['spec'];p.pop('links',None)
             p['display']={'name':key,'description':'cAdvisor per-Pod interface counter. rate() is applied before deduplication by cluster, namespace, pod and interface. Loopback excluded. Cluster scope: import and namespace filters do not narrow shared infrastructure. No bandwidth percentage without an independently known link capacity. No active-transfer validation in this lab; retained imports are completed.'}
             p['plugin']['spec']['yAxis']['format']={'unit':'bytes/sec'}
-            query(panels[key],f'max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_{direction}_bytes_total{{{sel},interface!="lo"}}[5m]))','${cluster_name} · ${pod} · ${interface}')
-        for key,metric,unit in [('controllerCPU','rate(harvester_import_cpu_usage_seconds_total{'+controller+',container!="",container!="POD"}[5m])','decimal'),('controllerMemory','harvester_import_memory_working_set_bytes{'+controller+',container!="",container!="POD"}','bytes(IEC)'),('performanceHealth','up{'+select+'}','decimal')]:
+            query(panels[key],f'max by (cluster_name,namespace,pod_name,interface) (rate(harvester_import_network_{direction}_bytes_total{{{sel},interface!="lo"}}[5m]))','${cluster_name} · ${pod_name} · ${interface}')
+        for key,metric,unit in [('controllerCPU','1000 * rate(harvester_import_cpu_usage_seconds_total{'+controller+',container!="",container!="POD"}[5m])','none'),('controllerMemory','harvester_import_memory_working_set_bytes{'+controller+',container!="",container!="POD"}','bytes(IEC)'),('performanceHealth','up{'+select+'}','decimal')]:
             panels[key]=copy.deepcopy(panels['activeAge']);p=panels[key]['spec'];p.pop('links',None)
-            p['display']={'name':key,'description':'Direct TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.'}
+            p['display']={'name':key,'description':'Direct TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.'}
             p['plugin']['spec']['yAxis']['format']={'unit':unit}
-            query(panels[key],f'max by (cluster_name,node,namespace,pod,container) ({metric})','${cluster_name} · ${pod} · ${container}' if key!='performanceHealth' else '${cluster_name} · ${node}')
+            query(panels[key],f'max by (cluster_name,node,namespace,pod_name,container) ({metric})','${cluster_name} · ${pod_name} · ${container}' if key!='performanceHealth' else '${cluster_name} · ${node}')
 
 guide_rows = ['# Dashboard reading guide', '', 'Each row explains what a panel shows. Open its description in SUSE for the formula, time window and measurement limits.', '', 'Counts use whole numbers; rates can be fractional. Missing data is not proof of health. Period-total panels summarize the selected window and do not show a trend. This is a community lab project, not recommended for production.', '']
 reviewed = {}
@@ -445,6 +446,7 @@ for slug, (name, purpose, guide) in META.items():
         for key in keys.split():
             kind=panels[key]['spec']['plugin']['kind'];width=8 if kind in ('StatChart','GaugeChart') else 12
             if slug=='imports' and key in ('registered','succeeded','failed','active'):width=6
+            if slug=='imports' and key==keys.split()[-1] and width==12 and x in (0,24):width=24
             if slug=='traefik' and key in ('requests1h','meanLatency','p95','p99'):width=12
             height=1 if kind=='StatChart' else (2 if kind=='GaugeChart' else 3)
             if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=6;height=2

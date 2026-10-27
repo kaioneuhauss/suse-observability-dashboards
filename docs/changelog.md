@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.4.1 — Match SUSE's stored Pod label
+
+SUSE normalizes the cAdvisor `pod` label to `pod_name`. Import performance selectors and legends now use the stored label; 1.4.0 could collect the data while showing empty performance panels. Seven positive native queries and seven nonexistent-cluster queries were checked explicitly after correction. Use 1.4.1 for new installs; existing immutable packages remain available.
+
+CPU is shown in mCPU so small values remain readable. Unpaired Imports panels use the full row, keeping paired CPU/memory and receive/transmit charts aligned.
+
+## 1.4.0 — Actionable dashboards and a complete Virtualization walkthrough
+
+- Removed full-width section text panels that looked like empty charts. Kept one introduction and the panel descriptions; made summary counts more compact.
+- Added per-Pod threshold values and top-ten usage details for missing resource settings, with links to complete Metrics Explorer tables. Corrected URL encoding and percentage scaling in those links.
+- Added opt-in VM Import Controller CPU, memory and network collection, plus explicitly shared Longhorn image-service network views. Uses TLS and `nodes/metrics`; no `nodes/proxy`, exec or write permissions.
+- Rewrote the Virtualization walkthrough from prerequisites through removal, including a new Agent installation, exact input fields and expected results. Installation remains Helm/kubectl only.
+- Retained all prior chart packages; cleanup behavior introduced in 1.3.0 is unchanged.
+
 ## 1.3.0 — Simpler installation and removal
 
 - Numbered English guides explain what to fill in, what to run and what to expect.
@@ -49,11 +63,3 @@
 ## Earlier combined package
 
 The version 6 procedures were replaced. Git revision `c059f58` preserves the previous package and its historical evidence.
-
-## 1.4.0 — Actionable dashboards and a complete Virtualization walkthrough
-
-- Removed full-width section text panels that looked like empty charts. Kept one introduction and the panel descriptions; made summary counts more compact.
-- Added per-Pod threshold values and top-ten usage details for missing resource settings, with links to complete Metrics Explorer tables. Corrected URL encoding and percentage scaling in those links.
-- Added opt-in VM Import Controller CPU, memory and network collection, plus explicitly shared Longhorn image-service network views. Uses TLS and `nodes/metrics`; no `nodes/proxy`, exec or write permissions.
-- Rewrote the Virtualization walkthrough from prerequisites through removal, including a new Agent installation, exact input fields and expected results. Installation remains Helm/kubectl only.
-- Retained all prior chart packages; cleanup behavior introduced in 1.3.0 is unchanged.

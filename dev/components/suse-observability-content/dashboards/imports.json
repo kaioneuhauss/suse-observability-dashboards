@@ -77,7 +77,7 @@
                   "$ref": "#/spec/panels/disks"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 5
               },
@@ -176,7 +176,7 @@
                   "$ref": "#/spec/panels/performanceHealth"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 23
               },
@@ -185,7 +185,7 @@
                   "$ref": "#/spec/panels/collection"
                 },
                 "height": 3,
-                "width": 12,
+                "width": 24,
                 "x": 0,
                 "y": 26
               }
@@ -330,8 +330,8 @@
         "controllerCPU": {
           "spec": {
             "display": {
-              "description": "CPU cores used by each controller container over five minutes. Compare a slowdown with CPU, memory and network together.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
-              "name": "Import controller: CPU used"
+              "description": "CPU used by each controller container over five minutes. 1000 mCPU equals one CPU core. Compare a slowdown with CPU, memory and network together.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
+              "name": "Import controller: CPU used (mCPU)"
             },
             "plugin": {
               "kind": "TimeSeriesChart",
@@ -352,8 +352,9 @@
                 "yAxis": {
                   "format": {
                     "decimalPlaces": 1,
-                    "unit": "decimal"
+                    "unit": "none"
                   },
+                  "label": "mCPU (1000 = 1 CPU)",
                   "show": true
                 }
               }
@@ -365,8 +366,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${cluster_name} · ${pod} · ${container}",
-                      "query": "max by (cluster_name,node,namespace,pod,container) (rate(harvester_import_cpu_usage_seconds_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",container!=\"\",container!=\"POD\"}[5m]))"
+                      "alias": "${cluster_name} · ${pod_name} · ${container}",
+                      "query": "max by (cluster_name,node,namespace,pod_name,container) (1000 * rate(harvester_import_cpu_usage_seconds_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod_name=~\"harvester-vm-import-controller-.+\",container!=\"\",container!=\"POD\"}[5m]))"
                     }
                   }
                 }
@@ -377,7 +378,7 @@
         "controllerMemory": {
           "spec": {
             "display": {
-              "description": "Working-set memory per controller container. Compare the trend with its configured limit and logs.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
+              "description": "Working-set memory per controller container. Compare the trend with its configured limit and logs.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
               "name": "Import controller: memory used"
             },
             "plugin": {
@@ -412,8 +413,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${cluster_name} · ${pod} · ${container}",
-                      "query": "max by (cluster_name,node,namespace,pod,container) (harvester_import_memory_working_set_bytes{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",container!=\"\",container!=\"POD\"})"
+                      "alias": "${cluster_name} · ${pod_name} · ${container}",
+                      "query": "max by (cluster_name,node,namespace,pod_name,container) (harvester_import_memory_working_set_bytes{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod_name=~\"harvester-vm-import-controller-.+\",container!=\"\",container!=\"POD\"})"
                     }
                   }
                 }
@@ -460,8 +461,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${cluster_name} · ${pod} · ${interface}",
-                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_receive_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",interface!=\"lo\"}[5m]))"
+                      "alias": "${cluster_name} · ${pod_name} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod_name,interface) (rate(harvester_import_network_receive_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod_name=~\"harvester-vm-import-controller-.+\",interface!=\"lo\"}[5m]))"
                     }
                   }
                 }
@@ -508,8 +509,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${cluster_name} · ${pod} · ${interface}",
-                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_transmit_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod=~\"harvester-vm-import-controller-.+\",interface!=\"lo\"}[5m]))"
+                      "alias": "${cluster_name} · ${pod_name} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod_name,interface) (rate(harvester_import_network_transmit_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"harvester-system\",pod_name=~\"harvester-vm-import-controller-.+\",interface!=\"lo\"}[5m]))"
                     }
                   }
                 }
@@ -727,8 +728,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${cluster_name} · ${pod} · ${interface}",
-                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_receive_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"longhorn-system\",pod=~\"(bim-|backing-image-manager-|backing-image-ds-).+\",interface!=\"lo\"}[5m]))"
+                      "alias": "${cluster_name} · ${pod_name} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod_name,interface) (rate(harvester_import_network_receive_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"longhorn-system\",pod_name=~\"(bim-|backing-image-manager-|backing-image-ds-).+\",interface!=\"lo\"}[5m]))"
                     }
                   }
                 }
@@ -775,8 +776,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${cluster_name} · ${pod} · ${interface}",
-                      "query": "max by (cluster_name,namespace,pod,interface) (rate(harvester_import_network_transmit_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"longhorn-system\",pod=~\"(bim-|backing-image-manager-|backing-image-ds-).+\",interface!=\"lo\"}[5m]))"
+                      "alias": "${cluster_name} · ${pod_name} · ${interface}",
+                      "query": "max by (cluster_name,namespace,pod_name,interface) (rate(harvester_import_network_transmit_bytes_total{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\",namespace=\"longhorn-system\",pod_name=~\"(bim-|backing-image-manager-|backing-image-ds-).+\",interface!=\"lo\"}[5m]))"
                     }
                   }
                 }
@@ -882,7 +883,7 @@
         "performanceHealth": {
           "spec": {
             "display": {
-              "description": "1 means the kubelet metrics endpoint answered; 0 means failure. This does not prove matching importer Pods exist. Check TLS, TCP/10250 and nodes/metrics access if collection fails.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is cores, memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
+              "description": "1 means the kubelet metrics endpoint answered; 0 means failure. This does not prove matching importer Pods exist. Check TLS, TCP/10250 and nodes/metrics access if collection fails.\n\nMeasurement details:\nDirect TLS-verified kubelet /metrics/cadvisor collection. Cluster scope; import and namespace filters do not apply. CPU is mCPU (1000 = one core), memory is working-set bytes. Empty is missing telemetry, not zero. Collection can be disabled with imports.performance.enabled: false.",
               "name": "Can we collect import performance metrics?"
             },
             "plugin": {
@@ -918,7 +919,7 @@
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
                       "alias": "${cluster_name} · ${node}",
-                      "query": "max by (cluster_name,node,namespace,pod,container) (up{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\"})"
+                      "query": "max by (cluster_name,node,namespace,pod_name,container) (up{cluster_name=~\"${import_cluster}\",job=\"sre-import-performance\"})"
                     }
                   }
                 }

@@ -55,7 +55,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.4.0 --values imports.yaml \
+  --version 1.4.1 --values imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -123,7 +123,7 @@ The chart retains only CPU, working-set memory and network byte counters for the
 | New panels | How to use them |
 |---|---|
 | Import controller: incoming/outgoing network traffic | Bytes/s per Pod interface, averaged over five minutes. Compare drops in traffic with import stages and controller logs. |
-| Import controller: CPU and memory | Identify resource pressure while exporting disks or serving images. CPU is cores, memory is working-set bytes. |
+| Import controller: CPU and memory | Compare resource use with slowdowns while exporting disks or serving images. CPU is mCPU (1000 = one core), memory is working-set bytes. Use limits, throttling and logs to confirm resource pressure. |
 | Shared image services: incoming/outgoing network traffic | Longhorn image infrastructure activity. Includes other image operations; do not attribute it exclusively to one import. |
 | Can we collect import performance metrics? | Each expected node should report `1`. No series means no discovered target or missing delivery; `0` means a failed scrape. |
 

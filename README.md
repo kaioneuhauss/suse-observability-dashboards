@@ -71,7 +71,7 @@ Replace `/path/to/harvester.yaml` and the context `harvester` with your own kube
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.4.0 --values virtualization.yaml \
+  --version 1.4.1 --values virtualization.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```
