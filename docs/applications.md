@@ -4,6 +4,8 @@ See request volume, errors and response times from inside your applications. Thi
 
 This is a community lab integration, **not recommended for production**.
 
+Starting without telemetry? Complete [application telemetry setup](application-telemetry.md) first. It includes a Helm collector example, application-side settings, version checks and removal. This dashboard chart does not require SUSE Virtualization.
+
 <a id="before-installing"></a>
 
 ## 1. Check the requirements

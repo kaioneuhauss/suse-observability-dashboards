@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-28 — Documentation walkthrough; chart packages unchanged
+
+- Added a detailed configuration guide with architecture, verified lab release placement, step explanations, chart parameter reference and the dashboard publication/removal lifecycle.
+- Expanded README prerequisites with server setup links, Agent placement, registry credential preparation, version boundaries and expected results.
+- Added an optional application OpenTelemetry walkthrough with a separate official Helm collector, SDK configuration, metric-contract checks and removal. This example passed Helm rendering and collector configuration validation; it was not deployed during this update.
+- Kept the existing 1.6.0 packages, dashboard definitions and live cluster configuration unchanged.
+
 ## 1.6.0 — Readable resource names and separate VM Top 5 lists
 
 - Increased short summary cards across all nine dashboards: the native component reduced labels to about 4px in one-row cards.

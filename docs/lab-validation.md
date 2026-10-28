@@ -1,6 +1,18 @@
-# Lab validation — October 26, 2026
+# Lab validation
 
 This records what was checked in this lab. It is not a support matrix or a production certification. **This community project is not recommended for production.**
+
+## 2026-10-28 — Documentation and configuration examples
+
+This was a documentation update, not another uninstall/reinstall round. Read-only Helm inspection confirmed the release versions, namespaces and selected non-secret settings described in [Configuration explained](configuration-guide.md#how-the-current-lab-is-organized). The existing cluster configuration was not changed.
+
+- All 38 YAML blocks across the README and documentation parsed with duplicate-key checks. Local document links and anchors passed checks.
+- The five minimal module examples and their applicable `content`/`telemetry` variants rendered successfully. The optional Imports performance example also rendered.
+- The new separate application collector example rendered with official OpenTelemetry chart `0.178.0`. Its extracted configuration passed the official collector `0.163.2` validator; the downloaded binary matched the SHA-256 digest supplied by its GitHub release asset.
+- The project's 69 automated tests and existing Helm checks passed. Dashboard chart packages remain at 1.6.0 and were not rebuilt.
+- Official server, Agent, OTLP ingress, application telemetry and registry documentation was reviewed. The Harvester Agent chart `1.2.14` values were checked: they do not contain the newer `otel.telemetryGateway` setting.
+
+The new application collector/SDK example was **not deployed** and no new application was instrumented. Server installation, new ingress creation, active imports, destructive failure tests and external notification delivery were not repeated. Rendered YAML and configuration validation do not establish connectivity, application metric compatibility or production readiness.
 
 ## 1.3.0 — Live removal and installation using Helm and kubectl
 
