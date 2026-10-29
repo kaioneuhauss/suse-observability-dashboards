@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.8.0 — Balanced cards and VM storage references
+
+- Use a consistent 56px numeric value size and reduce action-list height by one third. At the validated desktop width, five results share a single row instead of wrapping 4 + 1. Storage health and old-backup previews share a row and show up to three entries each; the full table retains all matches.
+- Show VM names for volumes associated with a running VM through KubeVirt’s explicit `vmi_pod` mapping. Keep Pod, PVC and volume labels in the full table; unmatched volumes stay visible.
+- Add native Pod/PVC investigation shortcuts and document the distinction between a panel link and an individual resource link.
+- Existing monitor definitions, collectors, permissions and dashboard IDs are preserved.
+
 ## 1.7.0 — Resource identity and filter guidance
 
 - Patch existing dashboards by default, preserving their IDs and saved links during updates.

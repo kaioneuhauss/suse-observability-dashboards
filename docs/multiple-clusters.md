@@ -25,7 +25,7 @@ Install on the second cluster, using the Agent's namespace and ingestion Secret 
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.7.0 --values traefik-second.yaml \
+  --version 1.8.0 --values traefik-second.yaml \
   --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -48,7 +48,7 @@ Create the publishing Secret in the central namespace, then install:
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.7.0 --values traefik-content.yaml \
+  --version 1.8.0 --values traefik-content.yaml \
   --kubeconfig /path/to/central.yaml --kube-context central \
   --namespace suse-observability --wait --timeout 15m
 ```

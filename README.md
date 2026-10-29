@@ -23,7 +23,11 @@ Want to understand what each step does? Read the [configuration walkthrough](doc
 
 **Only need SUSE Virtualization?** Complete steps 2–4, install option A, then check it in step 6. You can stop there. Imports is a separate, optional module. Coriolis is not included.
 
-**Reading the dashboards:** VM Performance has separate Top 5 lists for CPU use, guest memory use and CPU waiting time. Resource lists show up to five entries so names stay readable; **Full names and values → Table view** shows the complete list and full identities. Each ranking uses the end of the selected period.
+**Reading the dashboards:** VM Performance has separate Top 5 lists for CPU use, guest memory use and CPU waiting time. Resource lists show up to five entries (three in the compact storage health/old-backup cards); **Full names and values → Table view** shows the complete list and full identities. Each ranking uses the end of the selected period.
+
+**Investigating a resource:** the Kubernetes resource guide includes **Investigate Pods**. Storage includes **Open PVCs** and **Open Pods**. Select the same cluster and namespace in that native list, then click the resource name to inspect it. These lists have their own filters. A panel can show several resources; its **Full names and values** link therefore keeps the complete metric table instead of guessing which Pod to open.
+
+**Storage references:** `VM:` is a running VM matched through KubeVirt’s launcher-Pod mapping; `Pod:` is another measured consumer. `PVC:` means no active consumer was mapped, not proof that the volume is unused. The full table includes VM, Pod, PVC, volume, namespace and cluster when available.
 
 In Kubernetes Cluster Health, **Unavailable application replicas** means configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. The list below names the affected applications. A brief gap during an update can be normal; it does not mean data was lost. This panel belongs to the optional Kubernetes module.
 
@@ -50,7 +54,7 @@ In Kubernetes Cluster Health, **Unavailable application replicas** means configu
 Do this on the **server cluster**, before installing anything from this repository:
 
 1. Check the official [requirements and sizing](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/requirements.html) and [version compatibility](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/Compatibility%20Self%20Hosted.html). Obtain a license and the required registry access. Choose the storage class and enough free resources for the selected profile.
-2. Follow the [official Helm installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html). Keep its values and credentials in a private location. The server chart version is independent of this project's `1.7.0` charts.
+2. Follow the [official Helm installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html). Keep its values and credentials in a private location. The server chart version is independent of this project's `1.8.0` charts.
 3. Configure DNS, a valid certificate and [HTTPS ingress](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html). For Virtualization or a separate application collector, also prepare the [OTLP endpoint](docs/otlp.md). The browser URL and OTLP gRPC address are different settings.
 4. Open the SUSE URL, log in and confirm the server workloads are ready:
 
@@ -286,7 +290,7 @@ Install:
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.7.0 --values virtualization.yaml \
+  --version 1.8.0 --values virtualization.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -330,7 +334,7 @@ imports:
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.7.0 --values imports.yaml \
+  --version 1.8.0 --values imports.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -353,7 +357,7 @@ observability:
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
-  --version 1.7.0 --values kubernetes.yaml \
+  --version 1.8.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -423,7 +427,7 @@ For another namespace/selector, add `telemetry.traefik.namespace`, `selector`, `
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.7.0 --values traefik.yaml \
+  --version 1.8.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -454,7 +458,7 @@ observability:
 
 ```sh
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
-  --version 1.7.0 --values applications.yaml \
+  --version 1.8.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -530,7 +534,7 @@ For example, save `virtualization-second.yaml` with `mode: telemetry`, the secon
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.7.0 --values virtualization-second.yaml \
+  --version 1.8.0 --values virtualization-second.yaml \
   --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```

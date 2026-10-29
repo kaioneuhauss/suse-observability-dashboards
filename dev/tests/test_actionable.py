@@ -12,6 +12,10 @@ class ActionableTests(unittest.TestCase):
    for label in ['k8s_cluster_name','pvc_namespace','pvc','volume']:
     self.assertIn(label,detail)
    self.assertIn('pod_name',detail)
+   self.assertIn('kubevirt_vmi_info',detail)
+   self.assertIn('vmi_pod',detail)
+   self.assertIn('group_left(vm_name)',detail)
+   self.assertIn('count by (k8s_cluster_name,pvc_namespace,pod_name)',detail)
    self.assertIn('kubernetes_state_pod_volumes_persistentvolumeclaims_readonly',detail)
    self.assertIn('0 * (',detail) # A read/write mount reports 0, but is still a reference.
    self.assertIn('group_left(volume,state)',detail)
@@ -56,7 +60,7 @@ class ActionableTests(unittest.TestCase):
     if p['plugin']['kind']=='StatChart':
      self.assertGreaterEqual(item['height'],2,(path.name,p['display']['name']))
      if item['width']==24 and p['queries'][0]['spec']['plugin']['spec']['alias']!='Pods':
-      self.assertGreaterEqual(item['height'],3)
+      self.assertGreaterEqual(item['height'],2)
       self.assertIn('topk(5, ',p['queries'][0]['spec']['plugin']['spec']['query'])
  def test_import_selectors_use_normalized_pod_label(self):
   panels=json.loads((CONTENT/'imports.json').read_text())['dashboard']['spec']['panels']

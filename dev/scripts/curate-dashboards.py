@@ -72,9 +72,9 @@ coverage|VM CPU samples collected over 24 hours|Number of CPU measurements avail
 unhealthy|Volumes needing attention|Volumes marked degraded or faulted by Longhorn. Open Longhorn to inspect replicas and scheduling; detached volumes with unknown health are counted separately in the health chart.
 neverBackup|Volumes with no recorded backup|Volumes whose last successful backup timestamp is zero. Check which ones actually need backups; this includes non-VM volumes.
 staleBackup|Volumes last backed up over 7 days ago|Volumes with a successful backup older than seven days. Compare this review window with your own recovery requirement; never-backed-up volumes appear separately.
-unhealthyDetails|Which volumes need attention?|Up to 5 volumes degraded or faulted at the end of the selected period. Each entry names the PVC and Longhorn volume; 1 means that state is active. Check replicas and scheduling in Longhorn. Open the values table for every affected volume.
+unhealthyDetails|Which volumes need attention?|Preview of up to 3 affected consumer/volume entries. VM or Pod names identify measured consumers; PVC means no active consumer was mapped. The value 1 means that state is active. Check replicas in Longhorn; the full table includes every affected volume and its complete identifiers.
 neverBackupDetails|Which volumes have no recorded backup?|Up to 5 volumes with no successful backup timestamp. Each entry identifies the PVC and Longhorn volume; 1 means no recorded backup. Open the values table for the complete list, then compare it with your backup policy.
-staleBackupDetails|Which backups are older than 7 days?|Days since the last recorded successful backup, with PVC and volume names. Up to 5 oldest entries; open the values table for all matches. Check the backup schedule and destination against your recovery requirement.
+staleBackupDetails|Which backups are older than 7 days?|Days since the last recorded successful backup. Preview of up to 3 oldest consumer/volume entries; open the values table for every match and complete identifiers. Check the backup schedule and destination against your recovery requirement.
 volumeHealth|Volume count by health|Number of volumes in each Longhorn health state. Unknown often occurs for detached volumes and does not mean healthy. Select a volume to investigate it.
 attachment|Volume count by attachment state|How many volumes are attached, detached or changing state. Detached can be normal for stopped VMs and does not mean that a disk should be deleted.
 latency|Time to read or write a storage volume|Current average response time reported by Longhorn for active volumes, in milliseconds. Compare with VM disk latency to locate storage delays.
@@ -300,6 +300,17 @@ def storage_consumers(expression):
     matched=f'({refs}) * on ({keys}) group_left(volume,state) ({unique})'
     unmatched=f'({expression}) unless on (k8s_cluster_name,volume) ({matched})'
     matched=f'label_replace(({matched}), "consumer", "Pod: $1", "pod_name", "(.+)")'
+    # Use KubeVirt's explicit launcher association, never a parsed Pod/PVC name.
+    # Reject ambiguous launcher mappings and keep every non-VM Pod association.
+    vms='max by (k8s_cluster_name,namespace,name,vmi_pod) (kubevirt_vmi_info{k8s_cluster_name=~"${storage_cluster}",phase="running",vmi_pod!=""})'
+    for target, source in [('pvc_namespace','namespace'),('pod_name','vmi_pod'),('vm_name','name')]:
+        vms=f'label_replace(({vms}), "{target}", "$1", "{source}", "(.+)")'
+    vms=f'max by (k8s_cluster_name,pvc_namespace,pod_name,vm_name) (0 * ({vms}) + 1)'
+    pod_keys='k8s_cluster_name,pvc_namespace,pod_name'
+    vms=f'({vms}) and on ({pod_keys}) (count by ({pod_keys}) ({vms}) == 1)'
+    vm_consumers=f'({matched}) * on ({pod_keys}) group_left(vm_name) ({vms})'
+    vm_consumers=f'label_replace(({vm_consumers}), "consumer", "VM: $1", "vm_name", "(.+)")'
+    matched=f'({vm_consumers}) or (({matched}) unless on ({pod_keys}) ({vms}))'
     unmatched=f'label_replace(({unmatched}), "consumer", "Volume: $1", "volume", "(.+)")'
     unmatched=f'label_replace(({unmatched}), "consumer", "PVC: $1", "pvc", "(.+)")'
     return f'({matched}) or ({unmatched})'
@@ -316,8 +327,6 @@ def compact_stat_identity(panel, source_label, prefix='', resource_pattern=None)
             expr=f'label_replace(({expr}), "sre_display", "$1", "sre_display", "^([^ ]+) · .*$")'
         expr=f'label_replace(({expr}), "sre_display", "$1…$2", "sre_display", "(.{{18}}).+(.{{8}})")'
         spec.update(query=expr,alias=prefix+'${sre_display}')
-    if panel['spec']['plugin']['kind']=='StatChart':
-        panel['spec']['plugin']['spec']['valueFontSize']=32
     panel['spec']['display']['description']+='\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.'
 
 def remove_display_wrappers(panels):
@@ -373,8 +382,9 @@ def add_actionable_panels(slug, panels):
             # StatChart uses the last non-null sample of every returned series.
             # Freeze the offender set at the selected end so recovered volumes
             # do not linger in a range query just because they failed earlier.
-            query(panels[key],f'topk(5, last_over_time(({storage_consumers(expression)})[1s:1s] @ end()))',alias)
-            p['display']['description']='Latest volume observations with Pod associations reported by the official Kubernetes Agent, joined by cluster, PVC namespace and PVC name. Only Running/Pending Pod labels are included. For KubeVirt hotplug disks the Agent can report the parent virt-launcher Pod; the direct mount is on its hp-volume child Pod. Association does not prove mounting or application health. PVC means no unambiguous current Pod association was measured: the VM may be stopped, the volume unused, or telemetry unavailable. Never infer a VM name from the PVC UUID. Shared volumes can have several consumer rows; the summary still counts unique volumes. State values of 1 mean this condition is present. Open Full names and values for volume/PVC/Pod identity and all rows.'
+            preview=5 if key=='neverBackupDetails' else 3
+            query(panels[key],f'topk({preview}, last_over_time(({storage_consumers(expression)})[1s:1s] @ end()))',alias)
+            p['display']['description']='Latest volume observations joined to the official Agent by cluster, PVC namespace and PVC name. VM identifies a running VM through the explicit kubevirt_vmi_info vmi_pod label; Pod identifies another measured consumer. The full table retains both VM and Pod names, PVC, volume and cluster. Only Running/Pending Pod labels are included. For KubeVirt hotplug disks the Agent can report the parent virt-launcher Pod; the direct mount is on its hp-volume child Pod. Association does not prove mounting or application health. PVC means no unambiguous current Pod association was measured: the VM may be stopped, the volume unused, or telemetry unavailable. Never infer a VM name from a PVC or Pod name. Shared volumes can have several consumer rows; the summary still counts unique volumes. State values of 1 mean this condition is present.'
     if slug == 'resources':
         selector='cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"'
         keys='cluster_name,namespace,pod_name,container'; pods='cluster_name,namespace,pod_name'
@@ -493,7 +503,7 @@ for slug, (name, purpose, guide) in META.items():
         if plug['kind']=='StatChart':
             # Generators copy an existing card as a model. Set the summary
             # font explicitly so a compact resource card cannot change it.
-            spec['valueFontSize']=40
+            spec['valueFontSize']=56
         # The native editor stores thresholds highest first. Publishing the
         # reverse order makes opening a dashboard count as an unsaved edit.
         if 'thresholds' in spec:
@@ -535,13 +545,13 @@ for slug, (name, purpose, guide) in META.items():
             # SUSE expands variables and URL-encodes this parameter itself.
             # Pre-encoding it produces %255B and breaks the explorer link.
             expressions=[q['spec']['plugin']['spec']['query'] for q in p['queries']]
-            if key in ACTION_LISTS.get(slug,set()) and expressions[0].startswith('topk(5, '): expressions[0]=expressions[0][8:-1]
+            if key in ACTION_LISTS.get(slug,set()) and expressions[0].startswith(('topk(5, ', 'topk(3, ')): expressions[0]=expressions[0][8:-1]
             if key in ('memLimitReview','cpuLimitReview'):expressions[0]='round(100 * ('+expressions[0]+'), 0.1)'
             state=[[[expression] for expression in expressions], [0,[6,[True,'']]]]
             encoded=json.dumps(state,separators=(',',':'))
             for char in '<>%&+#':encoded=encoded.replace(char,'\\u'+format(ord(char),'04x'))
             p['links']=[{'name':'Full names and values','targetBlank':True,
-              'tooltip':('All matching resources, including those outside Top 5. ' if key in ACTION_LISTS.get(slug,set()) else 'Values and labels from this panel query. ')+'Select Table view and check the time range. Units and conditions are explained in the panel description.',
+              'tooltip':('All matching resources, including those outside the preview. ' if key in ACTION_LISTS.get(slug,set()) else 'Values and labels from this panel query. ')+'Select Table view and check the time range. Units and conditions are explained in the panel description.',
               'url':'./#/metrics?metrics='+encoded}]
         if key in ACTION_LISTS.get(slug,set()):
             if slug=='virtualization-storage':
@@ -567,6 +577,10 @@ for slug, (name, purpose, guide) in META.items():
     panels['guide']['spec'].setdefault('links',[])
     panels['guide']['spec']['display']={'name':'What this dashboard tells you','description':purpose}
     panels['guide']['spec']['plugin']['spec']['text']='**'+purpose+'** '+guide+' **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list.'
+    if slug=='virtualization-storage':
+        panels['guide']['spec']['plugin']['spec']['text']+=' **VM / Pod** identifies a measured consumer. **PVC** means no active consumer was mapped. [Open PVCs](./#/views/urn:stackpack:kubernetes-v2:shared:query-view:persistent-volume-claims) or [Open Pods](./#/views/urn:stackpack:kubernetes-v2:shared:query-view:pods); select the same cluster and namespace, then click the resource name.'
+    elif slug=='resources':
+        panels['guide']['spec']['plugin']['spec']['text']+=' [Investigate Pods](./#/views/urn:stackpack:kubernetes-v2:shared:query-view:pods): select the same cluster and namespace, then click a Pod name to open its health, events and logs. This native list has its own filters.'
     items=[{'x':0,'y':0,'width':24,'height':1,'content':{'$ref':'#/spec/panels/guide'}}]; y=1
     seen=[]
     for index,(heading,keys) in enumerate(SECTIONS[slug]):
@@ -579,7 +593,10 @@ for slug, (name, purpose, guide) in META.items():
             # One grid row makes SUSE 2.10.2 shrink Stat labels to ~4px.
             height=2 if kind in ('StatChart','GaugeChart') else 3
             if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=12;height=2
-            if key in ACTION_LISTS.get(slug, set()): width=24; height=3
+            # Two rows give the native Stat grid room for five entries on one
+            # line at the validated desktop width. Three rows made a 4+1 grid.
+            if key in ACTION_LISTS.get(slug, set()): width=24; height=2
+            if slug=='virtualization-storage' and key in ('unhealthyDetails','staleBackupDetails'): width=12
             if x+width>24:y+=row_height;x=0;row_height=0
             items.append({'x':x,'y':y,'width':width,'height':height,'content':{'$ref':'#/spec/panels/'+key}})
             x+=width;row_height=max(row_height,height);seen.append(key)

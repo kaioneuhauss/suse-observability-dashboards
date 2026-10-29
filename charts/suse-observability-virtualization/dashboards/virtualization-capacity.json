@@ -124,7 +124,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -163,7 +163,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -413,7 +413,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [

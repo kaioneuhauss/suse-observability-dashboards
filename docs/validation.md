@@ -71,6 +71,6 @@ Normal time/filter changes use the viewer URL. If a current dashboard still show
 
 ## Identify a storage problem
 
-In **Virtualization · Storage & Backups**, use **Which volumes need attention?**. The card shows the state and an abbreviated Pod/PVC identity. Use **Full names and values → Table view** for complete state, cluster, volume, PVC, PVC namespace and any matched Pod. Pod association uses the official Agent; a hotplug disk can identify the parent virt-launcher Pod. A PVC-only fallback does not prove that the volume is unused. Backup review lists use the same path. The panel previews at most five matches; the linked query has no Top 5 restriction.
+In **Virtualization · Storage & Backups**, use **Which volumes need attention?**. The card shows the state and an abbreviated VM/Pod/PVC identity. Use **Full names and values → Table view** for complete state, cluster, volume, PVC, PVC namespace and any matched Pod. Pod association uses the official Agent; a hotplug disk can identify the parent virt-launcher Pod. A PVC-only fallback does not prove that the volume is unused. Backup review lists use the same path. Health and old-backup cards preview three entries; the no-backup list previews five. The linked query includes every match.
 
 `pvc_namespace` identifies the application/VM namespace. It differs from the Longhorn collector's `longhorn-system` namespace. A blank PVC label means no claim identity is reported; do not infer a VM from the namespace. Compare the volume with Longhorn before remediation. See [alerts and their limits](alerts.md).

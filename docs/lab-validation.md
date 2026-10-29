@@ -1,5 +1,17 @@
 # Lab validation
 
+## 2026-10-29 — Chart 1.8.0 proportions and VM storage references
+
+- Updated the five central `mode: content` releases. All nine live definitions match their chart source and keep their existing IDs. No collector, permission, application, VM or volume configuration was changed.
+- Reviewed all Stat/Gauge summary and detail panels across the nine dashboards in the browser at a 1280px viewport. Numeric Stat values use 56px. Action lists now use two grid rows; five results fit one line at this viewport. Storage health and old-backup previews share a row and show up to three entries each; full tables and summary counts remain complete. Native label sizing remains automatic and can differ at other window sizes.
+- Compared the old and new storage queries in the same API evaluation: 1 unhealthy entry, 183 entries without a recorded backup and 1 old-backup entry kept their values and volume/Pod identities. Added VM references were checked against Kubernetes launcher-Pod owner UIDs: **32 references confirmed**. Stopped VM definitions are outside this mapping.
+- Checked **22 display projections** against their underlying queries; values and full identities matched within floating-point tolerance `1e-12`. All **69 automated tests**, repeatable generation and Helm checks passed.
+- All **39 monitors** were enabled, with zero execution errors and zero unmatched topology states in the final sample. Notification routing and delivery were not configured or tested.
+- The degraded PVC shown in the user's screenshot had no Pod or VM reference in the current Kubernetes definitions. It remains visible as a PVC; this is not permission to delete it and does not establish that its data is disposable.
+- The installed 2.10.2 frontend schema supports panel-level links, but not a per-series component identifier in dashboard queries. Kept complete metric tables and added native Pod/PVC list shortcuts; those lists have independent filters and resource-name links. No hard-coded Pod IDs were published.
+
+This is a focused presentation and association check. It does not repeat the earlier full filter matrix, an active import, a destructive failure test, or backup restoration. Raw identities and screenshots remain in the private validation folder.
+
 This records what was checked in this lab. It is not a support matrix or a production certification. **This community project is not recommended for production.**
 
 ## 2026-10-29 — Chart 1.7.0 filters, resource identity and usability

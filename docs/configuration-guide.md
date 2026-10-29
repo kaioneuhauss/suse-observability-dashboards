@@ -2,7 +2,7 @@
 
 This guide explains what we configured, why it is there and how to repeat it. Use the [README](../README.md) for the installation commands. Keep this page beside it when you want to understand a setting or change the setup.
 
-The examples use chart **1.7.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation was reviewed on **2026-10-29**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
+The examples use chart **1.8.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation was reviewed on **2026-10-29**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
 
 > [!WARNING]
 > Community project for labs and learning. Not recommended for production and not an officially supported SUSE integration. Validate the metrics, resource usage, permissions and alert policy in your own environment.
@@ -75,7 +75,7 @@ Use a private note like this. Replace the examples once, then use the same names
 | Browser/API URL | `https://observability.example.com` | Publisher destination and base for Prometheus remote write |
 | Agent receiver | `https://observability.example.com/receiver/stsAgent` | Destination for the official Agent |
 | OTLP gRPC address | `otlp-observability.example.com:443` | Destination for the Virtualization or separate application OTel collector |
-| Dashboard chart version | `1.7.0` | Reproducible module installation |
+| Dashboard chart version | `1.8.0` | Reproducible module installation |
 | Server and Agent chart versions | Record the installed versions | Separate release cycles; do not substitute `1.7.0` here |
 
 **Run on your computer:**
@@ -227,7 +227,7 @@ observability:
 helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
 helm repo update obs-dashboards
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.7.0 --values virtualization.yaml \
+  --version 1.8.0 --values virtualization.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -237,7 +237,7 @@ helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virt
 | `upgrade --install` | Installs a missing release or updates the existing one |
 | `obs-virtualization` | Your release name; keep it for updates and removal |
 | `obs-dashboards/suse-observability-virtualization` | Repository alias and chart name |
-| `--version 1.7.0` | Selects the exact published chart package |
+| `--version 1.8.0` | Selects the exact published chart package |
 | `--values virtualization.yaml` | Merges your settings with the chart defaults |
 | `--kubeconfig` / `--kube-context` | Selects the destination cluster explicitly |
 | `--namespace` | Places the release beside the required Secrets |
@@ -371,8 +371,8 @@ If a hook fails, inspect its Job logs and retry after correcting the error. Exte
 Most installations change only the small examples above. The following tables explain the configurable settings in the five **1.7.0** charts. A dotted name represents nested YAML, not a literal dotted key. Where a row covers a group, it lists the group's individual fields. Inspect defaults without installing anything:
 
 ```sh
-helm show values obs-dashboards/suse-observability-virtualization --version 1.7.0
-helm show values obs-dashboards/suse-observability-imports --version 1.7.0
+helm show values obs-dashboards/suse-observability-virtualization --version 1.8.0
+helm show values obs-dashboards/suse-observability-imports --version 1.8.0
 ```
 
 | Setting | Meaning and when to change it |

@@ -58,7 +58,7 @@
                 "content": {
                   "$ref": "#/spec/panels/memLimitReview"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
                 "y": 5
@@ -67,10 +67,10 @@
                 "content": {
                   "$ref": "#/spec/panels/cpuLimitReview"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 8
+                "y": 7
               },
               {
                 "content": {
@@ -79,16 +79,16 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 11
+                "y": 9
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/cpuRequestMissingValues"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 13
+                "y": 11
               },
               {
                 "content": {
@@ -97,16 +97,16 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 16
+                "y": 13
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/cpuLimitMissingValues"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 18
+                "y": 15
               },
               {
                 "content": {
@@ -115,16 +115,16 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 21
+                "y": 17
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/memRequestMissingValues"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 23
+                "y": 19
               },
               {
                 "content": {
@@ -133,16 +133,16 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 26
+                "y": 21
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/memLimitMissingValues"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 28
+                "y": 23
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 31
+                "y": 25
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 31
+                "y": 25
               },
               {
                 "content": {
@@ -169,7 +169,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 34
+                "y": 28
               },
               {
                 "content": {
@@ -178,7 +178,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 37
+                "y": 31
               },
               {
                 "content": {
@@ -187,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 37
+                "y": 31
               },
               {
                 "content": {
@@ -196,7 +196,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 40
+                "y": 34
               },
               {
                 "content": {
@@ -205,7 +205,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 43
+                "y": 37
               },
               {
                 "content": {
@@ -214,7 +214,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 43
+                "y": 37
               },
               {
                 "content": {
@@ -223,7 +223,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 46
+                "y": 40
               },
               {
                 "content": {
@@ -232,7 +232,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 46
+                "y": 40
               },
               {
                 "content": {
@@ -241,7 +241,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 49
+                "y": 43
               },
               {
                 "content": {
@@ -250,7 +250,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 52
+                "y": 46
               }
             ]
           }
@@ -277,7 +277,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -306,7 +306,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -323,7 +323,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -352,7 +352,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"round(100 * (((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))) \\u003e 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\")))), \\\"sre_series\\\", \\\"No eligible pods above 80\\u0025\\\", \\\"\\\", \\\"\\\")), 0.1)\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -378,7 +378,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -478,7 +478,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -517,7 +517,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -546,7 +546,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -563,7 +563,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -807,7 +807,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Are applications using the CPU and memory reserved for them, or approaching their limits?** A request reserves resources for scheduling. A limit sets a maximum. Actual use is a separate measurement. Compare the same five busiest pods across used, reserved and limit charts. 1000 mCPU equals one CPU core. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
+                "text": "**Are applications using the CPU and memory reserved for them, or approaching their limits?** A request reserves resources for scheduling. A limit sets a maximum. Actual use is a separate measurement. Compare the same five busiest pods across used, reserved and limit charts. 1000 mCPU equals one CPU core. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list. [Investigate Pods](./#/views/urn:stackpack:kubernetes-v2:shared:query-view:pods): select the same cluster and namespace, then click a Pod name to open its health, events and logs. This native list has its own filters."
               }
             },
             "queries": []
@@ -881,7 +881,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -910,7 +910,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -927,7 +927,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -956,7 +956,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"round(100 * (((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())))))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))) \\u003e 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())))))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\")))), \\\"sre_series\\\", \\\"No eligible pods above 80\\u0025\\\", \\\"\\\", \\\"\\\")), 0.1)\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -982,7 +982,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -1081,7 +1081,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -1120,7 +1120,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -1149,7 +1149,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -1166,7 +1166,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [

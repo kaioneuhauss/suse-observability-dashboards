@@ -68,3 +68,9 @@ A short label is a display projection, not a new identity. Cards and selected lo
 Storage details join Longhorn labels to the official Agent metric `kubernetes_state_pod_volumes_persistentvolumeclaims_readonly` by cluster, PVC namespace and PVC name. A metric value of zero means read/write, not an absent reference, so references are normalized with `0 * metric + 1`. Running/Pending Pod labels are retained, repeated collector series are deduplicated, and ambiguous PVC-to-volume matches are excluded from the join. Unmatched volumes remain visible with a PVC/volume fallback. Several consumers can produce several detail rows; summary counts still count unique volumes.
 
 For KubeVirt hotplug disks, this Agent metric can report the parent `virt-launcher` Pod while the direct PVC mount is in its `hp-volume` child. This is an observed Pod association, not proof of a mounted filesystem, application health, VM ownership or safe deletion. No guest VM name is inferred from a PVC UUID. Freshness and source availability still need checking.
+
+## VM storage association (1.8.0)
+
+The existing Pod-to-PVC association is enriched with `kubevirt_vmi_info{phase="running",vmi_pod!=""}`. Join on cluster, PVC namespace and Pod name after explicitly renaming `vmi_pod`; do not parse a VM name from a Pod or PVC. Only unique launcher mappings are eligible. The result adds `vm_name` and changes the display consumer to `VM: ...`; its value, Pod identity and volume identity stay unchanged. Ordinary Pods and unmapped PVCs remain visible. Stopped VM definitions are not covered by this mapping.
+
+In the tested 2.10.2 dashboard implementation, metric queries accept PromQL, alias and minimum step; they do not expose the component-identifier template supported by native metric bindings. Header links interpolate dashboard variables, not each returned metric series. Native resource-list shortcuts therefore have their own filters; click a resource name there to open its details.

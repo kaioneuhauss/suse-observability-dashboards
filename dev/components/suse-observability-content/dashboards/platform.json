@@ -103,7 +103,7 @@
                 "content": {
                   "$ref": "#/spec/panels/availability"
                 },
-                "height": 3,
+                "height": 2,
                 "width": 24,
                 "x": 0,
                 "y": 10
@@ -115,7 +115,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 13
+                "y": 12
               },
               {
                 "content": {
@@ -124,7 +124,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 16
+                "y": 15
               },
               {
                 "content": {
@@ -133,7 +133,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 16
+                "y": 15
               },
               {
                 "content": {
@@ -142,7 +142,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 19
+                "y": 18
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 19
+                "y": 18
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 22
+                "y": 21
               },
               {
                 "content": {
@@ -169,7 +169,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 22
+                "y": 21
               },
               {
                 "content": {
@@ -178,7 +178,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 25
+                "y": 24
               },
               {
                 "content": {
@@ -187,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 25
+                "y": 24
               },
               {
                 "content": {
@@ -196,7 +196,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 28
+                "y": 27
               },
               {
                 "content": {
@@ -205,7 +205,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 28
+                "y": 27
               },
               {
                 "content": {
@@ -214,7 +214,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 31
+                "y": 30
               },
               {
                 "content": {
@@ -223,7 +223,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 31
+                "y": 30
               },
               {
                 "content": {
@@ -232,7 +232,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 34
+                "y": 33
               },
               {
                 "content": {
@@ -241,7 +241,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 34
+                "y": 33
               },
               {
                 "content": {
@@ -250,7 +250,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 37
+                "y": 36
               },
               {
                 "content": {
@@ -259,7 +259,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 37
+                "y": 36
               },
               {
                 "content": {
@@ -268,7 +268,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 40
+                "y": 39
               },
               {
                 "content": {
@@ -277,7 +277,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 40
+                "y": 39
               },
               {
                 "content": {
@@ -286,7 +286,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 43
+                "y": 42
               },
               {
                 "content": {
@@ -295,7 +295,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 43
+                "y": 42
               },
               {
                 "content": {
@@ -304,7 +304,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 46
+                "y": 45
               },
               {
                 "content": {
@@ -313,7 +313,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 46
+                "y": 45
               },
               {
                 "content": {
@@ -322,7 +322,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 49
+                "y": 48
               },
               {
                 "content": {
@@ -331,7 +331,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 49
+                "y": 48
               },
               {
                 "content": {
@@ -340,7 +340,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 52
+                "y": 51
               },
               {
                 "content": {
@@ -349,7 +349,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 52
+                "y": 51
               },
               {
                 "content": {
@@ -358,7 +358,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 55
+                "y": 54
               },
               {
                 "content": {
@@ -367,7 +367,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 55
+                "y": 54
               }
             ]
           }
@@ -384,7 +384,7 @@
               {
                 "name": "Full names and values",
                 "targetBlank": true,
-                "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "tooltip": "All matching resources, including those outside the preview. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"last_over_time((label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\")) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"workload\\\", \\\"kind\\\", \\\"namespace\\\", \\\"cluster_name\\\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\"))), \\\"sre_series\\\", \\\"No unavailable replicas in measured workloads\\\", \\\"\\\", \\\"\\\"))[1s:1s] @ end())\"]],[0,[6,[true,\"\"]]]]"
               }
             ],
@@ -406,7 +406,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 32
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -541,7 +541,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -1562,7 +1562,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -1746,7 +1746,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -2156,7 +2156,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
@@ -2195,7 +2195,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 56
               }
             },
             "queries": [
