@@ -918,7 +918,7 @@
   {
     "dashboard": "resources",
     "panel": "cpuOver80Count",
-    "title": "Pods above 80% of their CPU limit",
+    "title": "Pods over 80% CPU limit",
     "monitor_slugs": [],
     "guidance": [
       "CPU Throttling (native)"
@@ -970,7 +970,7 @@
   {
     "dashboard": "resources",
     "panel": "cpuUseGauge",
-    "title": "Pod closest to its CPU limit",
+    "title": "Highest Pod CPU %",
     "monitor_slugs": [],
     "guidance": [
       "CPU Throttling (native)"
@@ -1024,7 +1024,7 @@
   {
     "dashboard": "resources",
     "panel": "memOver80Count",
-    "title": "Pods above 80% of their memory limit",
+    "title": "Pods over 80% memory limit",
     "monitor_slugs": [
       "container-memory"
     ],
@@ -1071,7 +1071,7 @@
   {
     "dashboard": "resources",
     "panel": "memUseGauge",
-    "title": "Pod closest to its memory limit",
+    "title": "Highest Pod memory %",
     "monitor_slugs": [
       "container-memory"
     ],

@@ -2,6 +2,37 @@
 
 This records what was checked in this lab. It is not a support matrix or a production certification. **This community project is not recommended for production.**
 
+## 2026-10-29 — Chart 1.7.0 filters, resource identity and usability
+
+This round updated the five central **content** releases. It did not uninstall the platform, reinstall collectors or change application, VM or volume configuration. Dashboard definitions were compared with the source after publication: **all nine matched and retained their IDs**. The native Kubernetes dashboard retained its ID too.
+
+### What changed
+
+- VM and Pod cards show compact names, larger values and a **Full names and values** link. Long PVC/certificate legends use the same approach. The complete identity remains in the query; a shortened label alone is not unique.
+- CPU/memory summary cards have more horizontal space. Separate Top 5 VM lists remain available for CPU demand, memory demand and CPU waiting.
+- Storage details include Pod references from the official Agent, with a PVC fallback when no unambiguous current association is available. Summary counts still count unique volumes.
+- The README explains parent/child filters, **None** versus **Everything**, Traefik namespace discovery and the difference between infrastructure signals, guest telemetry and application tracing.
+- Helm uses `patch` by default for dashboard updates. Managed content can still overwrite personal edits; uninstall/reinstall can change IDs.
+
+### Checks completed
+
+- **8,827 native API query/filter cases:** every discovered single-value filter path, parent + Everything paths, representative multi-selection and a nonexistent cluster. **Zero query errors or nonfinite values**; 3,350 empty cases were recorded separately. All 195 nonexistent-cluster query cases returned no series.
+- **833 six-hour query cases:** zero errors or nonfinite values; 209 empty cases. Range checks covered Everything, individual clusters, representative multiple clusters and the negative cluster.
+- Final display projections were compared with their underlying expressions in **22 same-evaluation checks**. Full identities matched; numerical differences were at floating-point rounding scale (maximum observed absolute difference about `5.6e-17`, tolerance `1e-12`). These comparisons check display changes, not exporter accuracy.
+- All **69 automated tests**, Helm lint/render/configuration checks, generation repeatability and package/source checks passed. End-user installation/removal still uses Helm and kubectl.
+- Browser checks covered the nine dashboards, their panel layouts and return navigation. No false unsaved-changes warning was reproduced. Tests included Everything, an empty selection, one cluster/namespace, multiple Traefik namespaces, an application, VM namespace selection and one storage volume. The complete Pod/PVC/volume row was opened in Metrics Explorer Table view. The tested browser viewport was 1280 pixels wide; this is not a guarantee for every window size or future resource name.
+- Native label discovery returned the VM namespace after selecting Harvester. An empty Cluster selection correctly produced no namespace choices. Traefik showed one namespace in the Observability cluster and two in the Rancher cluster, matching the discovered standard Ingress backends. No new application/Ingress was created for this check.
+- **184 Longhorn volumes** were reconciled with the source. The detail queries retained 183 volumes without a recorded backup, one older backup and the degraded volume. **41 Pod associations** were checked: 28 direct PVC references and 13 KubeVirt hotplug associations confirmed through the child Pod's owner UID. No VM name was guessed from a PVC UUID.
+- The read-only inventory found **10 Ready nodes and 338 Pods that were Ready or Succeeded**. This does not establish overall health. All **39 monitors** were enabled, with no execution errors or unmatched topology states in the sampled status.
+
+### Actual findings and limits
+
+One Longhorn volume was degraded, the Harvester host exceeded the configured etcd WAL latency threshold, and an Elasticsearch container exceeded the configured sustained memory/limit threshold. Those findings were retained rather than changing infrastructure or thresholds to make the dashboards green. The degraded volume had no matched current Pod reference; that does not prove that its data is disposable.
+
+A license warning appeared briefly during an initial page load, then disappeared when the dashboard loaded. This was not confirmed as an invalid license and no license change was required.
+
+This is bounded lab validation, not proof that every possible environment or failure is covered. No active VMware import, guest-agent installation, new tracing pipeline, automatic remediation, backup restore, host failure, server upgrade or external alert-delivery test was performed. Coriolis remained outside scope. Native UI dimensions, retained telemetry and source freshness still affect what a user sees. Raw identities, screenshots and detailed test output remain in the private validation folder.
+
 ## 2026-10-28 — Documentation and configuration examples
 
 This was a documentation update, not another uninstall/reinstall round. Read-only Helm inspection confirmed the release versions, namespaces and selected non-secret settings described in [Configuration explained](configuration-guide.md#how-the-current-lab-is-organized). The existing cluster configuration was not changed.

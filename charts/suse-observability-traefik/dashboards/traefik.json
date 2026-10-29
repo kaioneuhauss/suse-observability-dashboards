@@ -617,7 +617,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Are requests reaching applications through Traefik, and where are errors or delays occurring?** Traefik is the entry point that sends incoming requests to applications. Start with traffic, errors and response time, then select an application. Certificates and connections are cluster-wide measurements. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Are requests reaching applications through Traefik, and where are errors or delays occurring?** Traefik is the entry point that sends incoming requests to applications. Start with traffic, errors and response time, then select an application. Certificates and connections are cluster-wide measurements. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []
@@ -1209,10 +1209,17 @@
         "tlsExpiry": {
           "spec": {
             "display": {
-              "description": "Time remaining before Traefik TLS certificates expire. A negative value means expired. This covers the whole selected cluster.\n\nMeasurement details:\nCertificate names (SAN) and serial number identify each certificate. Lower values need attention; negative means expired. Namespace and application filters do not apply.",
+              "description": "Time remaining before Traefik TLS certificates expire. A negative value means expired. This covers the whole selected cluster.\n\nMeasurement details:\nCertificate names (SAN) and serial number identify each certificate. Lower values need attention; negative means expired. Namespace and application filters do not apply.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Days until certificates expire"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((label_join((label_join(((min by (cluster_name,sans,serial) ((traefik_tls_certs_not_after{cluster_name=~\\\"${ingress_cluster}\\\"}) or (_traefik_tls_certs_not_after{cluster_name=~\\\"${ingress_cluster}\\\"})) - time()) / 86400), \\\"sre_series\\\", \\\"\\\", \\\"cluster_name\\\")), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"sre_series\\\", \\\"sans\\\")), \\\"sre_series\\\", \\\" \\u00b7 serial \\\", \\\"sre_series\\\", \\\"serial\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1246,8 +1253,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((label_join((label_join(((min by (cluster_name,sans,serial) ((traefik_tls_certs_not_after{cluster_name=~\"${ingress_cluster}\"}) or (_traefik_tls_certs_not_after{cluster_name=~\"${ingress_cluster}\"})) - time()) / 86400), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"sans\")), \"sre_series\", \" · serial \", \"sre_series\", \"serial\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((label_join((label_join(((min by (cluster_name,sans,serial) ((traefik_tls_certs_not_after{cluster_name=~\"${ingress_cluster}\"}) or (_traefik_tls_certs_not_after{cluster_name=~\"${ingress_cluster}\"})) - time()) / 86400), \"sre_series\", \"\", \"cluster_name\")), \"sre_series\", \" · \", \"sre_series\", \"sans\")), \"sre_series\", \" · serial \", \"sre_series\", \"serial\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^[^ ]+ · (.*)$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }

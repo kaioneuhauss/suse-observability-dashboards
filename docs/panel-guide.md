@@ -220,13 +220,13 @@ Are applications using the CPU and memory reserved for them, or approaching thei
 | CPU limit for those same pods (mCPU) | Configured CPU ceiling for the same five pods. A missing limit is different from a zero-CPU allowance. |
 | Pods with no CPU reservation | Count of pods with at least one container missing a CPU request. Review their scheduling requirements before setting values. |
 | Pods with no CPU limit | Count of pods with at least one container missing a CPU limit. Whether a limit is needed depends on workload policy. |
-| Pod closest to its CPU limit | Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact. |
+| Highest Pod CPU % | Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact. |
 | Memory used by the five busiest pods | Working-set memory for the five pods selected as busiest at the end of the period. Compare the same names in reserved memory and limits. |
 | Memory reserved for those same pods | Scheduling memory requests for the same five pods. These reservations differ from actual memory use. |
 | Memory limit for those same pods | Configured memory ceiling for the same pods. Exceeding a container limit can cause an out-of-memory termination. |
 | Pods with no memory reservation | Count of pods with at least one container missing a memory request. Review sizing and scheduling requirements. |
 | Pods with no memory limit | Count of pods with at least one container missing a memory limit. Review workload policy and host capacity before choosing limits. |
-| Pod closest to its memory limit | Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources. |
+| Highest Pod memory % | Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources. |
 | Which pods have missing resource settings? | The legend lists affected pods and missing settings. A line is an inventory marker, not a trend; use the details link for columns. |
 | Pods using the largest share of their memory limit | Five highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers. |
 | CPU used compared with CPU reserved | CPU use divided by the scheduling request. More than 100% is possible and does not by itself mean a limit was exceeded. |
@@ -235,10 +235,10 @@ Are applications using the CPU and memory reserved for them, or approaching thei
 | Can we read pod resource settings? | 1 means pod configuration collection is working; 0 means it failed. Check this before trusting missing-setting counts. |
 | Which pods exceed 80% of their CPU limit? | Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Investigate throttling and demand before changing limits. |
 | Which pods exceed 80% of their memory limit? | Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Compare sustained usage and recent memory-related restarts. |
-| Pods above 80% of their CPU limit | Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names. |
+| Pods over 80% CPU limit | Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names. |
 | Top 5 pods without CPU requests: current CPU use (mCPU) | Five highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests. |
 | Top 5 pods without CPU limits: current CPU use (mCPU) | Five highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them. |
 | Top 5 pods without memory requests: current memory use | Five highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests. |
 | Top 5 pods without memory limits: current memory use | Five highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits. |
-| Pods above 80% of their memory limit | Count of measured pods above the memory review threshold. See the detail list and inspect individual containers. |
+| Pods over 80% memory limit | Count of measured pods above the memory review threshold. See the detail list and inspect individual containers. |
 

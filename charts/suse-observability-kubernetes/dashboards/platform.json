@@ -377,12 +377,12 @@
         "availability": {
           "spec": {
             "display": {
-              "description": "Up to 5 affected applications at the end of the selected period, with the number of unavailable replicas beside each name. For example, 1 means one configured instance is not available. Check scheduling, image pulls and readiness probes. A short gap during an update can be normal.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.",
+              "description": "Up to 5 affected applications at the end of the selected period, with the number of unavailable replicas beside each name. For example, 1 means one configured instance is not available. Check scheduling, image pulls and readiness probes. A short gap during an update can be normal.\n\nMeasurement details:\nOnly workloads with fewer available copies than configured are listed. The value is the number missing, not a count of failures. Deployment, StatefulSet and DaemonSet names identify the owner. A brief rollout can create a temporary gap. No matching source data stays empty.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Which applications have unavailable replicas?"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"last_over_time((label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\")) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"workload\\\", \\\"kind\\\", \\\"namespace\\\", \\\"cluster_name\\\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"deployment\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"Deployment\\\", \\\"\\\", \\\"\\\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"workload\\\", \\\"$1\\\", \\\"daemonset\\\", \\\"(.*)\\\")), \\\"kind\\\", \\\"DaemonSet\\\", \\\"\\\", \\\"\\\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}),0)), \\\"workload\\\", \\\"$1\\\", \\\"statefulset\\\", \\\"(.*)\\\"), \\\"kind\\\", \\\"StatefulSet\\\", \\\"\\\", \\\"\\\"))), \\\"sre_series\\\", \\\"No unavailable replicas in measured workloads\\\", \\\"\\\", \\\"\\\"))[1s:1s] @ end())\"]],[0,[6,[true,\"\"]]]]"
@@ -406,7 +406,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -416,8 +416,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, last_over_time((label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\")) > 0), \"sre_series\", \" · \", \"workload\", \"kind\", \"namespace\", \"cluster_name\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\"))), \"sre_series\", \"No unavailable replicas in measured workloads\", \"\", \"\"))[1s:1s] @ end()))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, last_over_time((label_join(((label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\")) > 0), \"sre_series\", \" · \", \"workload\", \"kind\", \"namespace\", \"cluster_name\") or on() label_replace((0 * count(label_replace((label_replace((max by (cluster_name,namespace,deployment) (kubernetes_state_deployment_replicas_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"deployment\", \"(.*)\")), \"kind\", \"Deployment\", \"\", \"\") or label_replace((label_replace((max by (cluster_name,namespace,daemonset) (kubernetes_state_daemonset_daemons_unavailable{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"})), \"workload\", \"$1\", \"daemonset\", \"(.*)\")), \"kind\", \"DaemonSet\", \"\", \"\") or label_replace(label_replace((clamp_min(max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_desired{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) - max by (cluster_name,namespace,statefulset) (kubernetes_state_statefulset_replicas_ready{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}),0)), \"workload\", \"$1\", \"statefulset\", \"(.*)\"), \"kind\", \"StatefulSet\", \"\", \"\"))), \"sre_series\", \"No unavailable replicas in measured workloads\", \"\", \"\"))[1s:1s] @ end()))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -1246,7 +1246,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Are servers and applications available, and is the cluster running out of resources?** Start with server readiness and unavailable application replicas. A replica is one instance of an application: if 3 are configured and only 2 are available, 1 is unavailable. Use the application list below to find the affected workload. Brief gaps can occur during updates. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Are servers and applications available, and is the cluster running out of resources?** Start with server readiness and unavailable application replicas. A replica is one instance of an application: if 3 are configured and only 2 are available, 1 is unavailable. Use the application list below to find the affected workload. Brief gaps can occur during updates. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []
@@ -1773,7 +1773,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join((label_replace((max by (cluster_name,namespace,pod_name,pod_phase) (last_over_time(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",pod_phase!~\\\"Running|Succeeded\\\"}[5m] @ end()) == 1)), \\\"reason\\\", \\\"$1\\\", \\\"pod_phase\\\", \\\"(.*)\\\") or label_replace(((max by (cluster_name,namespace,pod_name) (last_over_time(kubernetes_state_pod_ready{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\",condition=\\\"false\\\",pod_phase=\\\"Running\\\"}[5m] @ end())) == 1)), \\\"reason\\\", \\\"Running but not ready\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\", \\\"reason\\\") or on() label_replace(((0 * count(kubernetes_state_pod_status_phase{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}))), \\\"sre_series\\\", \\\"No pods need attention in this scope\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"
@@ -1871,10 +1871,17 @@
         "pvcCapacity": {
           "spec": {
             "display": {
-              "description": "Reported filesystem capacity for measured PVCs. This is not the total physical capacity of the storage system.\n\nMeasurement details:\nFormatted capacity reported by the kubelet. Filesystem metadata can make it smaller than the requested PVC size.",
+              "description": "Reported filesystem capacity for measured PVCs. This is not the total physical capacity of the storage system.\n\nMeasurement details:\nFormatted capacity reported by the kubelet. Filesystem metadata can make it smaller than the requested PVC size.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Size of measured application volumes"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0)), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -1907,8 +1914,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"persistentvolumeclaim\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"persistentvolumeclaim\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^[^ ]+ · [^ ]+ · (.*)$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -1967,10 +1974,17 @@
         "pvcRisk": {
           "spec": {
             "display": {
-              "description": "Percentage used in PVC filesystems that expose usage metrics. Raw block volumes and some drivers cannot supply this measurement.\n\nMeasurement details:\nOnly PVCs with positive inode statistics are included. Block and unmounted volumes are not treated as full.",
+              "description": "Percentage used in PVC filesystems that expose usage metrics. Raw block volumes and some drivers cannot supply this measurement.\n\nMeasurement details:\nOnly PVCs with positive inode statistics are included. Block and unmounted volumes are not treated as full.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Application volume space used"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_used_bytes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0)) / (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -2003,8 +2017,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join(((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_used_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0)) / (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"persistentvolumeclaim\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join(((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_used_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0)) / (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_capacity_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0))), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"persistentvolumeclaim\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^[^ ]+ · [^ ]+ · (.*)$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -2020,7 +2034,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_state_persistentvolumeclaim_request_storage{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})) unless on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0), \\\"item\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -2070,10 +2084,17 @@
         "pvcUsed": {
           "spec": {
             "display": {
-              "description": "Bytes used in measured PVC filesystems. Match the namespace and volume when comparing with capacity.\n\nMeasurement details:\nUsage reported by the kubelet and storage driver. This is not Longhorn replica storage or the filesystem inside a VM backed by a Block PVC.",
+              "description": "Bytes used in measured PVC filesystems. Match the namespace and volume when comparing with capacity.\n\nMeasurement details:\nUsage reported by the kubelet and storage driver. This is not Longhorn replica storage or the filesystem inside a VM backed by a Block PVC.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Space used in application volumes"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_used_bytes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}) \\u003e 0)), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"persistentvolumeclaim\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "TimeSeriesChart",
               "spec": {
@@ -2106,8 +2127,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_used_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"persistentvolumeclaim\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_used_bytes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) and on (cluster_name,namespace,persistentvolumeclaim) (max by (cluster_name,namespace,persistentvolumeclaim) (kubernetes_kubelet_volume_stats_inodes{cluster_name=~\"${platform_cluster}\",namespace=~\"${platform_namespace}\"}) > 0)), \"sre_series\", \" · \", \"cluster_name\", \"namespace\", \"persistentvolumeclaim\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^[^ ]+ · [^ ]+ · (.*)$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -2201,7 +2222,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"label_join(((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (increase(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"}[1h])))) \\u003e 0), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\") or on() label_replace((0 * count(kubernetes_state_container_restarts{cluster_name=~\\\"${platform_cluster}\\\",namespace=~\\\"${platform_namespace}\\\"})), \\\"sre_series\\\", \\\"No restarts observed in the last hour\\\", \\\"\\\", \\\"\\\")\"]],[0,[6,[true,\"\"]]]]"

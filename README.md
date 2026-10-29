@@ -23,7 +23,7 @@ Want to understand what each step does? Read the [configuration walkthrough](doc
 
 **Only need SUSE Virtualization?** Complete steps 2–4, install option A, then check it in step 6. You can stop there. Imports is a separate, optional module. Coriolis is not included.
 
-**Reading the dashboards:** VM Performance has separate Top 5 lists for CPU use, guest memory use and CPU waiting time. Resource lists show up to five entries so names stay readable; **Open values table → Table view** shows the complete list. Hover over a shortened name to see its full identity. Each ranking uses the end of the selected period.
+**Reading the dashboards:** VM Performance has separate Top 5 lists for CPU use, guest memory use and CPU waiting time. Resource lists show up to five entries so names stay readable; **Full names and values → Table view** shows the complete list and full identities. Each ranking uses the end of the selected period.
 
 In Kubernetes Cluster Health, **Unavailable application replicas** means configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. The list below names the affected applications. A brief gap during an update can be normal; it does not mean data was lost. This panel belongs to the optional Kubernetes module.
 
@@ -50,7 +50,7 @@ In Kubernetes Cluster Health, **Unavailable application replicas** means configu
 Do this on the **server cluster**, before installing anything from this repository:
 
 1. Check the official [requirements and sizing](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/requirements.html) and [version compatibility](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/Compatibility%20Self%20Hosted.html). Obtain a license and the required registry access. Choose the storage class and enough free resources for the selected profile.
-2. Follow the [official Helm installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html). Keep its values and credentials in a private location. The server chart version is independent of this project's `1.6.0` charts.
+2. Follow the [official Helm installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html). Keep its values and credentials in a private location. The server chart version is independent of this project's `1.7.0` charts.
 3. Configure DNS, a valid certificate and [HTTPS ingress](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html). For Virtualization or a separate application collector, also prepare the [OTLP endpoint](docs/otlp.md). The browser URL and OTLP gRPC address are different settings.
 4. Open the SUSE URL, log in and confirm the server workloads are ready:
 
@@ -286,7 +286,7 @@ Install:
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.6.0 --values virtualization.yaml \
+  --version 1.7.0 --values virtualization.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -330,7 +330,7 @@ imports:
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.6.0 --values imports.yaml \
+  --version 1.7.0 --values imports.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -353,7 +353,7 @@ observability:
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
-  --version 1.6.0 --values kubernetes.yaml \
+  --version 1.7.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -423,7 +423,7 @@ For another namespace/selector, add `telemetry.traefik.namespace`, `selector`, `
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
-  --version 1.6.0 --values traefik.yaml \
+  --version 1.7.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -454,7 +454,7 @@ observability:
 
 ```sh
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
-  --version 1.6.0 --values applications.yaml \
+  --version 1.7.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -483,10 +483,32 @@ In SUSE, open **Dashboards → All**, choose your module and select the cluster.
 
 - Virtualization: compare running VM names with Harvester. Storage details identify the PVC namespace, PVC and Longhorn volume.
 - Imports: compare retained import records with kubectl. No active imports means performance is infrastructure activity, not an active transfer test.
-- Kubernetes: use the named Pod lists and **Open values table → Table** to inspect every match, including entries outside the first 10.
+- Kubernetes: use the named Pod lists and **Full names and values → Table** to inspect every match, including entries outside the Top 5.
 - Traefik/Applications: compare a known application's requests and errors. No traffic or missing data is not proof of availability.
 
 **No data is not zero or healthy.** If Helm fails, inspect `kubectl get jobs` and `kubectl logs job/JOB_NAME` with the same kubeconfig, context and namespace. Check the publishing identity, DNS/TLS and ingestion credentials. Do not reinstall repeatedly to hide an error. See [validation and troubleshooting](docs/validation.md).
+
+### Select a cluster, namespace and resource
+
+1. Open **Cluster**. Keep **Include everything** enabled to see all measured clusters. To choose one, turn it off, click the input, then click the cluster name.
+2. Open **Namespace**, turn off **Include everything** and select a namespace from that cluster. Repeat for VM, Application or Volume when that filter exists.
+3. If the toolbar says **None**, nothing is selected. It does not mean "all". Select a value or enable **Include everything** again. A namespace list can be empty when Cluster is None.
+4. When changing clusters, reset Namespace and the following filters to **Everything**, then select values from the new cluster. A selection from the previous cluster may not exist in the new one.
+5. Read the names beside the values. Long names use an ellipsis in the middle, preserving the start and end. Click **Full names and values**, select **Table** and check the time range to read complete identities and every matching resource. Cards are a shortlist, not the complete incident list; abbreviated names are not unique identifiers.
+
+**Why does Traefik show only one namespace?** Its Namespace filter lists namespaces with discovered Kubernetes Ingress backends in the selected cluster. It does not list every namespace that exists. Another namespace appears when its Ingress is discovered; useful request charts also need traffic through that Traefik instance, service metrics and successful collection. A Pod or ClusterIP Service alone does not create an Ingress. This chart's inventory covers standard Kubernetes Ingress, not every Traefik CRD/provider. Confirm the source with:
+
+```sh
+kubectl get ingress --all-namespaces --kubeconfig /path/to/cluster.yaml --context my-cluster
+```
+
+**Which Pod uses this volume?** Storage detail cards show a Running/Pending Pod association reported by the official Agent. For KubeVirt hotplug disks, it can identify the parent `virt-launcher` Pod; the direct mount belongs to its `hp-volume` child Pod. The full table includes `pod_name`, `pvc_namespace`, `pvc`, `volume` and `k8s_cluster_name`. A shared volume can have multiple consumer rows. A `PVC:` label means no unambiguous current Pod reference was matched; check whether the VM is stopped, the claim is unused or Pod telemetry is missing. It does not prove an orphaned volume. The overview still counts unique volumes. Never delete a volume based only on this list.
+
+### Investigate the cause
+
+Use the native resource page for Pod health, events, logs and related resources. These dashboards complement those screens. Application traces require instrumentation and OpenTelemetry delivery; installing a dashboard does not generate traces or execute repairs.
+
+For a VM, distinguish virtualization errors (VM/VMI state, host, `virt-launcher`, PVC and Longhorn) from failures inside the guest OS. A Windows service error or an application exception needs guest/application telemetry. The current [SUSE Virtualization integration guide](https://documentation.suse.com/external-tree/en-us/cloudnative/suse-observability/latest/en/use/suse/suse-virtualization.html) describes a native Virtualization StackPack; availability depends on the server/Agent version. It was not listed in this lab's 2.10.2 catalog. Check compatibility before updating. For application tracing on Linux VMs, see the [official OpenTelemetry guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-linux.html). No guest agent, new tracing pipeline or automatic remediation is installed by this project.
 
 ### What about alerts?
 
@@ -508,7 +530,7 @@ For example, save `virtualization-second.yaml` with `mode: telemetry`, the secon
 
 ```sh
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.6.0 --values virtualization-second.yaml \
+  --version 1.7.0 --values virtualization-second.yaml \
   --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -526,7 +548,7 @@ helm get values obs-virtualization \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
 ```
 
-The publishing release owns the managed dashboards: Helm updates can replace their definitions and IDs. Keep personal edits in a separate dashboard copy. For chart versions older than 1.3.0, follow the [upgrade/removal notes](docs/lifecycle.md#moving-from-120-or-121).
+The publishing release owns the managed dashboards. From chart 1.7.0, updates patch existing dashboards and preserve their IDs by default. Definitions can still overwrite personal edits, so keep those in a separate copy. Explicit `replace` mode and uninstall/reinstall can change IDs. For chart versions older than 1.3.0, follow the [upgrade/removal notes](docs/lifecycle.md#moving-from-120-or-121).
 
 ## 9. Remove one module or all modules
 

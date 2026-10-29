@@ -47,7 +47,7 @@ SUSE resolves `${__interval}` according to chart resolution; see its [query guid
 
 ## Actionable resource details (1.4.0)
 
-CPU/memory threshold panels show each qualifying Pod and its measured percentage, at the selected end time, using the existing complete-running-container eligibility checks. Counts remain a compact summary. Missing-request/limit panels add the ten highest measured Pod usages; their **Open values table** link includes every matching measured Pod, not just the top ten. Missing usage does not become zero. CPU is mCPU, memory is working-set bytes, and threshold table queries multiply the ratio by 100.
+CPU/memory threshold panels show each qualifying Pod and its measured percentage, at the selected end time, using the existing complete-running-container eligibility checks. Counts remain a compact summary. Missing-request/limit panels add the five highest measured Pod usages; their **Full names and values** link includes every matching measured Pod, not just the Top 5. Missing usage does not become zero. CPU is mCPU, memory is working-set bytes, and threshold table queries multiply the ratio by 100.
 
 SUSE Observability 2.10.2 offers no native dashboard Table widget. We use per-series Stat cards for correctly paired names and values, and Metrics Explorer's Table view for full names. Hover truncated names or open the table. `sort_by_label` was rejected by the native API; enabling the TimeSeries legend's positional Last column is not a safe substitute on this version. Details links preserve dashboard filters, but check the Explorer time range before comparing numbers. No automatic resizing is performed.
 
@@ -60,3 +60,11 @@ The controller handles multiple imports and serves exported images; its traffic 
 Performance collection is opt-in. It requires Nodes discovery plus `nodes/metrics` read access, direct TCP/10250 and a trusted serving certificate with the node IP. No `nodes/proxy` grant is used. A failed scrape is `up=0`; no matching Pods is an empty performance chart, even if node collection is up. The inventory health check remains independent. Completed-import validation does not validate active VMware transfer throughput.
 
 SUSE ingestion normalizes cAdvisor `pod` to `pod_name`. The collection allowlist uses the source label `pod`; dashboard selectors and aliases use the stored `pod_name`. A successful query with empty results is not acceptance when the matching source Pods exist.
+
+## Resource labels and Pod-to-volume associations (1.7.0)
+
+A short label is a display projection, not a new identity. Cards and selected long legends preserve the first 18 and last 8 characters with an explicit ellipsis. Full labels remain in each query result and in the **Full names and values** link. Two abbreviated names can collide; use the complete labels before acting. Top 5 determines membership, not a guaranteed descending visual order in the native renderer.
+
+Storage details join Longhorn labels to the official Agent metric `kubernetes_state_pod_volumes_persistentvolumeclaims_readonly` by cluster, PVC namespace and PVC name. A metric value of zero means read/write, not an absent reference, so references are normalized with `0 * metric + 1`. Running/Pending Pod labels are retained, repeated collector series are deduplicated, and ambiguous PVC-to-volume matches are excluded from the join. Unmatched volumes remain visible with a PVC/volume fallback. Several consumers can produce several detail rows; summary counts still count unique volumes.
+
+For KubeVirt hotplug disks, this Agent metric can report the parent `virt-launcher` Pod while the direct PVC mount is in its `hp-volume` child. This is an observed Pod association, not proof of a mounted filesystem, application health, VM ownership or safe deletion. No guest VM name is inferred from a PVC UUID. Freshness and source availability still need checking.

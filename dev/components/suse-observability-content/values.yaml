@@ -45,7 +45,7 @@ dashboards:
   - platform
   - traefik
   - harvester
-  updateStrategy: replace
+  updateStrategy: patch
 monitors:
   enabled: true
   include: []

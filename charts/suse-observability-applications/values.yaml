@@ -51,7 +51,7 @@ content:
     enabled: true
     include:
     - applications
-    updateStrategy: replace
+    updateStrategy: patch
   monitors:
     enabled: true
     include:

@@ -10,7 +10,15 @@ class ActionableTests(unittest.TestCase):
    self.assertNotIn('topk(',detail)
    self.assertIn('@ end()',detail)
    for label in ['k8s_cluster_name','pvc_namespace','pvc','volume']:
-    self.assertIn(label,detail);self.assertIn('${'+label+'}',p['queries'][0]['spec']['plugin']['spec']['alias'])
+    self.assertIn(label,detail)
+   self.assertIn('pod_name',detail)
+   self.assertIn('kubernetes_state_pod_volumes_persistentvolumeclaims_readonly',detail)
+   self.assertIn('0 * (',detail) # A read/write mount reports 0, but is still a reference.
+   self.assertIn('group_left(volume,state)',detail)
+   self.assertIn('count by (k8s_cluster_name,pvc_namespace,pvc)',detail)
+   self.assertIn('unless on (k8s_cluster_name,volume)',detail)
+   self.assertIn('${sre_display}',p['queries'][0]['spec']['plugin']['spec']['alias'])
+   self.assertNotIn('sre_display',detail)
   self.assertIn('degraded|faulted',panels['unhealthyDetails']['spec']['queries'][0]['spec']['plugin']['spec']['query'])
  def test_detail_links_roundtrip_and_keep_all_offenders(self):
   panels=json.loads((CONTENT/'resources.json').read_text())['dashboard']['spec']['panels']
@@ -24,17 +32,20 @@ class ActionableTests(unittest.TestCase):
    state=json.loads(raw); detail=state[0][0][0]
    self.assertIn('${workload_cluster}',detail)
    self.assertNotIn('topk(',detail)
-   self.assertTrue(q.startswith('topk(5, '))
+   self.assertIn('topk(5, ',q)
+   self.assertIn('sre_pod',q)
+   self.assertNotIn('sre_display',detail)
    if key.endswith('LimitReview'):
     self.assertIn('> 0.8',q);self.assertTrue(detail.startswith('round(100 * ('))
  def test_rankings_keep_full_identity_and_freeze_the_selected_end(self):
   panels=json.loads((CONTENT/'virtualization-contention.json').read_text())['dashboard']['spec']['panels']
   for key in ['cpuReady','cpuUsage','memoryUse']:
    p=panels[key]['spec'];q=p['queries'][0]['spec']['plugin']['spec']
-   self.assertTrue(q['query'].startswith('topk(5, last_over_time('))
+   self.assertIn('topk(5, last_over_time(',q['query'])
    self.assertIn('@ end()',q['query'])
    self.assertIn('phase="running"',q['query'])
-   for label in ['name','namespace','k8s_cluster_name']:self.assertIn('${'+label+'}',q['alias'])
+   for label in ['name','namespace','k8s_cluster_name']:self.assertIn(label,q['query'])
+   self.assertEqual(q['alias'],'${sre_display}')
    detail=json.loads(p['links'][0]['url'].split('metrics=',1)[1])[0][0][0]
    self.assertNotIn('topk(',detail)
  def test_stat_cards_reserve_readable_space_and_bound_action_lists(self):
@@ -46,7 +57,7 @@ class ActionableTests(unittest.TestCase):
      self.assertGreaterEqual(item['height'],2,(path.name,p['display']['name']))
      if item['width']==24 and p['queries'][0]['spec']['plugin']['spec']['alias']!='Pods':
       self.assertGreaterEqual(item['height'],3)
-      self.assertTrue(p['queries'][0]['spec']['plugin']['spec']['query'].startswith('topk(5, '))
+      self.assertIn('topk(5, ',p['queries'][0]['spec']['plugin']['spec']['query'])
  def test_import_selectors_use_normalized_pod_label(self):
   panels=json.loads((CONTENT/'imports.json').read_text())['dashboard']['spec']['panels']
   for key in ['controllerRx','controllerTx','controllerCPU','controllerMemory','imageRx','imageTx']:

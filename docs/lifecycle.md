@@ -64,7 +64,7 @@ Use the same module guide and saved values. For the backup from step 1:
 ```sh
 helm repo update obs-dashboards
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.6.0 --values virtualization-backup.yaml \
+  --version 1.7.0 --values virtualization-backup.yaml \
   --set lifecycle.action=apply --set-string lifecycle.confirmDelete= \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
@@ -74,7 +74,7 @@ helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virt
 
 ## Update without removing
 
-Use step 4 while the release is installed. Keep its release name, namespace, `mode`, full values and publishing identity. Read the changelog first. Unchanged dashboards keep their IDs; changed dashboards use the default `replace` strategy, which can overwrite manual edits and change links.
+Use step 4 while the release is installed. Keep its release name, namespace, `mode`, full values and publishing identity. Read the changelog first. Chart 1.7.0 patches changed dashboards and preserves their IDs by default. Managed definitions can overwrite manual edits, so keep personal changes in a separate copy. Explicit `replace` mode and uninstall/reinstall can change IDs.
 
 ## Moving from 1.2.0 or 1.2.1
 

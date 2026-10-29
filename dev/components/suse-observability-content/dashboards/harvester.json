@@ -284,10 +284,17 @@
         "guestCpuGauge": {
           "spec": {
             "display": {
-              "description": "CPU use of the busiest selected VM compared with its configured virtual CPUs. If high, open VM Performance to check whether CPU is actually waiting.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU cores used divided by configured guest vCPUs, not the smaller scheduling request. The VM and namespace filters apply.",
+              "description": "CPU use of the busiest selected VM compared with its configured virtual CPUs. If high, open VM Performance to check whether CPU is actually waiting.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU cores used divided by configured guest vCPUs, not the smaller scheduling request. The VM and namespace filters apply.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Busiest VM: CPU used"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",resource=\\\"cpu\\\",unit=\\\"cores\\\",source=\\\"domain\\\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",resource=\\\"cpu\\\",unit=\\\"sockets\\\",source=\\\"domain\\\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",resource=\\\"cpu\\\",unit=\\\"threads\\\",source=\\\"domain\\\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}[5m])))) \\u003e 0))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"name\\\", \\\"namespace\\\", \\\"k8s_cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "StatChart",
               "spec": {
@@ -301,7 +308,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 40
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -311,8 +318,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"cores\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"sockets\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"threads\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"name\", \"namespace\", \"k8s_cluster_name\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"cores\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"sockets\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) * (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",unit=\"threads\",source=\"domain\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"name\", \"namespace\", \"k8s_cluster_name\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -371,10 +378,17 @@
         "guestDiskGauge": {
           "spec": {
             "display": {
-              "description": "Highest measured filesystem use inside a VM. Review the named VM and mount point before it fills up. Requires QEMU Guest Agent statistics.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by filesystem capacity from QEMU Guest Agent. Reserved blocks mean this may differ from df Use%. The VM and namespace filters apply. Loop-mounted OS images are excluded.",
+              "description": "Highest measured filesystem use inside a VM. Review the named VM and mount point before it fills up. Requires QEMU Guest Agent statistics.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Used space divided by filesystem capacity from QEMU Guest Agent. Reserved blocks mean this may differ from df Use%. The VM and namespace filters apply. Loop-mounted OS images are excluded.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Fullest VM filesystem"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (last_over_time(kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",disk_name!~\\\"(/dev/)?loop[0-9]\\u002b\\\",file_system_type!~\\\"tmpfs|overlay|squashfs\\\"}[5m]))) / (max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (last_over_time(kubevirt_vmi_filesystem_capacity_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",disk_name!~\\\"(/dev/)?loop[0-9]\\u002b\\\",file_system_type!~\\\"tmpfs|overlay|squashfs\\\"}[5m])) \\u003e 0))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"name\\\", \\\"namespace\\\", \\\"k8s_cluster_name\\\", \\\"disk_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -407,8 +421,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (last_over_time(kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"}[5m]))) / (max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (last_over_time(kubevirt_vmi_filesystem_capacity_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"}[5m])) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"name\", \"namespace\", \"k8s_cluster_name\", \"disk_name\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((last_over_time((topk(1, ((max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (last_over_time(kubevirt_vmi_filesystem_used_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"}[5m]))) / (max by (k8s_cluster_name,namespace,name,disk_name,file_system_type) (last_over_time(kubevirt_vmi_filesystem_capacity_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",disk_name!~\"(/dev/)?loop[0-9]+\",file_system_type!~\"tmpfs|overlay|squashfs\"}[5m])) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"name\", \"namespace\", \"k8s_cluster_name\", \"disk_name\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -515,10 +529,17 @@
         "guestMemoryGauge": {
           "spec": {
             "display": {
-              "description": "Highest memory-use percentage inside a selected VM. This counts memory the guest cannot readily reclaim; check the VM trend before adding RAM.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Guest OS total minus available memory, divided by guest OS total. Requires balloon statistics. The VM and namespace filters apply.",
+              "description": "Highest memory-use percentage inside a selected VM. This counts memory the guest cannot readily reclaim; check the VM trend before adding RAM.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Guest OS total minus available memory, divided by guest OS total. Requires balloon statistics. The VM and namespace filters apply.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Busiest VM: memory used"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((last_over_time((topk(1, ((clamp_min((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}[5m])))) - (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}[5m])))), 0)) / (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}[5m]))) \\u003e 0))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"name\\\", \\\"namespace\\\", \\\"k8s_cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -551,8 +572,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, ((clamp_min((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) - (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))), 0)) / (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m]))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"name\", \"namespace\", \"k8s_cluster_name\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((last_over_time((topk(1, ((clamp_min((max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))) - (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m])))), 0)) / (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (last_over_time(kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}[5m]))) > 0))))[1s:1s] @ end())), \"sre_series\", \" · \", \"name\", \"namespace\", \"k8s_cluster_name\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -568,7 +589,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((label_join((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})) unless on (k8s_cluster_name,namespace,name) ((max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})))), \\\"item\\\", \\\" \\u00b7 \\\", \\\"k8s_cluster_name\\\", \\\"namespace\\\", \\\"name\\\")) or on() label_replace((0 * count(kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"})), \\\"item\\\", \\\"No running VMs missing OS memory statistics\\\", \\\"\\\", \\\"\\\")), \\\"sre_series\\\", \\\"\\\", \\\"item\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -673,7 +694,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Are my virtual machines and their hosts running out of resources?** Start with the summary, then select a VM to see its memory and disks. VM means the operating system inside the virtual machine; host means the physical Harvester server. Host panels always cover the selected cluster. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Are my virtual machines and their hosts running out of resources?** Start with the summary, then select a VM to see its memory and disks. VM means the operating system inside the virtual machine; host means the physical Harvester server. Host panels always cover the selected cluster. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []

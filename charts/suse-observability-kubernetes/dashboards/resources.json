@@ -23,7 +23,7 @@
                   "$ref": "#/spec/panels/cpuUseGauge"
                 },
                 "height": 2,
-                "width": 6,
+                "width": 12,
                 "x": 0,
                 "y": 1
               },
@@ -32,8 +32,8 @@
                   "$ref": "#/spec/panels/memUseGauge"
                 },
                 "height": 2,
-                "width": 6,
-                "x": 6,
+                "width": 12,
+                "x": 12,
                 "y": 1
               },
               {
@@ -41,18 +41,18 @@
                   "$ref": "#/spec/panels/cpuOver80Count"
                 },
                 "height": 2,
-                "width": 6,
-                "x": 12,
-                "y": 1
+                "width": 12,
+                "x": 0,
+                "y": 3
               },
               {
                 "content": {
                   "$ref": "#/spec/panels/memOver80Count"
                 },
                 "height": 2,
-                "width": 6,
-                "x": 18,
-                "y": 1
+                "width": 12,
+                "x": 12,
+                "y": 3
               },
               {
                 "content": {
@@ -61,7 +61,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 3
+                "y": 5
               },
               {
                 "content": {
@@ -70,7 +70,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 6
+                "y": 8
               },
               {
                 "content": {
@@ -79,7 +79,7 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 9
+                "y": 11
               },
               {
                 "content": {
@@ -88,7 +88,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 11
+                "y": 13
               },
               {
                 "content": {
@@ -97,7 +97,7 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 14
+                "y": 16
               },
               {
                 "content": {
@@ -106,7 +106,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 16
+                "y": 18
               },
               {
                 "content": {
@@ -115,7 +115,7 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 19
+                "y": 21
               },
               {
                 "content": {
@@ -124,7 +124,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 21
+                "y": 23
               },
               {
                 "content": {
@@ -133,7 +133,7 @@
                 "height": 2,
                 "width": 24,
                 "x": 0,
-                "y": 24
+                "y": 26
               },
               {
                 "content": {
@@ -142,7 +142,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 26
+                "y": 28
               },
               {
                 "content": {
@@ -151,7 +151,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 29
+                "y": 31
               },
               {
                 "content": {
@@ -160,7 +160,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 29
+                "y": 31
               },
               {
                 "content": {
@@ -169,7 +169,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 32
+                "y": 34
               },
               {
                 "content": {
@@ -178,7 +178,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 35
+                "y": 37
               },
               {
                 "content": {
@@ -187,7 +187,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 35
+                "y": 37
               },
               {
                 "content": {
@@ -196,7 +196,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 38
+                "y": 40
               },
               {
                 "content": {
@@ -205,7 +205,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 41
+                "y": 43
               },
               {
                 "content": {
@@ -214,7 +214,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 41
+                "y": 43
               },
               {
                 "content": {
@@ -223,7 +223,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 0,
-                "y": 44
+                "y": 46
               },
               {
                 "content": {
@@ -232,7 +232,7 @@
                 "height": 3,
                 "width": 12,
                 "x": 12,
-                "y": 44
+                "y": 46
               },
               {
                 "content": {
@@ -241,7 +241,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 47
+                "y": 49
               },
               {
                 "content": {
@@ -250,7 +250,7 @@
                 "height": 3,
                 "width": 24,
                 "x": 0,
-                "y": 50
+                "y": 52
               }
             ]
           }
@@ -299,12 +299,12 @@
         "cpuLimitMissingValues": {
           "spec": {
             "display": {
-              "description": "Five highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.",
+              "description": "Five highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 pods without CPU limits: current CPU use (mCPU)"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -323,7 +323,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -333,8 +333,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_pod\", \"$1\", \"sre_series\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1\", \"sre_pod\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -345,12 +345,12 @@
         "cpuLimitReview": {
           "spec": {
             "display": {
-              "description": "Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Investigate throttling and demand before changing limits.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.",
+              "description": "Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Investigate throttling and demand before changing limits.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Which pods exceed 80% of their CPU limit?"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"round(100 * (((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))) \\u003e 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\")))), \\\"sre_series\\\", \\\"No eligible pods above 80\\u0025\\\", \\\"\\\", \\\"\\\")), 0.1)\"]],[0,[6,[true,\"\"]]]]"
@@ -378,7 +378,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -388,8 +388,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, ((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))) > 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_series\", \"No eligible pods above 80%\", \"\", \"\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, ((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))) > 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000)))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_series\", \"No eligible pods above 80%\", \"\", \"\"))), \"sre_pod\", \"$1\", \"sre_series\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1\", \"sre_pod\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -405,7 +405,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -457,7 +457,7 @@
           "spec": {
             "display": {
               "description": "Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured CPU limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. Use the link for values in table columns; enable Table view in Metrics Explorer.",
-              "name": "Pods above 80% of their CPU limit"
+              "name": "Pods over 80% CPU limit"
             },
             "links": [],
             "plugin": {
@@ -539,12 +539,12 @@
         "cpuRequestMissingValues": {
           "spec": {
             "display": {
-              "description": "Five highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.",
+              "description": "Five highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 pods without CPU requests: current CPU use (mCPU)"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -563,7 +563,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -573,8 +573,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) / 1000000)) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_pod\", \"$1\", \"sre_series\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1\", \"sre_pod\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -590,7 +590,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -694,7 +694,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"(max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m])) / 1000000)), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\"))) and on (sre_series) (max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\")))\"]],[0,[6,[true,\"\"]]]]"
@@ -745,10 +745,17 @@
         "cpuUseGauge": {
           "spec": {
             "display": {
-              "description": "Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU used divided by the sum of CPU limits in the same pod. Every running regular container must have a positive limit and usage data; partially configured pods are excluded.",
-              "name": "Pod closest to its CPU limit"
+              "description": "Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. CPU used divided by the sum of CPU limits in the same pod. Every running regular container must have a positive limit and usage data; partially configured pods are excluded.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
+              "name": "Highest Pod CPU %"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) / 1000000))))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -781,8 +788,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) * 1000 > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_cpu_usage{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) / 1000000))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -800,7 +807,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Are applications using the CPU and memory reserved for them, or approaching their limits?** A request reserves resources for scheduling. A limit sets a maximum. Actual use is a separate measurement. Compare the same five busiest pods across used, reserved and limit charts. 1000 mCPU equals one CPU core. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Are applications using the CPU and memory reserved for them, or approaching their limits?** A request reserves resources for scheduling. A limit sets a maximum. Actual use is a separate measurement. Compare the same five busiest pods across used, reserved and limit charts. 1000 mCPU equals one CPU core. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []
@@ -896,12 +903,12 @@
         "memLimitMissingValues": {
           "spec": {
             "display": {
-              "description": "Five highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.",
+              "description": "Five highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 pods without memory limits: current memory use"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -920,7 +927,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -930,8 +937,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_pod\", \"$1\", \"sre_series\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1\", \"sre_pod\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -942,12 +949,12 @@
         "memLimitReview": {
           "spec": {
             "display": {
-              "description": "Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Compare sustained usage and recent memory-related restarts.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.",
+              "description": "Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Compare sustained usage and recent memory-related restarts.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Which pods exceed 80% of their memory limit?"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"round(100 * (((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())))))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))) \\u003e 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())))))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\")))), \\\"sre_series\\\", \\\"No eligible pods above 80\\u0025\\\", \\\"\\\", \\\"\\\")), 0.1)\"]],[0,[6,[true,\"\"]]]]"
@@ -975,7 +982,7 @@
                     }
                   ]
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -985,8 +992,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, ((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))) > 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_series\", \"No eligible pods above 80%\", \"\", \"\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, ((max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))) > 0.8) or on() label_replace((0 * count(max by (sre_series) (label_join((last_over_time(((((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_series\", \"No eligible pods above 80%\", \"\", \"\"))), \"sre_pod\", \"$1\", \"sre_series\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1\", \"sre_pod\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -1002,7 +1009,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())))))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -1053,7 +1060,7 @@
           "spec": {
             "display": {
               "description": "Count of measured pods above the memory review threshold. See the detail list and inspect individual containers.\n\nMeasurement details:\nOnly pods whose five-minute average usage is above 80% of their configured memory limit, at the end of the selected period. The compact list below names cluster, namespace and pod. Zero means no eligible pod above 80%; missing source data is not a healthy zero. Only pods with positive limits and usage data for every running regular container are eligible. Review sustained pressure and application symptoms before changing resources. For virt-launcher, this is VM hosting pod memory; guest OS memory is separate. Use the link for values in table columns; enable Table view in Metrics Explorer.",
-              "name": "Pods above 80% of their memory limit"
+              "name": "Pods over 80% memory limit"
             },
             "links": [],
             "plugin": {
@@ -1135,12 +1142,12 @@
         "memRequestMissingValues": {
           "spec": {
             "display": {
-              "description": "Five highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.",
+              "description": "Five highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests.\n\nMeasurement details:\nLatest five-minute average for running regular containers, grouped by Pod. At least one running container has no positive setting. Not a recommended request or limit. Empty means no matching measured Pod, or missing usage data; check inventory health and the count. Hover for full names; open the table for all labels.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 pods without memory requests: current memory use"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -1159,7 +1166,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -1169,8 +1176,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((topk(5, max by (sre_series) (label_join(((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) and on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)))), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\")))), \"sre_pod\", \"$1\", \"sre_series\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1\", \"sre_pod\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -1186,7 +1193,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name) (topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())))))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
@@ -1241,7 +1248,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"(max by (sre_series) (label_join((sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m])))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\"))) and on (sre_series) (max by (sre_series) (label_join((topk(5, sum by (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\")))\"]],[0,[6,[true,\"\"]]]]"
@@ -1291,10 +1298,17 @@
         "memUseGauge": {
           "spec": {
             "display": {
-              "description": "Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Working set divided by the sum of memory limits in the same pod. Every running regular container must have a positive limit and usage data. A single container can still run out of memory before the pod total reaches 100%.",
-              "name": "Pod closest to its memory limit"
+              "description": "Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources.\n\nMeasurement details:\nShows the highest value among the selected resources at the end of the time window. The resource is named below. Orange starts at 80%, red at 90%; these are initial reference colors, not proof of an outage. See the historical charts for duration and trend. Working set divided by the sum of memory limits in the same pod. Every running regular container must have a positive limit and usage data. A single container can still run out of memory before the pod total reaches 100%.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
+              "name": "Highest Pod memory %"
             },
-            "links": [],
+            "links": [
+              {
+                "name": "Full names and values",
+                "targetBlank": true,
+                "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
+                "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()))))))))[1s:1s] @ end())), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"pod_name\\\", \\\"namespace\\\", \\\"cluster_name\\\"))\"]],[0,[6,[true,\"\"]]]]"
+              }
+            ],
             "plugin": {
               "kind": "GaugeChart",
               "spec": {
@@ -1327,8 +1341,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${sre_series}",
-                      "query": "max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((label_replace((max by (sre_series) (label_join((last_over_time((topk(1, (((sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)))) / (sum by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))) and on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1))))) unless on (cluster_name,namespace,pod_name) (max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end())) > 0)) or max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (avg_over_time(container_memory_working_set{cluster_name=~\"${workload_cluster}\",namespace=~\"${workload_namespace}\"}[5m] @ end()))))))))[1s:1s] @ end())), \"sre_series\", \" · \", \"pod_name\", \"namespace\", \"cluster_name\"))), \"sre_display\", \"$1\", \"sre_series\", \"(.*)\")), \"sre_display\", \"$1\", \"sre_display\", \"^([^ ]+) · .*$\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -1392,7 +1406,7 @@
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "Values and labels from this panel query. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"max by (sre_series) (label_join(((label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0))), \\\"missing_setting\\\", \\\"CPU request\\\", \\\"pod_name\\\", \\\".*\\\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_cpu_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) * 1000 \\u003e 0))), \\\"missing_setting\\\", \\\"CPU limit\\\", \\\"pod_name\\\", \\\".*\\\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_requested{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0))), \\\"missing_setting\\\", \\\"Memory request\\\", \\\"pod_name\\\", \\\".*\\\")) or (label_replace((max by (cluster_name,namespace,pod_name) ((max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_running{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end()) == 1)) unless on (cluster_name,namespace,pod_name,container) (max by (cluster_name,namespace,pod_name,container) (last_over_time(sre_pod_container_memory_limit{cluster_name=~\\\"${workload_cluster}\\\",namespace=~\\\"${workload_namespace}\\\"}[5m] @ end())) \\u003e 0))), \\\"missing_setting\\\", \\\"Memory limit\\\", \\\"pod_name\\\", \\\".*\\\"))), \\\"sre_series\\\", \\\" \\u00b7 \\\", \\\"cluster_name\\\", \\\"namespace\\\", \\\"pod_name\\\", \\\"missing_setting\\\"))\"]],[0,[6,[true,\"\"]]]]"

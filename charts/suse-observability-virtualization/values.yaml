@@ -54,7 +54,7 @@ content:
     - virtualization-contention
     - virtualization-capacity
     - virtualization-storage
-    updateStrategy: replace
+    updateStrategy: patch
   monitors:
     enabled: true
     include:

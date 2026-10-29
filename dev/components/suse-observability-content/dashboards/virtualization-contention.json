@@ -173,12 +173,12 @@
         "cpuReady": {
           "spec": {
             "display": {
-              "description": "Up to five running VMs with the most CPU scheduling wait at the end of the selected period. Values average the previous 5 minutes. A sustained increase means virtual CPUs are waiting for processing time on the host.\n\nMeasurement details:\nMean run-queue delay across vCPUs, then worst selected VM. A scheduling-pressure analogue to CPU Ready; not VMware-identical accounting. No factor of 1000: KubeVirt exports seconds.",
+              "description": "Up to five running VMs with the most CPU scheduling wait at the end of the selected period. Values average the previous 5 minutes. A sustained increase means virtual CPUs are waiting for processing time on the host.\n\nMeasurement details:\nMean run-queue delay across vCPUs, then worst selected VM. A scheduling-pressure analogue to CPU Ready; not VMware-identical accounting. No factor of 1000: KubeVirt exports seconds.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 VMs by CPU waiting time"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"last_over_time(((100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}[5m])))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}) == 1))[1s:1s] @ end())\"]],[0,[6,[true,\"\"]]]]"
@@ -197,7 +197,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -207,8 +207,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${name} · ${namespace} · ${k8s_cluster_name}",
-                      "query": "topk(5, last_over_time(((100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}) == 1))[1s:1s] @ end()))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((topk(5, last_over_time(((100 * avg by (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name,id) (rate(kubevirt_vmi_vcpu_delay_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m])))) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}) == 1))[1s:1s] @ end()))), \"sre_display\", \"$1\", \"name\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -219,12 +219,12 @@
         "cpuUsage": {
           "spec": {
             "display": {
-              "description": "Up to five running VMs with the highest CPU use relative to configured virtual CPUs, averaged over 5 minutes at the end of the selected period. Compare with CPU waiting time before concluding that the host is overloaded.\n\nMeasurement details:\nDomain CPU seconds per second divided by configured cores × sockets × threads. Includes hypervisor/domain CPU accounting; inspect the time series before resizing.",
+              "description": "Up to five running VMs with the highest CPU use relative to configured virtual CPUs, averaged over 5 minutes at the end of the selected period. Compare with CPU waiting time before concluding that the host is overloaded.\n\nMeasurement details:\nDomain CPU seconds per second divided by configured cores × sockets × threads. Includes hypervisor/domain CPU accounting; inspect the time series before resizing.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 VMs by CPU use"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"last_over_time(((100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",resource=\\\"cpu\\\",source=\\\"domain\\\",unit=\\\"cores\\\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",resource=\\\"cpu\\\",source=\\\"domain\\\",unit=\\\"sockets\\\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",resource=\\\"cpu\\\",source=\\\"domain\\\",unit=\\\"threads\\\"})) \\u003e 0)) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}) == 1))[1s:1s] @ end())\"]],[0,[6,[true,\"\"]]]]"
@@ -243,7 +243,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -253,8 +253,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${name} · ${namespace} · ${k8s_cluster_name}",
-                      "query": "topk(5, last_over_time(((100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"cores\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"sockets\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"threads\"})) > 0)) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}) == 1))[1s:1s] @ end()))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((topk(5, last_over_time(((100 * (max by (k8s_cluster_name,namespace,name) (rate(kubevirt_vmi_cpu_usage_seconds_total{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}[5m]))) / ((max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"cores\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"sockets\"}) * max by (k8s_cluster_name,namespace,name) (kubevirt_vm_resource_requests{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",resource=\"cpu\",source=\"domain\",unit=\"threads\"})) > 0)) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}) == 1))[1s:1s] @ end()))), \"sre_display\", \"$1\", \"name\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }
@@ -321,7 +321,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Which VMs are busiest, and what could be slowing them down?** Each Top 5 selects its own VMs at the end of the selected period. Read the VM name beside its value, then select a VM to investigate its trend. High CPU use alone does not prove a problem; compare waiting time, memory pressure and disk response. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Which VMs are busiest, and what could be slowing them down?** Each Top 5 selects its own VMs at the end of the selected period. Read the VM name beside its value, then select a VM to investigate its trend. High CPU use alone does not prove a problem; compare waiting time, memory pressure and disk response. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []
@@ -426,12 +426,12 @@
         "memoryUse": {
           "spec": {
             "display": {
-              "description": "Up to five running VMs with the highest guest memory-use percentage at the end of the selected period. Reclaimable memory is excluded. Compare with swap activity and page reads before adding RAM.\n\nMeasurement details:\n100 × (available - usable) / available. Usable corresponds to guest MemAvailable; reclaimable cache is not counted as used. Missing statistics remain empty.",
+              "description": "Up to five running VMs with the highest guest memory-use percentage at the end of the selected period. Reclaimable memory is excluded. Compare with swap activity and page reads before adding RAM.\n\nMeasurement details:\n100 × (available - usable) / available. Usable corresponds to guest MemAvailable; reclaimable cache is not counted as used. Missing statistics remain empty.\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.",
               "name": "Top 5 VMs by guest memory use"
             },
             "links": [
               {
-                "name": "Open values table",
+                "name": "Full names and values",
                 "targetBlank": true,
                 "tooltip": "All matching resources, including those outside Top 5. Select Table view and check the time range. Units and conditions are explained in the panel description.",
                 "url": "./#/metrics?metrics=[[[\"last_over_time(((100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\"}) \\u003e 0)) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\\\"${vm_cluster}\\\",namespace=~\\\"${vm_namespace}\\\",name=~\\\"${vm_name}\\\",phase=\\\"running\\\"}) == 1))[1s:1s] @ end())\"]],[0,[6,[true,\"\"]]]]"
@@ -450,7 +450,7 @@
                   "defaultColor": "#1976B9",
                   "steps": []
                 },
-                "valueFontSize": 20
+                "valueFontSize": 32
               }
             },
             "queries": [
@@ -460,8 +460,8 @@
                   "plugin": {
                     "kind": "PrometheusTimeSeriesQuery",
                     "spec": {
-                      "alias": "${name} · ${namespace} · ${k8s_cluster_name}",
-                      "query": "topk(5, last_over_time(((100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) > 0)) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}) == 1))[1s:1s] @ end()))"
+                      "alias": "${sre_display}",
+                      "query": "label_replace((label_replace((topk(5, last_over_time(((100 * (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) - max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_usable_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"})) / (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_memory_available_bytes{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\"}) > 0)) and on (k8s_cluster_name,namespace,name) (max by (k8s_cluster_name,namespace,name) (kubevirt_vmi_info{k8s_cluster_name=~\"${vm_cluster}\",namespace=~\"${vm_namespace}\",name=~\"${vm_name}\",phase=\"running\"}) == 1))[1s:1s] @ end()))), \"sre_display\", \"$1\", \"name\", \"(.*)\")), \"sre_display\", \"$1…$2\", \"sre_display\", \"(.{18}).+(.{8})\")"
                     }
                   }
                 }

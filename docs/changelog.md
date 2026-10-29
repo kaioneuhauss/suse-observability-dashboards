@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0 — Resource identity and filter guidance
+
+- Patch existing dashboards by default, preserving their IDs and saved links during updates.
+- Match Longhorn volumes to current Pod PVC references already collected by the official Agent. Keep unmatched volumes and all consumers in the complete table; avoid ambiguous joins.
+- Use larger values and compact resource labels in VM, Pod and storage detail cards. Preserve full identities in the query and the **Full names and values** link.
+- Explain Everything versus None, dependent filters, Traefik namespace discovery and the boundary between VM infrastructure, guest telemetry and application traces.
+- See the dated validation record for tested cases and limitations.
+
 ## 2026-10-28 — Documentation walkthrough; chart packages unchanged
 
 - Added a detailed configuration guide with architecture, verified lab release placement, step explanations, chart parameter reference and the dashboard publication/removal lifecycle.

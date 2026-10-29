@@ -387,7 +387,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**How much capacity is assigned to running VMs, and how much room is left?** Assigned resources are configuration, not actual use. Use available host memory before starting more VMs. The 24-hour charts help review sizing; they do not recommend an automatic resize or guarantee high availability. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**How much capacity is assigned to running VMs, and how much room is left?** Assigned resources are configuration, not actual use. Use available host memory before starting more VMs. The 24-hour charts help review sizing; they do not recommend an automatic resize or guarantee high availability. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []

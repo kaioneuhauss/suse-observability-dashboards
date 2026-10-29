@@ -154,13 +154,13 @@ cpuRequestTop|CPU reserved for those same pods|Scheduling requests for the same 
 cpuLimitTop|CPU limit for those same pods|Configured CPU ceiling for the same five pods. A missing limit is different from a zero-CPU allowance.
 cpuRequestMissingList|Pods with no CPU reservation|Count of pods with at least one container missing a CPU request. Review their scheduling requirements before setting values.
 cpuLimitMissingList|Pods with no CPU limit|Count of pods with at least one container missing a CPU limit. Whether a limit is needed depends on workload policy.
-cpuUseGauge|Pod closest to its CPU limit|Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact.
+cpuUseGauge|Highest Pod CPU %|Highest measured CPU use relative to a configured limit. Compare with throttling and latency; a high percentage alone does not prove a user impact.
 memUsageTop|Memory used by the five busiest pods|Working-set memory for the five pods selected as busiest at the end of the period. Compare the same names in reserved memory and limits.
 memRequestTop|Memory reserved for those same pods|Scheduling memory requests for the same five pods. These reservations differ from actual memory use.
 memLimitTop|Memory limit for those same pods|Configured memory ceiling for the same pods. Exceeding a container limit can cause an out-of-memory termination.
 memRequestMissingList|Pods with no memory reservation|Count of pods with at least one container missing a memory request. Review sizing and scheduling requirements.
 memLimitMissingList|Pods with no memory limit|Count of pods with at least one container missing a memory limit. Review workload policy and host capacity before choosing limits.
-memUseGauge|Pod closest to its memory limit|Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources.
+memUseGauge|Highest Pod memory %|Highest memory-use percentage relative to a configured limit. Check the trend and container termination reasons before changing resources.
 missingSettingsPods|Which pods have missing resource settings?|The legend lists affected pods and missing settings. A line is an inventory marker, not a trend; use the details link for columns.
 memoryRisk|Pods using the largest share of their memory limit|Five highest memory-to-limit percentages. A sustained rise toward the limit may need investigation; check the relevant containers.
 cpuReservation|CPU used compared with CPU reserved|CPU use divided by the scheduling request. More than 100% is possible and does not by itself mean a limit was exceeded.
@@ -169,12 +169,12 @@ workingSetRSS|Pod memory: working set and resident memory|Two views of memory fo
 inventoryHealth|Can we read pod resource settings?|1 means pod configuration collection is working; 0 means it failed. Check this before trusting missing-setting counts.
 cpuLimitReview|Which pods exceed 80% of their CPU limit?|Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Investigate throttling and demand before changing limits.
 memLimitReview|Which pods exceed 80% of their memory limit?|Up to five pods with the highest use above the review threshold. Open the values table for every affected pod. Compare sustained usage and recent memory-related restarts.
-cpuOver80Count|Pods above 80% of their CPU limit|Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names.
+cpuOver80Count|Pods over 80% CPU limit|Count of measured pods above the CPU review threshold. See the adjacent detail list for the affected names.
 cpuRequestMissingValues|Top 5 pods without CPU requests: current CPU use (mCPU)|Five highest measured values and five-minute CPU use of affected running pods. Review peak demand and scheduling needs before choosing requests.
 cpuLimitMissingValues|Top 5 pods without CPU limits: current CPU use (mCPU)|Five highest measured values and five-minute CPU use of affected running pods. CPU limits are a policy choice; check throttling and latency before adding them.
 memRequestMissingValues|Top 5 pods without memory requests: current memory use|Five highest measured values and five-minute working-set use of affected running pods. Review sustained and peak use before choosing requests.
 memLimitMissingValues|Top 5 pods without memory limits: current memory use|Five highest measured values and five-minute working-set use of affected running pods. Review application peaks and recent OOM events before choosing limits.
-memOver80Count|Pods above 80% of their memory limit|Count of measured pods above the memory review threshold. See the detail list and inspect individual containers.
+memOver80Count|Pods over 80% memory limit|Count of measured pods above the memory review threshold. See the detail list and inspect individual containers.
 ''',
 'platform': '''
 ready|Servers ready to run workloads|Percentage of known nodes reporting Ready. A missing or unready server needs investigation before capacity planning.
@@ -287,6 +287,53 @@ UNITS = {
 def query(panel, expression, alias):
     panel['spec']['queries'] = [{'kind':'TimeSeriesQuery','spec':{'plugin':{'kind':'PrometheusTimeSeriesQuery','spec':{'query':expression,'alias':alias}}}}]
 
+def storage_consumers(expression):
+    # The Agent already exposes Pod -> PVC references. A readonly value of 0
+    # still means the reference exists; normalize it to 1 before joining.
+    # Keep every consumer (RWX and migration can produce multiple Pods).
+    refs='max by (cluster_name,namespace,persistentvolumeclaim,pod_name) (kubernetes_state_pod_volumes_persistentvolumeclaims_readonly{cluster_name=~"${storage_cluster}",pod_phase=~"Running|Pending"})'
+    for target, source in [('k8s_cluster_name','cluster_name'),('pvc_namespace','namespace'),('pvc','persistentvolumeclaim')]:
+        refs=f'label_replace(({refs}), "{target}", "$1", "{source}", "(.+)")'
+    refs=f'max by (k8s_cluster_name,pvc_namespace,pvc,pod_name) (0 * ({refs}) + 1)'
+    keys='k8s_cluster_name,pvc_namespace,pvc'
+    unique=f'({expression}) and on ({keys}) (count by ({keys}) ({expression}) == 1)'
+    matched=f'({refs}) * on ({keys}) group_left(volume,state) ({unique})'
+    unmatched=f'({expression}) unless on (k8s_cluster_name,volume) ({matched})'
+    matched=f'label_replace(({matched}), "consumer", "Pod: $1", "pod_name", "(.+)")'
+    unmatched=f'label_replace(({unmatched}), "consumer", "Volume: $1", "volume", "(.+)")'
+    unmatched=f'label_replace(({unmatched}), "consumer", "PVC: $1", "pvc", "(.+)")'
+    return f'({matched}) or ({unmatched})'
+
+def compact_stat_identity(panel, source_label, prefix='', resource_pattern=None):
+    """Keep IDs in query results, but don't let a UUID dominate a stat card."""
+    for q in panel['spec'].get('queries',[]):
+        spec=q['spec']['plugin']['spec']
+        expr=spec['query']
+        expr=f'label_replace(({expr}), "sre_display", "$1", "{source_label}", "(.*)")'
+        if resource_pattern:
+            expr=f'label_replace(({expr}), "sre_display", "$1", "sre_display", "{resource_pattern}")'
+        elif source_label=='sre_series':
+            expr=f'label_replace(({expr}), "sre_display", "$1", "sre_display", "^([^ ]+) · .*$")'
+        expr=f'label_replace(({expr}), "sre_display", "$1…$2", "sre_display", "(.{{18}}).+(.{{8}})")'
+        spec.update(query=expr,alias=prefix+'${sre_display}')
+    if panel['spec']['plugin']['kind']=='StatChart':
+        panel['spec']['plugin']['spec']['valueFontSize']=32
+    panel['spec']['display']['description']+='\n\nLong names are abbreviated in this panel. Open Full names and values for complete resource labels and values. The query retains the full identity; an abbreviated name alone is not a unique identifier.'
+
+def remove_display_wrappers(panels):
+    # Generators also run over already curated files. Remove only our display
+    # projections before rebuilding links/rankings; leave measurements intact.
+    import re
+    for panel in panels.values():
+        desc=panel['spec'].get('display',{}).get('description','')
+        panel['spec'].setdefault('display',{})['description']=desc.split('\n\nLong names are abbreviated')[0]
+        for query in panel['spec'].get('queries',[]):
+            q=query['spec']['plugin']['spec']
+            while True:
+                match=re.fullmatch(r'label_replace\(\((.*)\), "(sre_display|sre_pod)", "[^"]*", "([^"]+)", "[^"]*"\)',q['query'],re.S)
+                if not match: break
+                q['query']=match[1];q['alias']='${'+match[3]+'}'
+
 # Native SUSE 2.10.2 has no Table widget. StatChart preserves each series/value
 # pair; its TimeSeries legend Last column can misattribute values.
 ACTION_LISTS = {'resources': {'memLimitReview','cpuLimitReview','cpuRequestMissingValues',
@@ -326,7 +373,8 @@ def add_actionable_panels(slug, panels):
             # StatChart uses the last non-null sample of every returned series.
             # Freeze the offender set at the selected end so recovered volumes
             # do not linger in a range query just because they failed earlier.
-            query(panels[key],f'topk(5, last_over_time(({expression})[1s:1s] @ end()))',alias)
+            query(panels[key],f'topk(5, last_over_time(({storage_consumers(expression)})[1s:1s] @ end()))',alias)
+            p['display']['description']='Latest volume observations with Pod associations reported by the official Kubernetes Agent, joined by cluster, PVC namespace and PVC name. Only Running/Pending Pod labels are included. For KubeVirt hotplug disks the Agent can report the parent virt-launcher Pod; the direct mount is on its hp-volume child Pod. Association does not prove mounting or application health. PVC means no unambiguous current Pod association was measured: the VM may be stopped, the volume unused, or telemetry unavailable. Never infer a VM name from the PVC UUID. Shared volumes can have several consumer rows; the summary still counts unique volumes. State values of 1 mean this condition is present. Open Full names and values for volume/PVC/Pod identity and all rows.'
     if slug == 'resources':
         selector='cluster_name=~"${workload_cluster}",namespace=~"${workload_namespace}"'
         keys='cluster_name,namespace,pod_name,container'; pods='cluster_name,namespace,pod_name'
@@ -376,6 +424,7 @@ for slug, (name, purpose, guide) in META.items():
     path = CONTENT / 'dashboards' / (slug + '.json')
     d = json.loads(path.read_text()); d.update(name=name, description=purpose)
     s = d['dashboard']['spec']; panels = s['panels']
+    remove_display_wrappers(panels)
     for key in list(panels):
         if key in REMOVE.get(slug, []) or key.startswith('section_') or key == 'etcdGuide':
             del panels[key]
@@ -441,6 +490,10 @@ for slug, (name, purpose, guide) in META.items():
             details={'volumeHealth':'Sum of deduplicated 0/1 health-state gauges, grouped by cluster and state. All selected volumes are included. Missing source metrics remain empty.', 'attachment':'Sum of deduplicated 0/1 attachment-state gauges by cluster and state. Not a deletion list. Missing source metrics remain empty.', 'backupState':'Longhorn 1.11.2 codes are counted and named: 0 New, 1 Pending, 2 In progress, 3 Completed, 4 Error, 5 Unknown. Zeros appear only when backup-state metrics exist.'}[key]
         if slug=='harvester' and key=='runningCount': details='Count of unique cluster, namespace and VM names with kubevirt_vmi_info phase="running". Missing input stays empty; it is not a count of stopped VM definitions.'
         plug=p['plugin']; spec=plug['spec']
+        if plug['kind']=='StatChart':
+            # Generators copy an existing card as a model. Set the summary
+            # font explicitly so a compact resource card cannot change it.
+            spec['valueFontSize']=40
         # The native editor stores thresholds highest first. Publishing the
         # reverse order makes opening a dashboard count as an unsaved edit.
         if 'thresholds' in spec:
@@ -476,7 +529,9 @@ for slug, (name, purpose, guide) in META.items():
             spec.setdefault('visual',{})['connectNulls']=False
         if slug=='traefik' and key in ('errorTimeline','clientErrorTimeline'):
             plug['kind']='TimeSeriesChart'; spec['visual']={'connectNulls':False}
-        if p.get('queries') and (p.get('links') or key in ACTION_LISTS.get(slug,set())):
+        compact_gauge=(slug=='resources' and key in ('cpuUseGauge','memUseGauge')) or (slug=='harvester' and key in ('guestMemoryGauge','guestDiskGauge'))
+        compact_legend=(slug=='platform' and key in ('pvcCapacity','pvcRisk','pvcUsed')) or (slug=='traefik' and key=='tlsExpiry')
+        if p.get('queries') and (p.get('links') or key in ACTION_LISTS.get(slug,set()) or compact_gauge or compact_legend or (slug=='harvester' and key=='guestCpuGauge')):
             # SUSE expands variables and URL-encodes this parameter itself.
             # Pre-encoding it produces %255B and breaks the explorer link.
             expressions=[q['spec']['plugin']['spec']['query'] for q in p['queries']]
@@ -485,14 +540,33 @@ for slug, (name, purpose, guide) in META.items():
             state=[[[expression] for expression in expressions], [0,[6,[True,'']]]]
             encoded=json.dumps(state,separators=(',',':'))
             for char in '<>%&+#':encoded=encoded.replace(char,'\\u'+format(ord(char),'04x'))
-            p['links']=[{'name':'Open values table','targetBlank':True,
+            p['links']=[{'name':'Full names and values','targetBlank':True,
               'tooltip':('All matching resources, including those outside Top 5. ' if key in ACTION_LISTS.get(slug,set()) else 'Values and labels from this panel query. ')+'Select Table view and check the time range. Units and conditions are explained in the panel description.',
               'url':'./#/metrics?metrics='+encoded}]
+        if key in ACTION_LISTS.get(slug,set()):
+            if slug=='virtualization-storage':
+                compact_stat_identity(panels[key], 'consumer', '${state}: ' if key=='unhealthyDetails' else '')
+            elif slug=='virtualization-contention':
+                compact_stat_identity(panels[key], 'name')
+            elif slug=='resources':
+                # sre_series starts with the full Pod name; the table keeps it.
+                qs=p['queries'][0]['spec']['plugin']['spec']
+                qs['query']=f'label_replace(({qs["query"]}), "sre_pod", "$1", "sre_series", "^([^ ]+) · .*$")'
+                compact_stat_identity(panels[key], 'sre_pod')
+            elif slug=='platform':
+                compact_stat_identity(panels[key], 'sre_series')
+        elif slug=='harvester' and key=='guestCpuGauge':
+            compact_stat_identity(panels[key], 'sre_series')
+        elif compact_gauge:
+            compact_stat_identity(panels[key], 'sre_series')
+        elif compact_legend:
+            pattern='^[^ ]+ · [^ ]+ · (.*)$' if slug=='platform' else '^[^ ]+ · (.*)$'
+            compact_stat_identity(panels[key], 'sre_series', resource_pattern=pattern)
         guide_rows.append('| '+title+' | '+intro+' |')
     guide_rows.append('')
     panels['guide']['spec'].setdefault('links',[])
     panels['guide']['spec']['display']={'name':'What this dashboard tells you','description':purpose}
-    panels['guide']['spec']['plugin']['spec']['text']='**'+purpose+'** '+guide+' **No data is not the same as zero.** Use the description icon for measurement details.'
+    panels['guide']['spec']['plugin']['spec']['text']='**'+purpose+'** '+guide+' **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list.'
     items=[{'x':0,'y':0,'width':24,'height':1,'content':{'$ref':'#/spec/panels/guide'}}]; y=1
     seen=[]
     for index,(heading,keys) in enumerate(SECTIONS[slug]):
@@ -504,7 +578,7 @@ for slug, (name, purpose, guide) in META.items():
             if slug=='traefik' and key in ('requests1h','meanLatency','p95','p99'):width=12
             # One grid row makes SUSE 2.10.2 shrink Stat labels to ~4px.
             height=2 if kind in ('StatChart','GaugeChart') else 3
-            if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=6;height=2
+            if slug=='resources' and key in ('cpuUseGauge','memUseGauge','cpuOver80Count','memOver80Count'):width=12;height=2
             if key in ACTION_LISTS.get(slug, set()): width=24; height=3
             if x+width>24:y+=row_height;x=0;row_height=0
             items.append({'x':x,'y':y,'width':width,'height':height,'content':{'$ref':'#/spec/panels/'+key}})

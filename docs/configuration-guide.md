@@ -2,7 +2,7 @@
 
 This guide explains what we configured, why it is there and how to repeat it. Use the [README](../README.md) for the installation commands. Keep this page beside it when you want to understand a setting or change the setup.
 
-The examples use chart **1.6.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation was reviewed on **2026-10-28**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
+The examples use chart **1.7.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation was reviewed on **2026-10-29**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
 
 > [!WARNING]
 > Community project for labs and learning. Not recommended for production and not an officially supported SUSE integration. Validate the metrics, resource usage, permissions and alert policy in your own environment.
@@ -75,8 +75,8 @@ Use a private note like this. Replace the examples once, then use the same names
 | Browser/API URL | `https://observability.example.com` | Publisher destination and base for Prometheus remote write |
 | Agent receiver | `https://observability.example.com/receiver/stsAgent` | Destination for the official Agent |
 | OTLP gRPC address | `otlp-observability.example.com:443` | Destination for the Virtualization or separate application OTel collector |
-| Dashboard chart version | `1.6.0` | Reproducible module installation |
-| Server and Agent chart versions | Record the installed versions | Separate release cycles; do not substitute `1.6.0` here |
+| Dashboard chart version | `1.7.0` | Reproducible module installation |
+| Server and Agent chart versions | Record the installed versions | Separate release cycles; do not substitute `1.7.0` here |
 
 **Run on your computer:**
 
@@ -92,7 +92,7 @@ helm list --all-namespaces --kubeconfig /path/to/cluster.yaml --kube-context my-
 
 The lab uses the optional **central publisher** arrangement. All five content releases are on the Observability cluster; collectors run on the source clusters. A new environment can start more simply with `mode: all` on its first monitored cluster.
 
-Read-only release inspection on 2026-10-28 confirmed server chart `2.10.2`, all five central content charts at `1.6.0`, Harvester Virtualization telemetry at `1.3.0`, Imports telemetry at `1.4.2` and the Harvester Agent at `1.2.14`. Content and collectors can have different versions because the latest updates changed dashboard definitions. This documentation update did not upgrade those releases.
+Read-only release inspection on 2026-10-28 confirmed server chart `2.10.2`, all five central content charts at `1.6.0`, Harvester Virtualization telemetry at `1.3.0`, Imports telemetry at `1.4.2` and the Harvester Agent at `1.2.14`. Content and collectors can have different versions because the latest updates changed dashboard definitions. That documentation update did not upgrade those releases. On 2026-10-29, the five central content releases were upgraded to 1.7.0 for the dashboard/filter review; the source collectors and platform releases were preserved.
 
 | Cluster | Namespace | Module releases | Mode / chart version |
 |---|---|---|---|
@@ -100,7 +100,7 @@ Read-only release inspection on 2026-10-28 confirmed server chart `2.10.2`, all 
 | Harvester | `suse-observability` | `obs-imports` | `telemetry` / 1.4.2 |
 | Rancher lab | `suse-observability` | `obs-kubernetes`, `obs-traefik` | `telemetry` / 1.3.0 |
 | Observability | `suse-observability-agent` | `obs-kubernetes`, `obs-traefik` | `telemetry` / 1.3.0 |
-| Observability | `suse-observability` | `obs-virtualization`, `obs-imports`, `obs-kubernetes`, `obs-traefik`, `obs-applications` | `content` / 1.6.0 |
+| Observability | `suse-observability` | `obs-virtualization`, `obs-imports`, `obs-kubernetes`, `obs-traefik`, `obs-applications` | `content` / 1.7.0 |
 
 The same release name can exist in different clusters/namespaces. Always include the destination flags when updating or removing it. The two Observability namespaces are intentional: one contains its Agent/collectors and the other contains the server/publishers. The integration names are `harvester`, `rancher-kaio` and `observability-cluster`; the last differs from its kubeconfig context `observability`.
 
@@ -227,7 +227,7 @@ observability:
 helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
 helm repo update obs-dashboards
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.6.0 --values virtualization.yaml \
+  --version 1.7.0 --values virtualization.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -237,7 +237,7 @@ helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virt
 | `upgrade --install` | Installs a missing release or updates the existing one |
 | `obs-virtualization` | Your release name; keep it for updates and removal |
 | `obs-dashboards/suse-observability-virtualization` | Repository alias and chart name |
-| `--version 1.6.0` | Selects the exact published chart package |
+| `--version 1.7.0` | Selects the exact published chart package |
 | `--values virtualization.yaml` | Merges your settings with the chart defaults |
 | `--kubeconfig` / `--kube-context` | Selects the destination cluster explicitly |
 | `--namespace` | Places the release beside the required Secrets |
@@ -296,7 +296,7 @@ Installing a chart does not launch Grafana. These are native SUSE dashboard defi
 2. Templates create the required workloads, configuration and RBAC. Content templates load this module's dashboard JSON and monitor definitions into ConfigMaps.
 3. Separate `post-install,post-upgrade` Jobs publish dashboards and monitors using the respective Secret references. They download a pinned official SUSE CLI and verify its checksum before using it.
 4. The publisher checks existing identifiers and its module catalog. It creates missing objects and reconciles changed definitions. It checks the persisted result rather than treating a successful command as sufficient.
-5. Identical dashboards keep their IDs. The default `replace` strategy deletes/recreates a changed dashboard, so its numeric ID and saved links can change. Export personal changes before updating; managed definitions can overwrite them.
+5. Chart 1.7.0 uses `patch` by default and preserves the IDs of existing dashboards. This was tested with CLI 3.3.6 and SUSE Observability 2.10.2. Explicit `replace` mode deletes/recreates a changed dashboard, so saved links can change. Export personal changes before updating; managed definitions can overwrite them.
 6. Helm removes successful hook Jobs. Failed Jobs remain for diagnosis, subject to their TTL. Collectors keep running independently of the completed publisher.
 
 The publisher runs code inside its container. **You do not run local Python or Bash scripts to install, update or remove modules.**
@@ -368,11 +368,11 @@ If a hook fails, inspect its Job logs and retry after correcting the error. Exte
 
 ## 12. Chart parameters: common settings
 
-Most installations change only the small examples above. The following tables explain the configurable settings in the five **1.6.0** charts. A dotted name represents nested YAML, not a literal dotted key. Where a row covers a group, it lists the group's individual fields. Inspect defaults without installing anything:
+Most installations change only the small examples above. The following tables explain the configurable settings in the five **1.7.0** charts. A dotted name represents nested YAML, not a literal dotted key. Where a row covers a group, it lists the group's individual fields. Inspect defaults without installing anything:
 
 ```sh
-helm show values obs-dashboards/suse-observability-virtualization --version 1.6.0
-helm show values obs-dashboards/suse-observability-imports --version 1.6.0
+helm show values obs-dashboards/suse-observability-virtualization --version 1.7.0
+helm show values obs-dashboards/suse-observability-imports --version 1.7.0
 ```
 
 | Setting | Meaning and when to change it |
@@ -393,7 +393,7 @@ helm show values obs-dashboards/suse-observability-imports --version 1.6.0
 | `content.slo.availabilityTarget` | Inherited internal default. The module wrapper replaces it with top-level `slo.availabilityTarget`; change the top-level setting. |
 | `content.dashboards.enabled`, `content.monitors.enabled` | Enable each kind of publishing. Turning a flag off does not delete already-published objects. Follow Lifecycle for selective removal. |
 | `content.dashboards.include`, `content.monitors.include` | Fixed module catalog lists, enforced by schema. They are not user-customizable dashboard menus. |
-| `content.dashboards.updateStrategy` | Default `replace`; `patch` is an advanced alternative dependent on CLI/server behavior. Keep the tested default unless you validate reconciliation. |
+| `content.dashboards.updateStrategy` | Default `patch`, preserving dashboard IDs. Optional `replace` deletes/recreates changed dashboards; use only when needed and after exporting them. Neither mode preserves personal edits to managed definitions. |
 
 ### Publishing Jobs: `content.publisher`
 

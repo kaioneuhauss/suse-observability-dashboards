@@ -55,7 +55,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.6.0 --values imports.yaml \
+  --version 1.7.0 --values imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
   --namespace suse-observability --wait --timeout 15m
 ```

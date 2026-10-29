@@ -52,7 +52,7 @@ content:
     include:
     - platform
     - resources
-    updateStrategy: replace
+    updateStrategy: patch
   monitors:
     enabled: true
     include:

@@ -39,7 +39,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
-  --version 1.6.0 --values kubernetes.yaml \
+  --version 1.7.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
   --namespace suse-observability --wait --timeout 15m
 ```
@@ -62,7 +62,7 @@ Usage, requests and limits answer different questions. High CPU alone is not pro
 
 **Unavailable application replicas** counts application instances that should be available but are not. If an application is configured with 3 replicas and only 2 are available, it contributes 1 to this count. The **Which applications have unavailable replicas?** panel shows the affected workload, namespace, cluster and number unavailable. It covers Deployments, StatefulSets and DaemonSets, including platform workloads. Deployments use unavailable replicas, StatefulSets use desired minus ready, and DaemonSets use unavailable instances. A rollout can produce a temporary gap; check readiness probes, scheduling and image pulls if it persists. Zero means no gap in the measured workloads, not proof that the entire application works.
 
-Action lists preview up to five entries. Use **Open values table → Table view** for all matching resources. Counts above the lists still include every matching resource.
+Action lists preview up to five entries. Use **Full names and values → Table view** for all matching resources. Counts above the lists still include every matching resource.
 
 ## Optional: etcd metrics
 

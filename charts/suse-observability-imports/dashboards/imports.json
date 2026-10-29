@@ -694,7 +694,7 @@
             "plugin": {
               "kind": "Markdown",
               "spec": {
-                "text": "**Which VMware imports have finished, failed or are still being processed by VM Import Controller?** Select an import to see its current stage and disk preparation. Completed means the controller recorded the VM starting; check the application separately. Disk readiness is not the percentage of data transferred. This dashboard does not cover Coriolis. **No data is not the same as zero.** Use the description icon for measurement details."
+                "text": "**Which VMware imports have finished, failed or are still being processed by VM Import Controller?** Select an import to see its current stage and disk preparation. Completed means the controller recorded the VM starting; check the application separately. Disk readiness is not the percentage of data transferred. This dashboard does not cover Coriolis. **No data is not the same as zero.** Select a cluster before narrowing the next filters. **None** selects nothing; **Everything** selects all available values. After changing a cluster, reset the following filters to Everything. Full names and values opens the complete resource list."
               }
             },
             "queries": []

@@ -27,6 +27,11 @@ def main():
         return d
     def values(spec,selected):
         matcher=substitute(spec['plugin']['spec']['matchers'][0],selected);label=spec['plugin']['spec']['labelName']
+        if a.native:
+            # Match the UI's label-values endpoint, including its time window.
+            # An instant query alone misses options from retained series.
+            data=api('label/'+urllib.parse.quote(label,safe='')+'/values',{'match[]':matcher,'start':now-a.hours*3600,'end':now})
+            return sorted({v for v in data['data'] if v})
         data=api('query',{'query':matcher,'time':now})
         return sorted({r['metric'][label] for r in data['data']['result'] if r['metric'].get(label)})
     chart=Path(__file__).resolve().parents[1]/'components/suse-observability-content/dashboards'
