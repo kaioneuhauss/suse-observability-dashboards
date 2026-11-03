@@ -2,7 +2,7 @@
 
 This guide explains what we configured, why it is there and how to repeat it. Use the [README](../README.md) for the installation commands. Keep this page beside it when you want to understand a setting or change the setup.
 
-The examples use chart **1.8.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation was reviewed on **2026-10-29**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
+The examples use chart **1.8.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation and the complete module reinstall were checked on **2026-11-03**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
 
 > [!WARNING]
 > Community project for labs and learning. Not recommended for production and not an officially supported SUSE integration. Validate the metrics, resource usage, permissions and alert policy in your own environment.
@@ -76,7 +76,7 @@ Use a private note like this. Replace the examples once, then use the same names
 | Agent receiver | `https://observability.example.com/receiver/stsAgent` | Destination for the official Agent |
 | OTLP gRPC address | `otlp-observability.example.com:443` | Destination for the Virtualization or separate application OTel collector |
 | Dashboard chart version | `1.8.0` | Reproducible module installation |
-| Server and Agent chart versions | Record the installed versions | Separate release cycles; do not substitute `1.7.0` here |
+| Server and Agent chart versions | Record the installed versions | Separate release cycles; do not substitute the dashboard version here |
 
 **Run on your computer:**
 
@@ -92,15 +92,15 @@ helm list --all-namespaces --kubeconfig /path/to/cluster.yaml --kube-context my-
 
 The lab uses the optional **central publisher** arrangement. All five content releases are on the Observability cluster; collectors run on the source clusters. A new environment can start more simply with `mode: all` on its first monitored cluster.
 
-Read-only release inspection on 2026-10-28 confirmed server chart `2.10.2`, all five central content charts at `1.6.0`, Harvester Virtualization telemetry at `1.3.0`, Imports telemetry at `1.4.2` and the Harvester Agent at `1.2.14`. Content and collectors can have different versions because the latest updates changed dashboard definitions. That documentation update did not upgrade those releases. On 2026-10-29, the five central content releases were upgraded to 1.7.0 for the dashboard/filter review; the source collectors and platform releases were preserved.
+The clean reinstall on 2026-11-03 removed all 11 project releases and recreated them at chart **1.8.0**, revision 1, using the published Helm repository. The existing SUSE server `2.10.2`, Harvester `1.8.2` and official Agents were preserved. The Harvester Agent remains `1.2.14`; the Rancher and Observability Agents remain `1.5.32`. Follow [the complete central installation commands](multiple-clusters.md#2-keep-publishers-on-the-observability-cluster) to reproduce this arrangement.
 
 | Cluster | Namespace | Module releases | Mode / chart version |
 |---|---|---|---|
-| Harvester | `suse-observability` | `obs-virtualization` | `telemetry` / 1.3.0 |
-| Harvester | `suse-observability` | `obs-imports` | `telemetry` / 1.4.2 |
-| Rancher lab | `suse-observability` | `obs-kubernetes`, `obs-traefik` | `telemetry` / 1.3.0 |
-| Observability | `suse-observability-agent` | `obs-kubernetes`, `obs-traefik` | `telemetry` / 1.3.0 |
-| Observability | `suse-observability` | `obs-virtualization`, `obs-imports`, `obs-kubernetes`, `obs-traefik`, `obs-applications` | `content` / 1.7.0 |
+| Harvester | `suse-observability` | `obs-virtualization` | `telemetry` / 1.8.0 |
+| Harvester | `suse-observability` | `obs-imports` | `telemetry` / 1.8.0 |
+| Rancher lab | `suse-observability` | `obs-kubernetes`, `obs-traefik` | `telemetry` / 1.8.0 |
+| Observability | `suse-observability-agent` | `obs-kubernetes`, `obs-traefik` | `telemetry` / 1.8.0 |
+| Observability | `suse-observability` | `obs-virtualization`, `obs-imports`, `obs-kubernetes`, `obs-traefik`, `obs-applications` | `content` / 1.8.0 |
 
 The same release name can exist in different clusters/namespaces. Always include the destination flags when updating or removing it. The two Observability namespaces are intentional: one contains its Agent/collectors and the other contains the server/publishers. The integration names are `harvester`, `rancher-kaio` and `observability-cluster`; the last differs from its kubeconfig context `observability`.
 
@@ -274,7 +274,7 @@ If a check fails, use [validation and troubleshooting](validation.md). Do not in
 
 ### Another module on the same cluster
 
-Keep the first release. Reuse the Agent, namespace and credentials. Follow the appropriate [README module option](../README.md#5-install-the-module-you-chose), save another values file and give it another release name.
+Keep the first release. Reuse the Agent, namespace and credentials. Follow the appropriate [README module option](../README.md#3-install-your-first-module), save another values file and give it another release name.
 
 For example, Imports uses `imports.yaml` and `obs-imports`. It needs the VM Import Controller CRD, but it does not depend on the Virtualization chart. `imports.performance.enabled: true` adds CPU/memory/network collection; default `false` keeps inventory only. The README contains the complete second-module command and expected result.
 
@@ -360,7 +360,7 @@ kubectl get deployment,daemonset --kubeconfig /path/to/cluster.yaml \
 
 If Kubernetes content was reusing Virtualization's collectors, those Kubernetes dashboards will lose their extra data when Virtualization is removed. If you want to keep that collection, change Kubernetes to `mode: all` and upgrade it **after** the Virtualization collectors are gone. Expect a brief collection gap.
 
-**Keep shared prerequisites:** uninstall does not remove the SUSE server, official Agent, applications, VMs, volumes, shared credentials, existing import controller, application instrumentation or OTLP ingress. Do not delete the namespace. Historical metrics follow the server's retention policy. The [README removal section](../README.md#9-remove-one-module-or-all-modules) lists all five module commands and the optional dedicated publishing Secret cleanup.
+**Keep shared prerequisites:** uninstall does not remove the SUSE server, official Agent, applications, VMs, volumes, shared credentials, existing import controller, application instrumentation or OTLP ingress. Do not delete the namespace. Historical metrics follow the server's retention policy. The [README removal section](../README.md#7-update-remove-or-reinstall) lists all five module commands and the optional dedicated publishing Secret cleanup.
 
 If a hook fails, inspect its Job logs and retry after correcting the error. External cleanup is not transactional: some objects may already have been removed. Do not bypass hooks or remove Secrets first. See [Lifecycle](lifecycle.md) for recovery and old chart versions.
 

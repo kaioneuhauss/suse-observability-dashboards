@@ -1,272 +1,77 @@
 # SUSE Observability dashboards
 
-Pick a module, fill in its settings and install it with Helm. Each module adds its own dashboards and monitors. The modules that need extra metrics also install their collectors.
+Choose a module, fill in a small YAML file and install it with Helm. Each module includes its own dashboards and monitors. Collectors are included where extra metrics are needed.
 
 > [!WARNING]
-> Community project for labs and learning. **Not recommended for production and not an officially supported SUSE integration.** Review the measurements and alert thresholds before relying on them. Notification channels are not configured by these charts.
+> Community project for labs and learning. **Not recommended for production and not an officially supported SUSE integration.** Review thresholds before relying on alerts. Notification delivery must be configured separately.
 
-You only need **Helm, kubectl and a text editor**. No repository clone, local Bash/Python scripts or Grafana installation. The examples below cover the first module, a second module, updates and removal.
+You need **Helm, kubectl and a text editor**. You do not need local scripts, Python, Grafana or a repository clone to install. Browser steps are needed to create SUSE integrations and obtain credentials.
 
-**Start here:** choose a module → prepare its prerequisites → save its values file → run Helm → check fresh data. Follow only the sections for your module. Browser steps are needed to create integrations and obtain credentials; Helm and kubectl handle the Kubernetes installation.
+## 1. Choose your modules
 
-Want to understand what each step does? Read the [configuration walkthrough](docs/configuration-guide.md). It explains the architecture, the lab configuration, every chart setting, dashboard creation and removal.
-
-## 1. Choose what to install
-
-| Module | Use it when you have | Dashboards | Monitors |
-|---|---|---:|---:|
-| [virtualization](#install-virtualization) | SUSE Virtualization / Harvester | 4: VMs, performance, capacity, storage & backups | 7 |
-| [imports](#install-imports) | Harvester VM Import Controller | 1: VMware import progress and optional infrastructure performance | 3 |
-| [kubernetes](#install-kubernetes) | Kubernetes / RKE2 | 2: cluster health and application resources | 21 |
-| [traefik](#install-traefik) | Traefik with Prometheus metrics | 1: incoming traffic, errors and speed | 6 |
-| [applications](#install-applications) | Applications already sending HTTP metrics | 1: application traffic, errors and speed | 2 |
-
-**Only need SUSE Virtualization?** Complete steps 2–4, install option A, then check it in step 6. You can stop there. Imports is a separate, optional module. Coriolis is not included.
-
-**Reading the dashboards:** VM Performance has separate Top 5 lists for CPU use, guest memory use and CPU waiting time. Resource lists show up to five entries (three in the compact storage health/old-backup cards); **Full names and values → Table view** shows the complete list and full identities. Each ranking uses the end of the selected period.
-
-**Investigating a resource:** the Kubernetes resource guide includes **Investigate Pods**. Storage includes **Open PVCs** and **Open Pods**. Select the same cluster and namespace in that native list, then click the resource name to inspect it. These lists have their own filters. A panel can show several resources; its **Full names and values** link therefore keeps the complete metric table instead of guessing which Pod to open.
-
-**Storage references:** `VM:` is a running VM matched through KubeVirt’s launcher-Pod mapping; `Pod:` is another measured consumer. `PVC:` means no active consumer was mapped, not proof that the volume is unused. The full table includes VM, Pod, PVC, volume, namespace and cluster when available.
-
-In Kubernetes Cluster Health, **Unavailable application replicas** means configured application instances that are not available. For example, 3 configured and 2 available means 1 unavailable replica. The list below names the affected applications. A brief gap during an update can be normal; it does not mean data was lost. This panel belongs to the optional Kubernetes module.
-
-**What “from zero” means here:** no dashboard components are installed yet. You still need an existing Harvester/Kubernetes cluster and a working SUSE Observability server. Server sizing, licensing, storage, DNS, certificates and application instrumentation are separate prerequisites. These charts do not create those platforms. For a new SUSE server, complete the [official server installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html) first.
-
-### Prepare only what your module needs
-
-| Prerequisite | Needed for | How to configure it | Ready when |
-|---|---|---|---|
-| SUSE Observability server | Every module | Follow the server preparation below | You can log in through HTTPS |
-| Kubernetes integration and official Agent | Virtualization, Imports, Kubernetes and Traefik; also recommended for application topology | Follow step 3 on each monitored cluster | Nodes and Pods appear in SUSE |
-| Publishing Service Token | First installation of each module; not collector-only releases | Create the Secret in step 3 | The publisher has permission to manage dashboards and monitors |
-| OTLP gRPC endpoint on the server | Virtualization; applications using a separate OTel collector | Follow [OTLP setup](docs/otlp.md) on the server cluster | DNS, TLS and the gRPC backend work; confirm ingestion after installation |
-| Application Collection access | Virtualization collector image | Follow option A | The image pull Secret exists in the collector namespace |
-| KubeVirt and Longhorn metrics | Virtualization | Follow option A | The collector discovers the targets and reports successful scrapes |
-| VM Import Controller | Imports only | Follow option B | The import CRD exists and can be listed |
-| Traefik Prometheus metrics | Traefik only | Follow option D | The metrics port and Service selector match your installation |
-| Instrumented application and metric delivery | Applications only | Follow [application telemetry setup](docs/application-telemetry.md), then option E | The required HTTP metrics and labels exist in Metrics Explorer |
-
-**OpenTelemetry is not a replacement for the Agent.** The Agent connects Kubernetes resources to SUSE. OpenTelemetry carries telemetry such as application metrics and traces. This project's Virtualization collector also uses OTLP. Kubernetes, Imports and Traefik use Prometheus remote write and do not require you to deploy another OTel collector. Installing an application dashboard does not instrument an application.
-
-### If SUSE Observability is not installed yet
-
-Do this on the **server cluster**, before installing anything from this repository:
-
-1. Check the official [requirements and sizing](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/requirements.html) and [version compatibility](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/Compatibility%20Self%20Hosted.html). Obtain a license and the required registry access. Choose the storage class and enough free resources for the selected profile.
-2. Follow the [official Helm installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html). Keep its values and credentials in a private location. The server chart version is independent of this project's `1.8.0` charts.
-3. Configure DNS, a valid certificate and [HTTPS ingress](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html). For Virtualization or a separate application collector, also prepare the [OTLP endpoint](docs/otlp.md). The browser URL and OTLP gRPC address are different settings.
-4. Open the SUSE URL, log in and confirm the server workloads are ready:
-
-```sh
-helm list --kubeconfig /path/to/observability.yaml --kube-context observability --namespace suse-observability
-kubectl get pods,pvc,ingress --kubeconfig /path/to/observability.yaml --context observability --namespace suse-observability
-```
-
-**Check:** the server release is deployed, its persistent storage is bound, workloads are ready and HTTPS works. Do not proceed while the server has unresolved storage, certificate or startup errors. An existing healthy server can be reused; do not reinstall it for these dashboards.
-
-## 2. Write down your environment details
-
-Replace these examples throughout the commands and YAML. Keep the files in a private folder outside Git.
-
-| Fill in | Example | Where to find it |
+| Module | What it shows | Dashboards / monitors |
 |---|---|---|
-| Kubeconfig file | `/path/to/cluster.yaml` | Download from Rancher or Harvester |
-| Kubeconfig context | `my-cluster` | First command below |
-| Agent namespace | `suse-observability` | Existing Agent release; use this for a new Agent in this guide |
-| Integration name | `my-cluster` | Kubernetes StackPack in SUSE; may differ from the context |
-| SUSE URL | `https://observability.example.com` | Address you use to open SUSE |
-| OTLP endpoint, when required | `otlp-observability.example.com:443` | TLS gRPC endpoint on the server; used by Virtualization and separate application collectors |
+| **virtualization** | Harvester VMs, hosts, performance, capacity, storage and backups | 4 / 7 |
+| **imports** | VM Import Controller records and optional importer CPU, memory and network use | 1 / 3 |
+| **kubernetes** | Cluster health and application resource use | 2 / 21 |
+| **traefik** | Incoming traffic, HTTP errors and response times | 1 / 6 |
+| **applications** | HTTP traffic, errors and response times from instrumented applications | 1 / 2 |
 
-Install [kubectl](https://kubernetes.io/docs/tasks/tools/) and [Helm 3 or 4](https://helm.sh/docs/intro/install/). Use a kubectl version compatible with your cluster. Check access and existing releases:
+Only want SUSE Virtualization? Install **virtualization**. Imports is optional and independent. Coriolis is not included.
 
-```sh
-kubectl config get-contexts --kubeconfig /path/to/cluster.yaml
-kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
-helm list --all-namespaces --kubeconfig /path/to/cluster.yaml --kube-context my-cluster
-```
+## 2. Prepare the prerequisites once
 
-**Check:** these are the intended nodes. If a module already exists, keep its release name, namespace, publishing identity and values file. The install command will update it. Do not install a second copy.
+<a id="prepare-only-what-your-module-needs"></a>
+<a id="if-suse-observability-is-not-installed-yet"></a>
+<a id="connect-the-cluster-to-suse"></a>
 
-The examples use `suse-observability` to match the lab. Current Agent instructions may use `suse-observability-agent`. Follow your version's namespace and replace it consistently in the module commands. Secrets are local to a namespace. `my-cluster` is an example used for both context and integration name here; they can be different in your environment.
+**Starting from zero? Follow [Prepare your environment](docs/prerequisites.md) in order.** It explains what to configure, where to run each command and how to check the result:
 
-## 3. Prepare the Agent and credentials once
+| Order | What to prepare | Needed for | Instructions |
+|---|---|---|---|
+| 1 | Cluster access, Helm and kubectl | All modules | [Access checks](docs/prerequisites.md#1-check-access-to-your-clusters) |
+| 2 | SUSE Observability server, storage, license, DNS and HTTPS | All modules | [Server setup and official installation](docs/prerequisites.md#2-prepare-the-suse-observability-server) |
+| 3 | Server OTLP endpoint | Virtualization and applications using OTLP | [OpenTelemetry setup](docs/prerequisites.md#3-prepare-opentelemetry-on-the-server) |
+| 4 | Kubernetes integration and official Agent on the monitored cluster | Virtualization, Imports, Kubernetes and Traefik | [Agent on Harvester or Kubernetes](docs/prerequisites.md#4-connect-harvester-or-kubernetes-to-suse) |
+| 5 | Publishing credential stored in a Kubernetes Secret | Releases that publish dashboards | [Create the Secret](docs/prerequisites.md#5-prepare-the-publishing-credential) |
+| 6 | Registry access, metrics endpoints and required network access | Depends on the module | [Module checks](docs/prerequisites.md#6-check-the-module-specific-prerequisites) |
 
-All modules in the same namespace reuse these prerequisites. Applications needs only the publishing credential and existing application metrics.
+**Keep working prerequisites.** Reinstalling dashboards does not require reinstalling SUSE, its Agent, Harvester or your applications. These charts do not create those platforms or instrument an application.
 
-### Connect the cluster to SUSE
+Fill in these details before continuing. Keep values and credential files in a private folder outside Git:
 
-**Where:** run the following commands against the cluster you want to monitor: Harvester for VMs/imports, or your Kubernetes/RKE2 cluster for its workloads. Use the [official Kubernetes integration guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/k8s-quick-start-guide.html) and the commands generated by your own SUSE instance. Check the required cluster permissions and Pod security policy with the cluster administrator.
+| Replace in this guide | Your value |
+|---|---|
+| `/path/to/cluster.yaml` | Kubeconfig of the cluster where this release will run |
+| `my-cluster` in commands | Context listed by `kubectl config get-contexts --kubeconfig /path/to/cluster.yaml` |
+| `clusterName: my-cluster` in YAML | Exact SUSE Kubernetes integration name; it can differ from the context |
+| `suse-observability` | Namespace containing the Agent and required Secrets; some installations use `suse-observability-agent` |
+| `https://observability.example.com` | SUSE browser/API URL |
+| `otlp-observability.example.com:443` | TLS gRPC endpoint, without `https://`; Virtualization only |
 
-On Harvester, use one installation method: the Helm procedure below, or the [Harvester 1.8 Agent add-on](https://docs.harvesterhci.io/v1.8/advanced/addons/suse-observability-agent/). That add-on is experimental in the linked version. Keep an existing add-on under its current owner; do not install another Agent over it. Use documentation matching your Harvester version.
+The short examples below use the default Secret names: `suse-observability-agent-secrets` for ingestion, `suse-observability-publisher-token` for publication, and `application-collection` for the Virtualization image. [Custom names and private CAs](docs/prerequisites.md#7-custom-secret-names-or-private-certificates) are optional overrides.
 
-If the official Agent is already installed, keep it and use the checks below. Otherwise, open **SUSE Observability → StackPacks → Kubernetes → Add new instance**. Choose a unique integration name and obtain the ingestion Service Token. Save the token as `/private/ingestion-token.txt`, with no extra spaces or trailing newline.
+## 3. Install your first module
 
-Save `agent.yaml`, using the receiver URL from your instance:
+**Already installed?** Keep the existing release placement, `mode` and complete saved values. Use [update/removal](#7-update-remove-or-reinstall) instead of replacing an existing configuration with a minimal first-install example.
 
-```yaml
-stackstate:
-  cluster:
-    name: my-cluster
-  url: https://observability.example.com/receiver/stsAgent
-```
+**Where:** the cluster you want to monitor, in the Agent's namespace. The default installs collectors and publishes content together. For an environment with several clusters and publishers kept on the Observability cluster, use the complete [central publication procedure](docs/multiple-clusters.md#2-keep-publishers-on-the-observability-cluster) instead; do not run both approaches for the same module.
 
-Replace `AGENT_CHART_VERSION` with the version offered by your Kubernetes integration. Keep any additional values required by that integration/version.
-
-If you need to inspect a version before using it, run `helm search repo suse-observability/suse-observability-agent --versions` after adding the repository below. Do not pick the newest version without checking server compatibility. `stackstate.cluster.name` identifies the cluster; `stackstate.url` is the Agent receiver, not the OTLP endpoint.
-
-```sh
-helm repo add suse-observability https://charts.rancher.com/server-charts/prime/suse-observability
-helm repo update suse-observability
-helm upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
-  --version AGENT_CHART_VERSION --values agent.yaml \
-  --set-file stackstate.apiKey=/private/ingestion-token.txt \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --create-namespace --wait --timeout 15m
-```
-
-The field is called `apiKey` but accepts the ingestion Service Token. Helm stores these values in release Secrets; restrict access to the namespace. Do not enable another Agent through a Harvester add-on as well.
-
-Check the Agent, integration name and ingestion Secret **without printing its credential**:
-
-```sh
-kubectl get pods --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
-kubectl get configmap suse-observability-agent-cluster-name \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability \
-  -o jsonpath='{.data.STS_CLUSTER_NAME}{"\n"}'
-kubectl get secret suse-observability-agent-secrets \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability \
-  -o go-template='{{range $key, $value := .data}}{{$key}}{{"\n"}}{{end}}'
-```
-
-**Check:** Agent Pods are ready, you know the integration name, and the Secret contains `STS_API_KEY`. Nodes and Pods must appear in SUSE. Use that integration name as `clusterName` below. With a custom Agent release, find the equivalent ConfigMap/Secret in its configuration.
-
-### Create the publishing Secret
-
-For Applications without an Agent in this cluster, first check that the publishing namespace exists with `kubectl get namespace suse-observability --kubeconfig /path/to/cluster.yaml --context my-cluster`. Only if it is absent, create it:
-
-```sh
-kubectl create namespace suse-observability \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-```
-
-Ask the SUSE administrator for a **Service Token allowed to read, create, update and delete dashboards and monitors**. The ingestion credential cannot publish dashboards. See [SUSE Service Tokens](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/security/k8s-service-tokens.html).
-
-This is an administrator prerequisite: SUSE documents Service Token management through its CLI, while the Kubernetes/OpenTelemetry StackPacks issue ingestion credentials. A Kubernetes Secret only stores a token; it does not create SUSE permissions. To keep this installation Helm/kubectl-only, obtain the publishing token from the administrator before continuing. See the [credential explanation](docs/configuration-guide.md#3-understand-the-three-credentials).
-
-Save it as `/private/publisher-token.txt`, containing only the token, without a trailing newline. Create the Secret once:
-
-```sh
-kubectl create secret generic suse-observability-publisher-token \
-  --from-file=serviceToken=/private/publisher-token.txt \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
-```
-
-**Check:** the Secret is created in the Agent namespace. If it already exists, reuse the existing publisher identity; do not replace it. Store credentials in your approved secret store and remove the temporary local token files when done.
-
-<details>
-<summary>Different Secret names or a private certificate authority?</summary>
-
-Add overrides to each module's values file when needed:
-
-```yaml
-ingestion:
-  existingSecret: your-agent-secret
-  secretKey: STS_API_KEY
-auth:
-  dashboards:
-    existingSecret: your-dashboard-publisher-secret
-    serviceTokenKey: serviceToken
-  monitors:
-    existingSecret: your-monitor-publisher-secret
-    serviceTokenKey: serviceToken
-```
-
-Keep the identity that owns existing dashboards; another token can receive 403 even with similar permissions. `mode: content` and Applications do not need ingestion credentials.
-
-For a private CA, create its Secret:
-
-```sh
-kubectl create secret generic observability-ca --from-file=ca.crt=/private/ca.crt \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
-```
-
-For Virtualization, add:
-
-```yaml
-content:
-  publisher:
-    caSecret: observability-ca
-telemetry:
-  remoteWrite:
-    caSecret: observability-ca
-virtualization:
-  otlp:
-    caSecret: observability-ca
-```
-
-Applications needs only `content.publisher`. Kubernetes/Traefik need `content.publisher` and `telemetry.remoteWrite`. Imports needs `content.publisher` and `imports.remoteWrite`. Keep certificate verification enabled.
-
-</details>
-
-## 4. Add the dashboard repository
+Add the repository once:
 
 ```sh
 helm repo add obs-dashboards https://raw.githubusercontent.com/kaioneuhauss/suse-observability-dashboards/main/helm
 helm repo update obs-dashboards
 ```
 
-**Check:** Helm confirms the repository was updated. Do this once on your computer. Collectors need DNS and network access to SUSE and their image registries. Publishing Jobs run on Linux amd64, download the pinned official SUSE CLI over HTTPS and verify its checksum.
-
-## 5. Install the module you chose
-
-Save YAML using your text editor. The defaults use the Secret names from step 3. Keep each module's own values file. **Use only the option you need; installing every module is not required.**
+**Expected:** Helm updates the repository successfully. Save only the YAML files for the modules you want.
 
 <a id="2-fill-in-your-settings--harvester-example"></a>
 <a id="install-virtualization"></a>
 
-### A. SUSE Virtualization
+### SUSE Virtualization
 
-**Where:** the Harvester cluster, in the same namespace as its Agent. **What you fill in:** integration name, SUSE URL and OTLP endpoint. The chart installs the collectors and publishes four dashboards and seven monitors.
-
-Before installing, check the Harvester services and public CA:
-
-```sh
-kubectl get service kubevirt-prometheus-metrics --namespace harvester-system \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-kubectl get configmap kubevirt-ca --namespace harvester-system \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-kubectl get service longhorn-backend --namespace longhorn-system \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-kubectl get networkpolicy --namespace longhorn-system \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-```
-
-**Check:** services and CA exist. The collector refreshes the public KubeVirt CA automatically. The nodes must allow Linux host collectors with host networking and read-only host mounts.
-
-For guest filesystem panels, the VM also needs a working QEMU guest agent. Follow the [Harvester guest-agent instructions](https://docs.harvesterhci.io/v1.8/vm/index/#installing-the-qemu-guest-agent) for your guest OS. This is separate from the SUSE Observability Agent installed on the cluster. The dashboard chart does not install software inside VMs; missing guest measurements remain empty.
-
-Prepare registry access using [Application Collection authentication](https://docs.apps.rancher.io/get-started/authentication). In its web interface, create an access token or ask your organization administrator for a service account with access to the collector image. If you already have a working pull Secret in this namespace, reuse it.
-
-Otherwise, save `/private/config.json` with your text editor, replacing the two placeholders with the registry username and access token/service-account secret:
-
-```json
-{"auths":{"dp.apps.rancher.io":{"username":"YOUR_REGISTRY_USERNAME","password":"YOUR_REGISTRY_TOKEN"}}}
-```
-
-This is a private credential file, not a chart values file. Keep it out of Git. An existing Docker configuration can also be used if it contains credentials for this registry, rather than only a local credential-helper reference. Create the Secret:
-
-```sh
-kubectl create secret generic application-collection \
-  --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=/private/config.json \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
-```
-
-**Check:** `application-collection` exists in the collector namespace. After installation, confirm the image actually pulls; a Secret alone does not prove access. Remove the temporary local credential file when done. The other dashboard modules do not require this Secret by default.
-
-The SUSE server also needs a reachable **OTLP gRPC endpoint with a valid TLS certificate**. This is separate from its UI URL. If it is missing, complete [Set up OTLP access](docs/otlp.md) on the **SUSE server cluster**, then return here. That guide includes the server Helm values and commands; DNS and certificate issuance depend on your infrastructure. Do not point the collector at the UI hostname unless it really serves OTLP.
-
-Save `virtualization.yaml` with these three settings:
+Save **`virtualization.yaml`**:
 
 ```yaml
 clusterName: my-cluster
@@ -275,7 +80,7 @@ observability:
   otlpEndpoint: otlp-observability.example.com:443
 ```
 
-Only if existing policies already isolate Longhorn managers and block collection, add:
+If the prerequisite check confirmed that existing policies isolate Longhorn managers, add this to the same file. Helm will create and later remove the collector's policy for you:
 
 ```yaml
 virtualization:
@@ -284,7 +89,7 @@ virtualization:
     existingIsolationConfirmed: true
 ```
 
-This rule allows TCP/9500 from this collector's namespace and Pod labels. Other policies can still grant additional access; the rule does not revoke it. The port also serves the Longhorn API. Do not add the first isolation policy blindly: it could block platform traffic. To skip storage collection, set `virtualization.longhorn.enabled: false`; storage panels will have no data.
+Do not enable it on an unisolated Longhorn installation: its first ingress policy could block platform traffic. See the [network checks](docs/network-access.md).
 
 Install:
 
@@ -295,65 +100,19 @@ helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virt
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Check:** Helm reports `deployed`. Open the four **Virtualization** dashboards in SUSE. Continue to step 6.
-
-<a id="install-imports"></a>
-
-### B. Imports — a complete second-module example
-
-Suppose Virtualization is already installed and you now want to follow VMware imports. **Keep `obs-virtualization` installed.** Reuse the Agent, namespace, credentials and Helm repository. Create a separate `imports.yaml` and install a separate release called `obs-imports`.
-
-VM Import Controller must be enabled. Check:
-
-```sh
-kubectl get crd virtualmachineimports.migration.harvesterhci.io \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-kubectl get virtualmachineimports.migration.harvesterhci.io --all-namespaces \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-```
-
-If its existing add-on is disabled, enable `spec.enabled` while preserving the other fields:
-
-```sh
-kubectl edit addons.harvesterhci.io vm-import-controller --namespace harvester-system \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-```
-
-Follow the [Harvester VM Import guide](https://docs.harvesterhci.io/v1.8/advanced/addons/vmimport/) for source/target preparation and actual imports. Enabling the add-on does not start a migration. Save `imports.yaml`:
-
-```yaml
-clusterName: my-cluster
-observability:
-  url: https://observability.example.com
-imports:
-  performance:
-    enabled: true
-```
-
-`performance.enabled: true` adds CPU, memory and network measurements for the controller and shared image services. It grants read-only Nodes and `nodes/metrics` access over TLS/10250, with a 512 MiB writer memory limit. These shared services are **not per-VM transfer progress, throughput or ETA**. Set it to `false` for inventory only, without kubelet access. No vCenter credentials are read.
-
-```sh
-helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
-  --version 1.8.0 --values imports.yaml \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
-```
-
-**Check:** the new dashboard **Virtualization · VMware Import Progress** appears alongside the existing four. Both releases remain listed. This module also works without the Virtualization chart, after the common prerequisites.
+**Expected:** `STATUS: deployed`, ready collectors and four **Virtualization** dashboards. Continue with [step 5](#5-check-that-it-works). If these are the only dashboards you need, you are done after those checks.
 
 <a id="install-kubernetes"></a>
 
-### C. Kubernetes / RKE2
+### Kubernetes / RKE2
 
-Requires the official Agent and Linux nodes that allow host networking and read-only host mounts. Save `kubernetes.yaml`:
+Save **`kubernetes.yaml`**:
 
 ```yaml
 clusterName: my-cluster
 observability:
   url: https://observability.example.com
 ```
-
-**Virtualization already installed on this cluster?** Add `mode: content` at the top of this file. It reuses Virtualization's host and Pod inventory collectors; installing both sets would duplicate data and conflict on host ports.
 
 ```sh
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
@@ -362,68 +121,19 @@ helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernet
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Check:** the two **Kubernetes** dashboards appear. With `mode: content`, no extra collector workloads are expected.
-
-etcd collection is off by default. If your administrator confirms `http://127.0.0.1:2381/metrics` is available on nodes labeled `node-role.kubernetes.io/etcd=true`, add `telemetry.etcd.enabled: true` as nested YAML to the release owning host collection and repeat its install command. The chart does not expose that port. Without collection, etcd panels and monitors have no samples; this is not a healthy result.
-
-**Installing Virtualization after Kubernetes?** First add `mode: content` to `kubernetes.yaml` and repeat its command. This removes the duplicated host collectors. Then install Virtualization. There will be a collection gap until Virtualization is ready. Keep both values files.
+**Expected:** two Kubernetes dashboards. If Virtualization already collects host/Pod metrics on this cluster, add **`mode: content`** to this file first to avoid duplicate host collectors. If installing Virtualization after Kubernetes, change Kubernetes to `mode: content` and rerun its command before installing Virtualization. [Optional etcd collection](docs/kubernetes.md) requires an existing local metrics endpoint; it is off by default.
 
 <a id="install-traefik"></a>
 
-### D. Traefik
+### Traefik
 
-Traefik must already expose Prometheus metrics internally. The default collector finds `app.kubernetes.io/name=rke2-traefik` in `kube-system`, port 9100.
-
-<details>
-<summary>Enable metrics on an existing RKE2 Traefik installation</summary>
-
-Check the owner and current configuration:
-
-```sh
-kubectl get helmchart,helmchartconfig --namespace kube-system \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-```
-
-For a directly managed RKE2 installation, merge these values into `spec.valuesContent` of the existing `rke2-traefik` HelmChartConfig using `kubectl edit`. **Preserve its other settings.** If none exists, save `traefik-metrics.yaml`:
-
-```yaml
-apiVersion: helm.cattle.io/v1
-kind: HelmChartConfig
-metadata:
-  name: rke2-traefik
-  namespace: kube-system
-spec:
-  valuesContent: |-
-    metrics:
-      prometheus:
-        entryPoint: metrics
-        addEntryPointsLabels: true
-        addServicesLabels: true
-    ports:
-      metrics:
-        port: 9100
-        expose:
-          default: false
-```
-
-```sh
-kubectl apply --filename traefik-metrics.yaml \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster
-```
-
-For Rancher/Fleet ownership, change the owning chart values instead. For a standalone Helm installation, merge the metrics/ports blocks into its existing values and upgrade Traefik using its installed chart version. This can restart Traefik; check application access afterward. Metrics stay internal. See [RKE2 configuration](https://docs.rke2.io/helm/) and [Traefik metrics](https://doc.traefik.io/traefik/observability/metrics/prometheus/).
-
-</details>
-
-Save `traefik.yaml`:
+Complete [Traefik metrics preparation](docs/traefik.md) first. Save **`traefik.yaml`**:
 
 ```yaml
 clusterName: my-cluster
 observability:
   url: https://observability.example.com
 ```
-
-For another namespace/selector, add `telemetry.traefik.namespace`, `selector`, `port` and `targetPort` using the real workload settings; see the [Traefik example](docs/traefik.md#3-fill-in-your-settings).
 
 ```sh
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
@@ -432,24 +142,13 @@ helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Check:** **Traefik · Incoming Traffic & Errors** appears and its collection panel is 1 for discovered targets.
+**Expected:** **Traefik · Incoming Traffic & Errors**. Defaults discover RKE2 Traefik in `kube-system`, port 9100. A different namespace, selector or port needs the overrides in the linked guide.
 
 <a id="install-applications"></a>
 
-### E. Applications
+### Instrumented applications
 
-The application must already send these metrics to SUSE. Traces alone are not enough. **Starting without application telemetry?** Follow [application telemetry setup](docs/application-telemetry.md) first: it covers instrumentation prerequisites, a separate collector installed with Helm, what to fill in, SDK configuration, checks and removal. It also explains when a newer Agent's built-in OTel gateway can be used. Neither path requires SUSE Virtualization. The new collector example has been rendered and checked, but was not deployed during the documentation update; verify fresh metrics before proceeding.
-
-| Signal | Expected metric / labels |
-|---|---|
-| Requests | `http_server_requests_total` |
-| Duration histogram in seconds | `http_server_request_duration_seconds_bucket`, `_sum`, `_count` |
-| Identity | `cluster_name`, `service_name`, `namespace` |
-| HTTP details | `http_route`, `http_response_status_code` |
-
-Check those names in Metrics Explorer. Use normalized routes, such as `/orders/{id}`. For a different contract, use [the application metric overrides](docs/applications.md#optional-different-metric-names); the chart cannot infer it.
-
-Save `applications.yaml`:
+Complete [application telemetry setup](docs/application-telemetry.md) first. Traces alone do not provide the HTTP metrics this dashboard requires. Save **`applications.yaml`**:
 
 ```yaml
 observability:
@@ -463,9 +162,39 @@ helm upgrade --install obs-applications obs-dashboards/suse-observability-applic
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Check:** **Applications · Traffic, Errors & Speed** appears. This module publishes content only; it has no collector Pods and does not need an ingestion Secret.
+**Expected:** **Applications · Traffic, Errors & Speed**. This module publishes content only. It does not create collectors, instrument applications or generate traffic. See the [required HTTP metrics and labels](docs/applications.md).
 
-## 6. Check the installation
+## 4. Add a second module
+
+<a id="install-imports"></a>
+
+Example: you installed Virtualization and now want **Imports**. Keep the first release installed. Reuse the Agent, Secrets and Helm repository. Each module has its own values file and release name.
+
+Check that VM Import Controller is enabled using the [Imports prerequisites](docs/imports.md). Save **`imports.yaml`**:
+
+```yaml
+clusterName: my-cluster
+observability:
+  url: https://observability.example.com
+imports:
+  performance:
+    enabled: true
+```
+
+```sh
+helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
+  --version 1.8.0 --values imports.yaml \
+  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
+  --namespace suse-observability --wait --timeout 15m
+```
+
+**Expected:** **Virtualization · VMware Import Progress** appears alongside the four existing dashboards. Imports also works as the first module. The same approach adds any other module: save its own file and run its own command.
+
+Performance collection reads Nodes and `nodes/metrics` over TLS/10250. It measures importer and shared image-service CPU, memory and network activity, **not per-VM transfer speed, percentage or ETA**. Set `performance.enabled: false` for inventory only, without kubelet metrics access.
+
+## 5. Check that it works
+
+Use the same kubeconfig, context and namespace as the installation:
 
 ```sh
 helm list --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
@@ -473,92 +202,51 @@ kubectl get deployment,daemonset,pods \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-**Expected:** your releases are `deployed` and their collectors are ready. Successful publishing Jobs disappear automatically. Failed Jobs remain for investigation.
-
-| Release / mode | Collector workloads expected |
+| Installed module, with collectors | Expected workloads |
 |---|---|
-| `obs-virtualization`, all | Deployment `obs-virtualization`, Deployment `obs-virtualization-pods`, DaemonSet `obs-virtualization-node` |
-| `obs-imports`, all | Deployment `obs-imports-imports` |
-| `obs-kubernetes`, all | Deployment `obs-kubernetes-pods`, DaemonSet `obs-kubernetes-node` |
-| `obs-traefik`, all | Deployment `obs-traefik-traefik`; no host DaemonSet |
-| Applications or any `content` release | None |
+| Virtualization | Deployments `obs-virtualization`, `obs-virtualization-pods`; DaemonSet `obs-virtualization-node` |
+| Imports | Deployment `obs-imports-imports` |
+| Kubernetes | Deployment `obs-kubernetes-pods`; DaemonSet `obs-kubernetes-node` |
+| Traefik | Deployment `obs-traefik-traefik` |
+| Applications or any `mode: content` release | No collector workloads |
 
-In SUSE, open **Dashboards → All**, choose your module and select the cluster. Allow a few minutes for fresh samples. Check collection first, then compare a known resource with the source:
+With optional etcd collection enabled, also expect `obs-virtualization-etcd` or `obs-kubernetes-etcd` on the eligible etcd nodes.
 
-- Virtualization: compare running VM names with Harvester. Storage details identify the PVC namespace, PVC and Longhorn volume.
-- Imports: compare retained import records with kubectl. No active imports means performance is infrastructure activity, not an active transfer test.
-- Kubernetes: use the named Pod lists and **Full names and values → Table** to inspect every match, including entries outside the Top 5.
-- Traefik/Applications: compare a known application's requests and errors. No traffic or missing data is not proof of availability.
+1. Confirm every installed release is **deployed** and its expected collectors are ready. Successful publishing Jobs disappear automatically.
+2. Open **SUSE → Dashboards → All**. Confirm the dashboards from your selected modules exist.
+3. Select your **Cluster**, then **Namespace** and resource. **Everything** selects all values; **None** selects nothing. Reset dependent filters when switching clusters.
+4. Allow a few minutes for fresh samples and rate calculations. A newly started collector can briefly have empty rankings before enough samples arrive. Check collection indicators, then compare a known VM, Pod, volume, import record or application against its source. Data older than the installation does not prove the new collector works.
+5. Open **Monitors** and inspect the module's `SRE ·` rules. Review thresholds and configure [notification channels](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/alerting/notifications/configure.html) if you want notifications.
 
-**No data is not zero or healthy.** If Helm fails, inspect `kubectl get jobs` and `kubectl logs job/JOB_NAME` with the same kubeconfig, context and namespace. Check the publishing identity, DNS/TLS and ingestion credentials. Do not reinstall repeatedly to hide an error. See [validation and troubleshooting](docs/validation.md).
+**No data is not zero or healthy.** A stopped VM has no current resource usage; a guest filesystem needs QEMU Guest Agent; an idle import is not a transfer test. Not every panel has an alert. See [alert coverage](docs/alerts.md) and [using filters, resource lists and native investigation](docs/dashboard-use.md).
 
-### Select a cluster, namespace and resource
-
-1. Open **Cluster**. Keep **Include everything** enabled to see all measured clusters. To choose one, turn it off, click the input, then click the cluster name.
-2. Open **Namespace**, turn off **Include everything** and select a namespace from that cluster. Repeat for VM, Application or Volume when that filter exists.
-3. If the toolbar says **None**, nothing is selected. It does not mean "all". Select a value or enable **Include everything** again. A namespace list can be empty when Cluster is None.
-4. When changing clusters, reset Namespace and the following filters to **Everything**, then select values from the new cluster. A selection from the previous cluster may not exist in the new one.
-5. Read the names beside the values. Long names use an ellipsis in the middle, preserving the start and end. Click **Full names and values**, select **Table** and check the time range to read complete identities and every matching resource. Cards are a shortlist, not the complete incident list; abbreviated names are not unique identifiers.
-
-**Why does Traefik show only one namespace?** Its Namespace filter lists namespaces with discovered Kubernetes Ingress backends in the selected cluster. It does not list every namespace that exists. Another namespace appears when its Ingress is discovered; useful request charts also need traffic through that Traefik instance, service metrics and successful collection. A Pod or ClusterIP Service alone does not create an Ingress. This chart's inventory covers standard Kubernetes Ingress, not every Traefik CRD/provider. Confirm the source with:
+If installation fails:
 
 ```sh
-kubectl get ingress --all-namespaces --kubeconfig /path/to/cluster.yaml --context my-cluster
+kubectl get jobs --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl logs job/JOB_NAME --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-**Which Pod uses this volume?** Storage detail cards show a Running/Pending Pod association reported by the official Agent. For KubeVirt hotplug disks, it can identify the parent `virt-launcher` Pod; the direct mount belongs to its `hp-volume` child Pod. The full table includes `pod_name`, `pvc_namespace`, `pvc`, `volume` and `k8s_cluster_name`. A shared volume can have multiple consumer rows. A `PVC:` label means no unambiguous current Pod reference was matched; check whether the VM is stopped, the claim is unused or Pod telemetry is missing. It does not prove an orphaned volume. The overview still counts unique volumes. Never delete a volume based only on this list.
+Replace `JOB_NAME` with the failed Job. Check credentials, DNS, TLS and permissions before retrying the same Helm command. [More checks and troubleshooting](docs/validation.md).
 
-### Investigate the cause
+## 6. Add another cluster or keep publication central
 
-Use the native resource page for Pod health, events, logs and related resources. These dashboards complement those screens. Application traces require instrumentation and OpenTelemetry delivery; installing a dashboard does not generate traces or execute repairs.
+You need **one publication per module per SUSE instance**, not a dashboard copy for every cluster.
 
-For a VM, distinguish virtualization errors (VM/VMI state, host, `virt-launcher`, PVC and Longhorn) from failures inside the guest OS. A Windows service error or an application exception needs guest/application telemetry. The current [SUSE Virtualization integration guide](https://documentation.suse.com/external-tree/en-us/cloudnative/suse-observability/latest/en/use/suse/suse-virtualization.html) describes a native Virtualization StackPack; availability depends on the server/Agent version. It was not listed in this lab's 2.10.2 catalog. Check compatibility before updating. For application tracing on Linux VMs, see the [official OpenTelemetry guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-linux.html). No guest agent, new tracing pipeline or automatic remediation is installed by this project.
+- **Another source cluster:** prepare its Agent and ingestion Secret, save new module values with `mode: telemetry`, and run the module command with that cluster's context. No publisher token is needed there.
+- **Publish from the Observability cluster:** install each source with `mode: telemetry`, then publish each module once with `mode: content` on the Observability cluster. One shared `content.yaml` can serve all five publishers when their common settings are identical.
 
-### What about alerts?
+Follow [the complete commands, placement table and removal procedure](docs/multiple-clusters.md). This is the arrangement used in the three-cluster validation. Record which release owns publication: uninstalling it removes that module's shared dashboards for every source cluster.
 
-The charts install **39 monitors** across all five modules. Virtualization includes VM pressure, collection failures and degraded/faulted PVC-backed Longhorn volumes. Imports includes failed/invalid records, inventory failure and optional performance collection failure. The Kubernetes, Traefik and Applications modules add their own checks.
+## 7. Update, remove or reinstall
 
-They are starting points, not complete incident coverage. Virtualization alone does not include Kubernetes host-memory/etcd monitors. Backup age, missing backups, import duration and bandwidth need your own recovery/performance policies. Not every graph should create an alert. See [alert coverage and limits](docs/alerts.md).
+### Update a module
 
-Open **Monitors** in SUSE and review the `SRE ·` rules. Notification channels/routing must be configured separately in SUSE. A published monitor is not proof that an email or other notification reaches someone.
-
-## 7. Add the same module to another cluster
-
-Each module's dashboards and monitors are published **once per SUSE instance**. They already have cluster selectors. To add another cluster, prepare its Agent and ingestion Secret, copy the module's values file and set its new integration name plus:
-
-```yaml
-mode: telemetry
-```
-
-For example, save `virtualization-second.yaml` with `mode: telemetry`, the second cluster's `clusterName`, SUSE URL and OTLP endpoint. Create its image-pull Secret and check Longhorn access as in option A. Install only collectors there:
-
-```sh
-helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
-  --version 1.8.0 --values virtualization-second.yaml \
-  --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
-  --namespace suse-observability --wait --timeout 15m
-```
-
-This release needs no publishing token. It adds the second cluster to the existing filters after metrics arrive. Keep a record of **which cluster/release owns publication**. Removing that publishing release removes the shared dashboards for every source cluster. Removing a telemetry release removes only that cluster's collectors. Applications has no telemetry mode. See [multiple clusters](docs/multiple-clusters.md) for central publication.
-
-## 8. Update or reinstall
-
-Keep each values file and any optional settings you added. To change configuration, edit the appropriate file and repeat **that module's** install command. To adopt a new version, update the repository, review its changelog and change `--version` explicitly. An uninstall followed by the same install command is a reinstall.
-
-Before a change, save the output of this command in a private file using your editor (replace the release name for other modules):
-
-```sh
-helm get values obs-virtualization \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
-```
-
-The publishing release owns the managed dashboards. From chart 1.7.0, updates patch existing dashboards and preserve their IDs by default. Definitions can still overwrite personal edits, so keep those in a separate copy. Explicit `replace` mode and uninstall/reinstall can change IDs. For chart versions older than 1.3.0, follow the [upgrade/removal notes](docs/lifecycle.md#moving-from-120-or-121).
-
-## 9. Remove one module or all modules
+Edit its saved YAML and rerun its **same install command**. Keep the release name, namespace and publishing identity. To change versions, update the repository, review the [changelog](docs/changelog.md) and change `--version` explicitly. Normal updates preserve dashboard IDs; an uninstall/reinstall creates new IDs and can invalidate bookmarks. Managed dashboards can overwrite manual edits; keep personal copies separately.
 
 ### Remove only an additional module
 
-For example, to remove Imports and keep Virtualization:
+To remove Imports and keep Virtualization:
 
 ```sh
 helm uninstall obs-imports \
@@ -566,62 +254,38 @@ helm uninstall obs-imports \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Check:** `obs-imports` disappears from `helm list`; its dashboard and three monitors are removed. The four Virtualization dashboards remain. VM Import Controller and import records remain too.
+**Expected:** its collectors, dashboard and three monitors are gone. Virtualization, VM Import Controller and import records remain. A `telemetry` release removes only collectors; shared content remains until its publishing release is removed.
 
-### Remove all installed modules
+### Remove every installed module
 
-First list your releases with the command in step 6. Run **only** the commands for releases you actually installed, on the cluster and namespace where each one lives. Keep the publishing Secret and SUSE API available until removal finishes.
+First list releases using step 5. Run **only the lines for modules installed in that cluster and namespace**. Keep SUSE and the publishing Secret available until cleanup finishes:
 
 ```sh
-helm uninstall obs-imports \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-applications \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-traefik \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-kubernetes \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-virtualization \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-imports --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-applications --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-traefik --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-kubernetes --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-virtualization --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
 ```
 
-Each command also works for removing that module individually. **One dependency to remember:** Kubernetes in `content` mode reuses Virtualization collectors. If you remove Virtualization but keep Kubernetes, first remove Virtualization, then change `kubernetes.yaml` to `mode: all` and repeat its install command. This restores host collection with a brief gap.
+For several clusters, remove source releases in each source namespace, then the central publishers as shown in [multi-cluster removal](docs/multiple-clusters.md#3-remove-a-module-or-start-again). **Do not delete the namespace, PVCs or platform releases.** Helm removes the project's owned resources and managed content; existing applications, VMs, volumes, Agents, server and metric history stay in place.
 
-For multiple clusters, remove telemetry releases on their own clusters first. Remove the publishing release only when no source cluster still needs its shared dashboards.
-
-### Confirm removal
+### Check removal and reinstall
 
 ```sh
 helm list --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
-kubectl get deployment,daemonset,jobs \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl get deployment,daemonset,pods --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-**Expected:** the selected releases and their collector workloads are gone; their managed dashboards and monitors disappear from SUSE. Old metric history remains until normal retention expires. Applications, VMs, PVCs, volumes, the SUSE server and official Agents stay in place. Shared Secrets and platform prerequisites also stay in place. **Do not delete the namespace.**
+**Expected:** the removed releases and their collectors are absent. Refresh **Dashboards → All** and **Monitors**; their managed content should also be gone. The native Kubernetes dashboard and unrelated content remain. If a cleanup hook fails, keep the credentials and follow [cleanup troubleshooting](docs/lifecycle.md); do not bypass it with `--no-hooks`.
 
-If uninstall fails, inspect the remaining Job and fix API access, TLS or token ownership, then repeat the same command. Do not bypass cleanup with `--no-hooks`. With custom `lifecycle.deleteOnUninstall: false`, remote dashboards intentionally remain; see [lifecycle recovery](docs/lifecycle.md#3-if-removal-fails).
+To start again, keep the working prerequisites and saved files, run the same install commands, then repeat step 5. [Optional cleanup of dedicated Secrets and prerequisites](docs/lifecycle.md) is separate; never remove a Secret still used by the Agent or another module.
 
-The project does not remove Agent credentials, Traefik configuration, the import controller or the server's OTLP endpoint because other integrations may use them. If you installed the optional separate application collector only for this experiment, follow its [additional cleanup steps](docs/application-telemetry.md#7-remove-the-dashboard-and-optional-collector). To remove the **dedicated publishing Secret**, first confirm every release using it is gone, then run:
+## More detail
 
-```sh
-kubectl delete secret suse-observability-publisher-token \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
-```
+- [Configuration walkthrough: what each setting does](docs/configuration-guide.md)
+- [Dashboard measurements and limitations](docs/metric-contracts.md)
+- [Every panel explained](docs/panel-guide.md)
+- [What was actually tested in the lab](docs/lab-validation.md)
 
-Skip that final command if the Secret is shared with anything else. Recreate it through step 3 when reinstalling.
-
-## More details
-
-The README covers the standard dashboard installation and removal. Environment-specific platform setup still belongs to its owner; linked guides cover those exceptions instead of assuming that every cluster uses the same DNS, CA, ingress or instrumentation.
-
-- [Virtualization walkthrough](docs/virtualization.md) · [OTLP setup](docs/otlp.md) · [Common prerequisites](docs/prerequisites.md)
-- [Configuration explained, step by step](docs/configuration-guide.md) · [Application telemetry setup](docs/application-telemetry.md)
-- [Dashboard reading guide](docs/panel-guide.md) · [Metric definitions](docs/metric-contracts.md) · [Alerts](docs/alerts.md)
-- [Validation](docs/validation.md) · [Lab results and limits](docs/lab-validation.md) · [Changelog](docs/changelog.md)
-
-`examples/` contains small values files. `charts/` contains chart source; `helm/` contains the packages Helm downloads. `dev/` is only for maintainers. The Virtualization topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards).
+The installation uses the published charts. `charts/` contains their sources, `helm/` their packages, `examples/` small values files, `docs/` the guides and `dev/` maintainer tools. You do not need the maintainer tools to install or remove a module.

@@ -1,5 +1,39 @@
 # Lab validation
 
+## 2026-11-03 — Clean reinstall from the simplified Helm/kubectl guide
+
+This run followed the README and its linked **central publication** procedure. It used the public **1.8.0** chart packages, seven small values files (six source files and one shared `content.yaml`), Helm **4.1.1** and kubectl **1.35.2**. Local maintainer tools were used to inspect evidence and test the repository; installation and removal used direct Helm/kubectl commands, without an installer script.
+
+### Removal and preservation
+
+- Saved the existing release values/manifests privately and checked all 11 replacement configurations with Helm server dry-runs before removal.
+- Uninstalled six source collector releases and five central publishers. Confirmed that all regular chart-owned resources, all **nine project dashboards** and all **39 project monitors** were absent before reinstalling.
+- The native **Kubernetes Cluster** dashboard retained its ID. The 38 unrelated monitors present after cleanup remained present after publication.
+- **828 protected resources** retained their UIDs and specifications both after removal and after reinstall: 86 in Observability, 29 in Rancher and 713 in Harvester. This includes workloads, persistent volumes/claims, VMs, VMIs and Longhorn volumes. Existing platform Helm release revisions and non-project NetworkPolicies did not change.
+- The official Agents, SUSE server, Harvester, Rancher, demo applications, import controller/records and historical metrics were preserved. Coriolis remained outside this work.
+
+### Installation and data
+
+- All **11 releases** were recreated at **revision 1**, chart **1.8.0**, with **24 ready collector Pods and zero restarts** in the final workload snapshot. The nine persisted dashboard definitions match their chart sources. Their IDs changed, as expected after uninstall/reinstall.
+- The chart recreated the restricted Longhorn policy: TCP/9500 from the Virtualization collector Pod selectors and its namespace together. Existing Longhorn platform policies retained their rules and UIDs.
+- **30 targets reported `up=1`**: five KubeVirt, one Longhorn, ten node, seven etcd, six Traefik and one Imports performance target. Their oldest sample was about **29 seconds** old at the freshness check. Import inventory also reported healthy and recent data.
+- Source reconciliation matched **10 running VMs by namespace/name**, **50 assigned vCPUs**, **100 GiB configured guest memory**, **184 Longhorn volumes by identity and health state**, and **eight import records**. Volume states were 41 healthy, one degraded and 142 unknown. Unknown is not treated as healthy.
+- **8,827 native API query/filter cases** completed with zero query errors and zero nonfinite values. These covered discovered single-value filter paths, parent/Everything combinations and representative multiple selections. All **195 nonexistent-cluster cases** returned no series. There were 3,555 empty cases, recorded separately from failures.
+- The first Virtualization audit began shortly after collector startup. Six summary/detail queries initially had no series; after collection warmed up, all six returned the expected Top 5 or storage detail entries. In the Imports dashboard, the two active-import age panels remained empty because the eight retained records were already complete. No active migration was started.
+- All **39 monitors** were enabled, with successful executions, zero execution errors and zero unmatched topology states in the final monitor check. Alert notification routing/delivery was not configured or tested.
+- Opened all nine dashboards in the browser and checked their visible summary panels. Tested the Harvester → namespace → VM filter (10 VMs to one selected VM), the empty-selection state, and Rancher → `cattle-system` in Traefik. The Traefik namespace list also contained `kube-system`. Returning from the VM dashboard did not reproduce the unsaved-changes warning. This was a focused UI check, not a repeat of every off-screen panel or viewport test.
+- All **69 repository tests**, Helm lint/render checks, **137 local documentation links** and **41 YAML examples** passed. The guide's installation/removal command blocks were checked to contain only Helm and kubectl commands. The charts themselves did not need a code change for this reinstall.
+
+### What the tutorial now makes explicit
+
+The README was shortened to the module selection, prerequisite map, small values files, install, checks and removal. Prerequisites now follow the execution order: server → OTLP endpoint → official Agent → publishing credential → module/network checks. Network policies remain chart-managed where supported; no extra policy script is required. The multi-cluster guide lists the actual release placement and complete commands for adding/removing a second module, all collectors and central content. One `content.yaml` replaces five identical publisher files.
+
+### Boundaries and existing issues
+
+The SUSE server, Agents, DNS, certificates, registry credentials and application instrumentation were **reused and checked**, not installed from scratch in this run. Their setup instructions point to the official documentation and were reviewed; this is not a claim that a new platform installation was tested. The live reinstall used split `telemetry`/`content` mode. The simpler `all` mode passed chart validation but was not a separate live installation in this round.
+
+Four failed ClickHouse backup Pods were already present before the work and remained afterward. The degraded Longhorn volume and active etcd/memory monitor findings were not remediated or hidden by changing thresholds. These are separate from successful dashboard deployment. This run does not prove backup restoration, failover, notification delivery, active import performance, every browser viewport or compatibility with other server/Agent versions.
+
 ## 2026-10-29 — Chart 1.8.0 proportions and VM storage references
 
 - Updated the five central `mode: content` releases. All nine live definitions match their chart source and keep their existing IDs. No collector, permission, application, VM or volume configuration was changed.

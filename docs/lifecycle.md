@@ -38,7 +38,7 @@ helm status obs-virtualization \
 
 **Expected result:** the release is absent from the list and `helm status` returns `release: not found`. Repeat the module guide's workload check: its named workloads should return `NotFound` as well. Open SUSE and confirm the module's dashboards disappeared. Other modules, applications, VMs, volumes, the SUSE server and its historical metrics, official Agents and shared Secrets stay in place. **Do not delete the namespace.**
 
-With multiple clusters, repeat removal for each source collector and then the central publisher. See [Multiple clusters](multiple-clusters.md#3-remove-a-module-from-multiple-clusters).
+With multiple clusters, repeat removal for each source collector and then the central publisher. See [Multiple clusters](multiple-clusters.md#3-remove-a-module-or-start-again).
 
 ## 3. If removal fails
 

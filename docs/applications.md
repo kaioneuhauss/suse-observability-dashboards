@@ -10,7 +10,7 @@ Starting without telemetry? Complete [application telemetry setup](application-t
 
 ## 1. Check the requirements
 
-You need the [publishing Secret](prerequisites.md#4-create-the-publishing-secret) and these metrics in Metrics Explorer:
+You need the [publishing Secret](prerequisites.md#5-prepare-the-publishing-credential) and these metrics in Metrics Explorer:
 
 | Signal | Expected name or labels |
 |---|---|

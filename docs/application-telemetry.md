@@ -137,7 +137,7 @@ config:
 
 The chart keeps its default OTLP receivers on 4317/4318 and health endpoint. This is a single-replica lab example with memory-backed queues. It does not provide durable delivery or an HA design. Network policy must permit only your intended application namespaces to reach the receiver and allow the collector to reach the Kubernetes API and SUSE. Do not expose this unauthenticated internal receiver to the Internet.
 
-For a private server CA, follow [the private CA Secret procedure](prerequisites.md#5-check-the-requirements-for-your-module), then merge these fields into the same file. Keep the other exporter settings:
+For a private server CA, follow [the private CA Secret procedure](prerequisites.md#6-check-the-module-specific-prerequisites), then merge these fields into the same file. Keep the other exporter settings:
 
 ```yaml
 extraVolumes:

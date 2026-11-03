@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-03 — Installation guide and clean reinstall validation
+
+- Shortened the README and ordered prerequisite setup from SUSE server and OTLP to the Agent, credentials and module/network checks.
+- Added complete central publication/removal commands and reused one shared values file for publishers. Kept end-user commands Helm/kubectl-only.
+- Reinstalled all 11 project releases from the public 1.8.0 charts, preserving platforms, applications, VMs and volumes. See [the evidence and boundaries](lab-validation.md). No chart package or dashboard definition changed.
+
+
 ## 1.8.0 — Balanced cards and VM storage references
 
 - Use a consistent 56px numeric value size and reduce action-list height by one third. At the validated desktop width, five results share a single row instead of wrapping 4 + 1. Storage health and old-backup previews share a row and show up to three entries each; the full table retains all matches.

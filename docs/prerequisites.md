@@ -1,72 +1,113 @@
 # Prepare your environment
 
-Do this once before installing your first module. If an item is already set up, check it and move on. You only need kubectl and Helm on your computer. Save the YAML examples with your usual text editor.
-
-For the complete guided installation, start with the [README prerequisite map](../README.md#prepare-only-what-your-module-needs). For the reason behind every setting, use the [configuration walkthrough](configuration-guide.md). This page is the common preparation checklist.
+Complete these steps once, in order. If something already works, check it and reuse it. The dashboard installation then needs only a small values file and one Helm command per module.
 
 > [!WARNING]
-> These charts are for labs and learning. They are not recommended for production or covered by official SUSE support.
+> This is a community lab project, not recommended for production or covered by official SUSE support. Use official, version-compatible instructions for the SUSE server and Agent.
 
-## 1. Check access to your cluster
+**Two places are involved:** the **server cluster** runs SUSE Observability; the **monitored cluster** runs the applications or Harvester VMs. They can be the same cluster. Commands explicitly name their target. Save YAML and private credentials with your text editor; no local scripts are required.
 
-Install [kubectl](https://kubernetes.io/docs/tasks/tools/) and [Helm](https://helm.sh/docs/intro/install/) for your operating system. Use a kubectl version compatible with your cluster. The charts are checked with Helm 3 and 4.
+## 1. Check access to your clusters
 
-Download the cluster's kubeconfig from Rancher or Harvester. Keep it in a private location outside this repository. Find the context name:
+Install [kubectl](https://kubernetes.io/docs/tasks/tools/) and [Helm 3 or 4](https://helm.sh/docs/intro/install/). Use a kubectl version compatible with the Kubernetes server. Download each kubeconfig from Rancher or Harvester and store it privately.
 
 ```sh
 kubectl config get-contexts --kubeconfig /path/to/cluster.yaml
 kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
+helm list --all-namespaces --kubeconfig /path/to/cluster.yaml --kube-context my-cluster
 ```
 
-In all examples, replace `/path/to/cluster.yaml` and `my-cluster` with those details. `--context` is for kubectl; `--kube-context` is the equivalent Helm option. Your account needs permission to install the chart's workloads and RBAC resources.
+**Expected:** the nodes belong to the intended cluster. Record its context, Agent namespace and existing release names. Your account must be allowed to install the selected module's workloads and RBAC resources. If Fleet or a Harvester add-on owns a prerequisite, change its owning configuration rather than installing a competing release.
 
-**Expected result:** you can list the nodes in the intended cluster.
+## 2. Prepare the SUSE Observability server
 
-## 2. Check SUSE Observability and the Agent
+Do this on the **server cluster**, before installing anything from this repository:
 
-Open your SUSE Observability URL and confirm you can log in. If the server is not installed, follow the [README server preparation](../README.md#if-suse-observability-is-not-installed-yet), including sizing, licensing, persistent storage, the official Helm installation, DNS and TLS checks. These dashboard charts do not size or install the server.
-
-Virtualization, Imports, Kubernetes and Traefik use the official Agent integration. Follow the [README Agent installation](../README.md#connect-the-cluster-to-suse) and your instance's Kubernetes StackPack instructions. They contain the settings for your version. Do not install a second Agent if one already exists. The [Harvester 1.8 Agent add-on](https://docs.harvesterhci.io/v1.8/advanced/addons/suse-observability-agent/) is documented as experimental. Applications content only needs existing compatible HTTP metrics and publisher access; its telemetry setup is described [separately](application-telemetry.md).
-
-Find the Agent's namespace, then check its Pods and integration name:
+1. Check the official [requirements and sizing](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/requirements.html) and [version compatibility](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/Compatibility%20Self%20Hosted.html). Obtain a license and the required registry access. Choose the storage class and enough free resources for the selected profile.
+2. Follow the [official Helm installation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/kubernetes_install.html). Keep its values and credentials in a private location. The server chart version is independent of this project's `1.8.0` charts.
+3. Configure DNS, a valid certificate and [HTTPS ingress](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html). For Virtualization or a separate application collector, also prepare the [OTLP endpoint](otlp.md). The browser URL and OTLP gRPC address are different settings.
+4. Open the SUSE URL, log in and confirm the server workloads are ready:
 
 ```sh
-helm list --all-namespaces --kubeconfig /path/to/cluster.yaml --kube-context my-cluster
+helm list --kubeconfig /path/to/observability.yaml --kube-context observability --namespace suse-observability
+kubectl get pods,pvc,ingress --kubeconfig /path/to/observability.yaml --context observability --namespace suse-observability
+```
+
+**Check:** the server release is deployed, its persistent storage is bound, workloads are ready and HTTPS works. Do not proceed while the server has unresolved storage, certificate or startup errors. An existing healthy server can be reused; do not reinstall it for these dashboards.
+
+The official installation page evolves. Follow the instructions for the **server chart version you selected**; current `suseObservability.*` settings are not a reason to replace a working older server's values. Keep the server and dashboard chart versions separate.
+
+## 3. Prepare OpenTelemetry on the server
+
+**Needed for:** Virtualization metrics and applications that send OTLP. Kubernetes, Imports and Traefik collectors use Prometheus remote write and can skip this step when no application collector uses OTLP.
+
+1. Open **SUSE → StackPacks → OpenTelemetry** and complete the integration instructions offered by your instance when setting up application telemetry. Keep its ingestion credential private. This is separate from the Kubernetes Agent integration and the publishing token.
+2. On a self-hosted server, expose the existing collector through a valid TLS/gRPC ingress. Follow **[Set up OTLP access](otlp.md)**: check the server Service, prepare DNS/certificate, save the ingress values, apply them with Helm using the installed server version, and verify the route. Do not install another server collector just for these dashboards.
+3. Record an endpoint such as `otlp-observability.example.com:443`. It is not automatically the same as the browser URL. Do not add `https://` to the Virtualization gRPC setting.
+
+**Expected before installation:** the OTLP hostname resolves to the correct ingress, its certificate covers that hostname, and its backend is the server's gRPC Service. **Expected after installation:** fresh metrics arrive without TLS/authentication/export errors. An Ingress resource alone is not proof of ingestion.
+
+The Virtualization chart reuses the official Kubernetes Agent's ingestion Secret. Application instrumentation has a separate [guided setup](application-telemetry.md). See SUSE's [OTLP protocol and endpoint documentation](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/otel/otlp-apis.html). Keep certificate verification enabled.
+
+## 4. Connect Harvester or Kubernetes to SUSE
+
+**Where:** run the following commands against the cluster you want to monitor: Harvester for VMs/imports, or your Kubernetes/RKE2 cluster for its workloads. Use the [official Kubernetes integration guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/k8s-quick-start-guide.html) and the commands generated by your own SUSE instance. Check the required cluster permissions and Pod security policy with the cluster administrator.
+
+On Harvester, use one installation method: the Helm procedure below, or the [Harvester 1.8 Agent add-on](https://docs.harvesterhci.io/v1.8/advanced/addons/suse-observability-agent/). That add-on is experimental in the linked version. Keep an existing add-on under its current owner; do not install another Agent over it. Use documentation matching your Harvester version.
+
+If the official Agent is already installed, keep it and use the checks below. Otherwise, open **SUSE Observability → StackPacks → Kubernetes → Add new instance**. Choose a unique integration name and obtain the ingestion Service Token. Save the token as `/private/ingestion-token.txt`, with no extra spaces or trailing newline.
+
+Save `agent.yaml`, using the receiver URL from your instance:
+
+```yaml
+stackstate:
+  cluster:
+    name: my-cluster
+  url: https://observability.example.com/receiver/stsAgent
+```
+
+Replace `AGENT_CHART_VERSION` with the version offered by your Kubernetes integration. Keep any additional values required by that integration/version.
+
+If you need to inspect a version before using it, run `helm search repo suse-observability/suse-observability-agent --versions` after adding the repository below. Do not pick the newest version without checking server compatibility. `stackstate.cluster.name` identifies the cluster; `stackstate.url` is the Agent receiver, not the OTLP endpoint.
+
+```sh
+helm repo add suse-observability https://charts.rancher.com/server-charts/prime/suse-observability
+helm repo update suse-observability
+helm upgrade --install suse-observability-agent suse-observability/suse-observability-agent \
+  --version AGENT_CHART_VERSION --values agent.yaml \
+  --set-file stackstate.apiKey=/private/ingestion-token.txt \
+  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
+  --namespace suse-observability --create-namespace --wait --timeout 15m
+```
+
+The field is called `apiKey` but accepts the ingestion Service Token. Helm stores these values in release Secrets; restrict access to the namespace. Do not enable another Agent through a Harvester add-on as well.
+
+Check the Agent, integration name and ingestion Secret **without printing its credential**:
+
+```sh
 kubectl get pods --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 kubectl get configmap suse-observability-agent-cluster-name \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability \
   -o jsonpath='{.data.STS_CLUSTER_NAME}{"\n"}'
-```
-
-Use the returned name as `clusterName`. If the ConfigMap has a custom name, get the integration name from the Agent's configuration or the Kubernetes integration in SUSE. Do not substitute the kubeconfig context unless both names actually match.
-
-Use the Agent's existing namespace for the collectors. It may be `suse-observability-agent` instead of `suse-observability`. Replace the namespace in every command if needed. Wait until the cluster's nodes and Pods appear in SUSE before continuing.
-
-**Expected result:** the Agent is running, its cluster name is known and the cluster appears in SUSE.
-
-## 3. Check the ingestion Secret
-
-The charts reuse the Agent's ingestion credential. The default is Secret `suse-observability-agent-secrets`, key `STS_API_KEY`. Check the key names without printing the credential:
-
-```sh
 kubectl get secret suse-observability-agent-secrets \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability \
   -o go-template='{{range $key, $value := .data}}{{$key}}{{"\n"}}{{end}}'
 ```
 
-If your names differ, add this to your module's values file:
+**Check:** Agent Pods are ready, you know the integration name, and the Secret contains `STS_API_KEY`. Nodes and Pods must appear in SUSE. Use that integration name as `clusterName` below. With a custom Agent release, find the equivalent ConfigMap/Secret in its configuration.
 
-```yaml
-ingestion:
-  existingSecret: your-agent-secret
-  secretKey: your-ingestion-key
+**Applications only:** this Agent is recommended for Kubernetes topology, but the content chart itself only needs a publisher and compatible application metrics. It does not create those metrics.
+
+## 5. Prepare the publishing credential
+
+**Where:** the namespace of the release that publishes content. For the simplest installation this is the monitored cluster's Agent namespace. With [central publication](multiple-clusters.md#2-keep-publishers-on-the-observability-cluster), create it only on the server cluster; source collectors do not need publishing access.
+
+Check the namespace with `kubectl get namespace suse-observability --kubeconfig /path/to/cluster.yaml --context my-cluster`. If it does not exist, create it before creating Secrets:
+
+```sh
+kubectl create namespace suse-observability \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster
 ```
-
-The applications module and `mode: content` do not need this Secret. Do not replace the Agent's credential just to install a dashboard.
-
-**Expected result:** the Secret contains `STS_API_KEY`, or you recorded its custom name and key.
-
-## 4. Create the publishing Secret
 
 Ask your SUSE administrator for a **Service Token allowed to read, create, update and delete dashboards and monitors**. The Agent's ingestion token cannot do this. Token issuance and permissions belong to SUSE Observability, not Kubernetes; these charts cannot create that access for you. See [SUSE Service Tokens](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/security/k8s-service-tokens.html).
 
@@ -94,28 +135,87 @@ Both use key `serviceToken` by default. A different identity can receive 403 eve
 
 **Expected result:** the publishing Secret exists in the namespace where Helm will publish the dashboards. Skip this step for collector-only (`telemetry`) releases.
 
-## 5. Check the requirements for your module
+**Why ask an administrator for this token?** Kubernetes Secrets store credentials; they do not create SUSE roles. SUSE documents token management through its CLI. The end-user installation here stays Helm/kubectl-only by treating a valid publisher token as a prerequisite. The chart runs the pinned CLI inside its publishing Job. See [credential roles and ownership](configuration-guide.md#3-understand-the-three-credentials).
 
-| Module | What else is needed |
-|---|---|
-| [Virtualization](virtualization.md) | OTLP gRPC endpoint, collector image access, KubeVirt and Longhorn metrics |
-| [Imports](imports.md) | VM Import Controller and its CRD on Harvester |
-| [Traefik](traefik.md) | Prometheus metrics enabled on your existing Traefik |
-| [Applications](applications.md) | HTTP metrics already arriving in SUSE with the expected names and labels |
-| [Kubernetes](kubernetes.md) | Linux nodes; permission to run host collectors; etcd metrics only if you enable them |
+## 6. Check the module-specific prerequisites
 
-Pods need DNS and HTTPS access to SUSE and the configured image registries. Publishing Jobs also download the pinned SUSE CLI and verify its SHA-256. Their default image runs on Linux amd64. The CLI runs inside the Job; you do not install it locally.
+### Virtualization: services, registry and network access
 
-No application metrics yet? Use [application telemetry setup](application-telemetry.md). It distinguishes SDK push, Prometheus scraping and existing telemetry. The current Agent gateway documentation does not apply automatically to older Agent charts such as the lab's `1.2.14`.
+Run on **Harvester**:
 
-For a private CA, create a Secret from your CA certificate:
+```sh
+kubectl get service kubevirt-prometheus-metrics --namespace harvester-system \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster
+kubectl get configmap kubevirt-ca --namespace harvester-system \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster
+kubectl get service longhorn-backend --namespace longhorn-system \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster
+```
+
+**Expected:** all three resources exist. The chart discovers KubeVirt targets and refreshes the public CA automatically. You do not export certificates by hand. Linux host collection uses host networking and read-only host mounts; cluster admission must permit it.
+
+Prepare registry access using [Application Collection authentication](https://docs.apps.rancher.io/get-started/authentication). In its web interface, create an access token or ask your organization administrator for a service account with access to the collector image. If you already have a working pull Secret in this namespace, reuse it.
+
+Otherwise, save `/private/config.json` with your text editor, replacing the two placeholders with the registry username and access token/service-account secret:
+
+```json
+{"auths":{"dp.apps.rancher.io":{"username":"YOUR_REGISTRY_USERNAME","password":"YOUR_REGISTRY_TOKEN"}}}
+```
+
+This is a private credential file, not a chart values file. Keep it out of Git. An existing Docker configuration can also be used if it contains credentials for this registry, rather than only a local credential-helper reference. Create the Secret:
+
+```sh
+kubectl create secret generic application-collection \
+  --type=kubernetes.io/dockerconfigjson --from-file=.dockerconfigjson=/private/config.json \
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+```
+
+**Check:** `application-collection` exists in the collector namespace. After installation, confirm the image actually pulls; a Secret alone does not prove access. Remove the temporary local credential file when done. The other dashboard modules do not require this Secret by default.
+
+Then follow **[Network access and Longhorn policies](network-access.md)**. If Longhorn is already isolated, enable its scoped policy in your values file; the chart creates it during installation and removes it during uninstall. No standalone policy file is needed. Existing platform policies must remain in place.
+
+Guest filesystem panels additionally need [QEMU Guest Agent inside the VM](https://docs.harvesterhci.io/v1.8/vm/index/#installing-the-qemu-guest-agent). This is different from the SUSE cluster Agent. Powered-off VMs have no current usage. Do not interpret absent guest metrics as zero.
+
+### Other modules
+
+| Module | Configure before installation | Ready when |
+|---|---|---|
+| Imports | [VM Import Controller and optional performance access](imports.md) | Import CRD exists; TLS/10250 is reachable if performance is enabled |
+| Kubernetes | [Host metrics and optional etcd](kubernetes.md) | Linux host collectors are permitted; etcd endpoint exists if enabled |
+| Traefik | [Enable internal Prometheus metrics](traefik.md) and [check policies](network-access.md#4-traefik-and-other-restrictions) | Correct namespace, selector and metrics port are known |
+| Applications | [Instrument and send application telemetry](application-telemetry.md) | Required HTTP metrics and labels are present in SUSE |
+
+Do not enable etcd collection just to fill an empty panel. Confirm the existing endpoint first; the chart does not expose or reconfigure etcd. Imports performance measures shared infrastructure, not per-VM transfer speed.
+
+## 7. Custom Secret names or private certificates
+
+Skip this section when the default names and public certificates work.
+
+Add overrides to each module's values file when needed:
+
+```yaml
+ingestion:
+  existingSecret: your-agent-secret
+  secretKey: STS_API_KEY
+auth:
+  dashboards:
+    existingSecret: your-dashboard-publisher-secret
+    serviceTokenKey: serviceToken
+  monitors:
+    existingSecret: your-monitor-publisher-secret
+    serviceTokenKey: serviceToken
+```
+
+Keep the identity that owns existing dashboards; another token can receive 403 even with similar permissions. `mode: content` and Applications do not need ingestion credentials.
+
+For a private CA, create its Secret:
 
 ```sh
 kubectl create secret generic observability-ca --from-file=ca.crt=/private/ca.crt \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
 ```
 
-Then add the relevant settings to your values file. This example is for Virtualization:
+For Virtualization, add:
 
 ```yaml
 content:
@@ -129,6 +229,10 @@ virtualization:
     caSecret: observability-ca
 ```
 
-Applications only uses `content.publisher`; Traefik and Kubernetes use `content.publisher` and `telemetry.remoteWrite`. Imports uses `content.publisher` and `imports.remoteWrite`. Keep certificate verification enabled.
+Applications needs only `content.publisher`. Kubernetes/Traefik need `content.publisher` and `telemetry.remoteWrite`. Imports needs `content.publisher` and `imports.remoteWrite`. Keep certificate verification enabled.
 
-You are ready to follow the [installation example](../README.md#2-fill-in-your-settings--harvester-example) or the guide for your chosen module.
+## 8. Ready to install
+
+You should now know your context, namespace, integration name, SUSE URL and (when needed) OTLP endpoint. The required Secrets are in the release's namespace. No plaintext credential belongs in a chart values file or Git.
+
+Return to **[install your first module](../README.md#3-install-your-first-module)**, or follow **[central publication](multiple-clusters.md#2-keep-publishers-on-the-observability-cluster)** for the three-cluster layout. After installation, check actual collection and fresh data; successful prerequisite commands alone do not validate the complete path.
