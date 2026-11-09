@@ -3,9 +3,9 @@
 Choose a module, fill in a small YAML file and install it with Helm. Each module includes its own dashboards and monitors. Collectors are included where extra metrics are needed.
 
 > [!WARNING]
-> Community project for labs and learning. **Not recommended for production and not an officially supported SUSE integration.** Review thresholds before relying on alerts. Notification delivery must be configured separately.
+> Community project, **not an officially supported SUSE integration** and **not recommended for production without target-environment acceptance**. A successful installation in this lab does not certify another environment. Complete the [production acceptance checks](docs/sre-review.md#production-acceptance) before operational use, including backup restore and notification delivery.
 
-You need **Helm, kubectl and a text editor**. You do not need local scripts, Python, Grafana or a repository clone to install. Browser steps are needed to create SUSE integrations and obtain credentials.
+You need **Helm, kubectl and a text editor** for these module installations. You do not need local scripts, Python, Grafana or a repository clone. For a new SUSE instance, an administrator uses the SUSE `sts` CLI once to create the dedicated publishing role/token; browser steps create the official integrations and obtain ingestion credentials.
 
 ## 1. Choose your modules
 
@@ -45,7 +45,7 @@ Fill in these details before continuing. Keep values and credential files in a p
 | `/path/to/cluster.yaml` | Kubeconfig of the cluster where this release will run |
 | `my-cluster` in commands | Context listed by `kubectl config get-contexts --kubeconfig /path/to/cluster.yaml` |
 | `clusterName: my-cluster` in YAML | Exact SUSE Kubernetes integration name; it can differ from the context |
-| `suse-observability` | Namespace containing the Agent and required Secrets; some installations use `suse-observability-agent` |
+| `suse-observability-agent` | Current official Agent namespace and the namespace used by the commands below. If your Agent already uses `suse-observability`, replace the namespace in **every** command and Secret check. Do not install a second Agent. |
 | `https://observability.example.com` | SUSE browser/API URL |
 | `otlp-observability.example.com:443` | TLS gRPC endpoint, without `https://`; Virtualization only |
 
@@ -55,7 +55,7 @@ The short examples below use the default Secret names: `suse-observability-agent
 
 **Already installed?** Keep the existing release placement, `mode` and complete saved values. Use [update/removal](#7-update-remove-or-reinstall) instead of replacing an existing configuration with a minimal first-install example.
 
-**Where:** the cluster you want to monitor, in the Agent's namespace. The default installs collectors and publishes content together. For an environment with several clusters and publishers kept on the Observability cluster, use the complete [central publication procedure](docs/multiple-clusters.md#2-keep-publishers-on-the-observability-cluster) instead; do not run both approaches for the same module.
+**Where:** the cluster you want to monitor, in the Agent's namespace (`suse-observability-agent` in this new-install example). The default installs collectors and publishes content together. For an environment with several clusters and publishers kept on the Observability cluster, use the complete [central publication procedure](docs/multiple-clusters.md#2-keep-publishers-on-the-observability-cluster) instead; do not run both approaches for the same module.
 
 Add the repository once:
 
@@ -97,7 +97,7 @@ Install:
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
   --version 1.8.0 --values virtualization.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** `STATUS: deployed`, ready collectors and four **Virtualization** dashboards. Continue with [step 5](#5-check-that-it-works). If these are the only dashboards you need, you are done after those checks.
@@ -118,7 +118,7 @@ observability:
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
   --version 1.8.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** two Kubernetes dashboards. If Virtualization already collects host/Pod metrics on this cluster, add **`mode: content`** to this file first to avoid duplicate host collectors. If installing Virtualization after Kubernetes, change Kubernetes to `mode: content` and rerun its command before installing Virtualization. [Optional etcd collection](docs/kubernetes.md) requires an existing local metrics endpoint; it is off by default.
@@ -139,7 +139,7 @@ observability:
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
   --version 1.8.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** **Traefik · Incoming Traffic & Errors**. Defaults discover RKE2 Traefik in `kube-system`, port 9100. A different namespace, selector or port needs the overrides in the linked guide.
@@ -159,7 +159,7 @@ observability:
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
   --version 1.8.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** **Applications · Traffic, Errors & Speed**. This module publishes content only. It does not create collectors, instrument applications or generate traffic. See the [required HTTP metrics and labels](docs/applications.md).
@@ -178,28 +178,28 @@ observability:
   url: https://observability.example.com
 imports:
   performance:
-    enabled: true
+    enabled: false
 ```
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
   --version 1.8.0 --values imports.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** **Virtualization · VMware Import Progress** appears alongside the four existing dashboards. Imports also works as the first module. The same approach adds any other module: save its own file and run its own command.
 
-Performance collection reads Nodes and `nodes/metrics` over TLS/10250. It measures importer and shared image-service CPU, memory and network activity, **not per-VM transfer speed, percentage or ETA**. Set `performance.enabled: false` for inventory only, without kubelet metrics access.
+The example starts with inventory only, which does not need kubelet access. To add importer and shared image-service CPU, memory and network activity, first complete the [optional performance prerequisites](docs/imports.md#optional-cpu-memory-and-network-during-imports), then set `performance.enabled: true` and rerun the same Helm command. This is **not per-VM transfer speed, percentage or ETA**.
 
 ## 5. Check that it works
 
 Use the same kubeconfig, context and namespace as the installation:
 
 ```sh
-helm list --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
+helm list --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent
 kubectl get deployment,daemonset,pods \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
 | Installed module, with collectors | Expected workloads |
@@ -223,8 +223,8 @@ With optional etcd collection enabled, also expect `obs-virtualization-etcd` or 
 If installation fails:
 
 ```sh
-kubectl get jobs --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
-kubectl logs job/JOB_NAME --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+kubectl get jobs --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
+kubectl logs job/JOB_NAME --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
 Replace `JOB_NAME` with the failed Job. Check credentials, DNS, TLS and permissions before retrying the same Helm command. [More checks and troubleshooting](docs/validation.md).
@@ -251,7 +251,7 @@ To remove Imports and keep Virtualization:
 ```sh
 helm uninstall obs-imports \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** its collectors, dashboard and three monitors are gone. Virtualization, VM Import Controller and import records remain. A `telemetry` release removes only collectors; shared content remains until its publishing release is removed.
@@ -261,11 +261,11 @@ helm uninstall obs-imports \
 First list releases using step 5. Run **only the lines for modules installed in that cluster and namespace**. Keep SUSE and the publishing Secret available until cleanup finishes:
 
 ```sh
-helm uninstall obs-imports --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-applications --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-traefik --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-kubernetes --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-virtualization --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-imports --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent --wait --timeout 15m
+helm uninstall obs-applications --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent --wait --timeout 15m
+helm uninstall obs-traefik --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent --wait --timeout 15m
+helm uninstall obs-kubernetes --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent --wait --timeout 15m
+helm uninstall obs-virtualization --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 For several clusters, remove source releases in each source namespace, then the central publishers as shown in [multi-cluster removal](docs/multiple-clusters.md#3-remove-a-module-or-start-again). **Do not delete the namespace, PVCs or platform releases.** Helm removes the project's owned resources and managed content; existing applications, VMs, volumes, Agents, server and metric history stay in place.
@@ -273,8 +273,8 @@ For several clusters, remove source releases in each source namespace, then the 
 ### Check removal and reinstall
 
 ```sh
-helm list --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
-kubectl get deployment,daemonset,pods --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+helm list --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent
+kubectl get deployment,daemonset,pods --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
 **Expected:** the removed releases and their collectors are absent. Refresh **Dashboards → All** and **Monitors**; their managed content should also be gone. The native Kubernetes dashboard and unrelated content remain. If a cleanup hook fails, keep the credentials and follow [cleanup troubleshooting](docs/lifecycle.md); do not bypass it with `--no-hooks`.
@@ -286,6 +286,7 @@ To start again, keep the working prerequisites and saved files, run the same ins
 - [Configuration walkthrough: what each setting does](docs/configuration-guide.md)
 - [Dashboard measurements and limitations](docs/metric-contracts.md)
 - [Every panel explained](docs/panel-guide.md)
+- [SRE review of all nine dashboards and production acceptance](docs/sre-review.md)
 - [What was actually tested in the lab](docs/lab-validation.md)
 
 The installation uses the published charts. `charts/` contains their sources, `helm/` their packages, `examples/` small values files, `docs/` the guides and `dev/` maintainer tools. You do not need the maintainer tools to install or remove a module.

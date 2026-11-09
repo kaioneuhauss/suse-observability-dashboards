@@ -57,7 +57,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
   --version 1.8.0 --values imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports `STATUS: deployed`. Successful publishing Jobs are removed automatically.
@@ -66,9 +66,9 @@ helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
 
 ```sh
 kubectl get deployment/obs-imports-imports \
-  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability-agent
 kubectl logs deployment/obs-imports-imports --container import-inventory --since=5m \
-  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability-agent
 ```
 
 **Expected result:** collector workloads are ready. Deployments should have all replicas ready, and DaemonSets should be ready on every expected node. Successful publishing Jobs are removed automatically.
@@ -97,7 +97,7 @@ Keep the publishing Secret available. The following command removes this release
 ```sh
 helm uninstall obs-imports \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
@@ -135,9 +135,9 @@ Check the collector after enabling it:
 
 ```sh
 kubectl logs deployment/obs-imports-imports --container vmagent --since=5m \
-  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability
+  --kubeconfig /path/to/harvester.yaml --context harvester --namespace suse-observability-agent
 kubectl auth can-i get nodes --subresource=metrics \
-  --as=system:serviceaccount:suse-observability:obs-imports-imports \
+  --as=system:serviceaccount:suse-observability-agent:obs-imports-imports \
   --kubeconfig /path/to/harvester.yaml --context harvester
 ```
 

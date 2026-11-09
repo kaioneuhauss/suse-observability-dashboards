@@ -27,7 +27,7 @@ For example, save this as `traefik-second.yaml`, then run:
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
   --version 1.8.0 --values traefik-second.yaml \
   --kubeconfig /path/to/second-cluster.yaml --kube-context second-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** collectors run on the second cluster, no publishing Jobs run there, and its name appears in the existing dashboard after data arrives. For Virtualization, also set the OTLP endpoint and prepare its registry/network requirements.
@@ -47,7 +47,7 @@ Example with three clusters:
 | Observability cluster, monitoring its own workloads | Its Agent namespace | `obs-kubernetes`, optional `obs-traefik` | `telemetry` |
 | Observability cluster, publishing content | `suse-observability` | One release per selected module | `content` |
 
-Replace the kubeconfig paths, contexts, namespace and integration names in the examples. A Helm release is identified by **cluster + namespace + release name**. In the lab, the Observability Agent uses `suse-observability-agent`, so collectors and publishers can use the same release names in different namespaces. If your Agent and publishers share a namespace, use a separate publishing namespace or distinct release names; do not overwrite a telemetry release with content mode accidentally.
+Replace the kubeconfig paths, contexts, namespace and integration names in the examples. The source commands use the current official Agent namespace, `suse-observability-agent`; the [validated lab](lab-validation.md) has older Harvester and Rancher Agents in `suse-observability` and uses that namespace instead. A Helm release is identified by **cluster + namespace + release name**. If your Agent and publishers share a namespace, use a separate publishing namespace or distinct release names; do not overwrite a telemetry release with content mode accidentally.
 
 Prepare the [prerequisites](prerequisites.md) first. Keep the publishing credential on the central cluster only. Add the chart repository once:
 
@@ -91,7 +91,7 @@ Install:
 helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virtualization \
   --version 1.8.0 --values harvester-virtualization.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 For optional Imports, save **`harvester-imports.yaml`**:
@@ -103,17 +103,17 @@ observability:
   url: https://observability.example.com
 imports:
   performance:
-    enabled: true
+    enabled: false
 ```
 
 ```sh
 helm upgrade --install obs-imports obs-dashboards/suse-observability-imports \
   --version 1.8.0 --values harvester-imports.yaml \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
-**Expected:** collector workloads are ready. There are no newly published dashboards yet. Imports performance requires the read-only kubelet access explained in the README.
+**Expected:** collector workloads are ready. There are no newly published dashboards yet. To add optional Imports performance later, complete its [kubelet permissions and network checks](imports.md#optional-cpu-memory-and-network-during-imports), set `enabled: true` and rerun the same Helm command.
 
 ### C. Install Kubernetes and Traefik collectors on RKE2
 
@@ -132,11 +132,11 @@ Add `telemetry.etcd.enabled: true` as nested YAML only after checking the local 
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
   --version 1.8.0 --values rancher-kubernetes.yaml \
   --kubeconfig /path/to/rancher.yaml --kube-context rancher \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
   --version 1.8.0 --values rancher-traefik.yaml \
   --kubeconfig /path/to/rancher.yaml --kube-context rancher \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected:** the selected collectors are ready. Skip Traefik if this cluster does not use it.
@@ -208,7 +208,7 @@ Keep the SUSE server and publishing credentials available until cleanup succeeds
 First remove its source collector, then its central content:
 
 ```sh
-helm uninstall obs-imports --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-imports --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability-agent --wait --timeout 15m
 helm uninstall obs-imports --kubeconfig /path/to/observability.yaml --kube-context observability --namespace suse-observability --wait --timeout 15m
 ```
 
@@ -219,9 +219,9 @@ helm uninstall obs-imports --kubeconfig /path/to/observability.yaml --kube-conte
 Run the Imports commands above, then remove the remaining source collectors:
 
 ```sh
-helm uninstall obs-virtualization --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-kubernetes --kubeconfig /path/to/rancher.yaml --kube-context rancher --namespace suse-observability --wait --timeout 15m
-helm uninstall obs-traefik --kubeconfig /path/to/rancher.yaml --kube-context rancher --namespace suse-observability --wait --timeout 15m
+helm uninstall obs-virtualization --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability-agent --wait --timeout 15m
+helm uninstall obs-kubernetes --kubeconfig /path/to/rancher.yaml --kube-context rancher --namespace suse-observability-agent --wait --timeout 15m
+helm uninstall obs-traefik --kubeconfig /path/to/rancher.yaml --kube-context rancher --namespace suse-observability-agent --wait --timeout 15m
 helm uninstall obs-kubernetes --kubeconfig /path/to/observability.yaml --kube-context observability --namespace suse-observability-agent --wait --timeout 15m
 helm uninstall obs-traefik --kubeconfig /path/to/observability.yaml --kube-context observability --namespace suse-observability-agent --wait --timeout 15m
 ```

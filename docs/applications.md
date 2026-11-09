@@ -50,7 +50,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 helm upgrade --install obs-applications obs-dashboards/suse-observability-applications \
   --version 1.8.0 --values applications.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports `STATUS: deployed`. Successful publishing Jobs are removed automatically.
@@ -59,7 +59,7 @@ helm upgrade --install obs-applications obs-dashboards/suse-observability-applic
 
 ```sh
 helm status obs-applications \
-  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent
 ```
 
 **Expected result:** the release is deployed. This module has no collector Pods.
@@ -89,7 +89,7 @@ Keep the publishing Secret available. The following command removes this release
 ```sh
 helm uninstall obs-applications \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. Applications has no telemetry mode or collectors.

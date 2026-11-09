@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-09 — New-environment prerequisites and SRE audit
+
+- Aligned the new-install commands and Secrets with the current official Agent namespace; documented the older lab namespace as an explicit substitution.
+- Added dedicated publisher-role and Service Token creation, the optional SUSE Virtualization StackPack/Agent resource integration, and an inventory-first Imports example that does not require kubelet metrics permissions.
+- Expanded the configuration walkthrough with source-to-query examples and a maintainer path for new dashboards. Added a nine-dashboard SRE review and production acceptance gates.
+- Rechecked the running lab with 8,854 native query/filter cases, source API comparisons, 39 monitor runtime checks, HTTP total invariants, and local chart tests. No chart package or live release changed; a fresh `mode: all` installation and production recovery tests remain target-environment acceptance work.
+
 ## 2026-11-03 — Installation guide and clean reinstall validation
 
 - Shortened the README and ordered prerequisite setup from SUSE server and OTLP to the Agent, credentials and module/network checks.

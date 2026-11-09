@@ -41,7 +41,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernetes \
   --version 1.8.0 --values kubernetes.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports `STATUS: deployed`. Successful publishing Jobs are removed automatically.
@@ -50,7 +50,7 @@ helm upgrade --install obs-kubernetes obs-dashboards/suse-observability-kubernet
 
 ```sh
 kubectl get deployment/obs-kubernetes-pods daemonset/obs-kubernetes-node \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 kubectl get nodes --kubeconfig /path/to/cluster.yaml --context my-cluster
 ```
 
@@ -85,7 +85,7 @@ Keep the publishing Secret available. The following command removes this release
 ```sh
 helm uninstall obs-kubernetes \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.

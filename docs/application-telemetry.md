@@ -19,26 +19,26 @@ Environment variables configure an existing SDK; they do not insert one into an 
 
 ## 2. Prepare the destination and credential
 
-**Where:** use the application's Kubernetes cluster, in this example namespace `suse-observability`. Keep the official Agent if you need Kubernetes topology. The collector does not replace it.
+**Where:** use the application's Kubernetes cluster, in this example namespace `suse-observability-agent`. Keep the official Agent if you need Kubernetes topology. The collector does not replace it.
 
 1. Complete the [server OTLP setup](otlp.md). Record the TLS gRPC address, for example `otlp-observability.example.com:443`.
 2. In SUSE, follow the OpenTelemetry StackPack setup and obtain its ingestion Service Token. Save it in `/private/otel-token.txt` without extra whitespace or a trailing newline. This is not the publishing token.
 3. Check whether the namespace exists; create it only if absent. Then create a dedicated ingestion Secret:
 
 ```sh
-kubectl get namespace suse-observability --kubeconfig /path/to/cluster.yaml --context my-cluster
+kubectl get namespace suse-observability-agent --kubeconfig /path/to/cluster.yaml --context my-cluster
 ```
 
 Only when the previous command reports `NotFound`:
 
 ```sh
-kubectl create namespace suse-observability --kubeconfig /path/to/cluster.yaml --context my-cluster
+kubectl create namespace suse-observability-agent --kubeconfig /path/to/cluster.yaml --context my-cluster
 ```
 
 ```sh
 kubectl create secret generic application-otel-ingestion \
   --from-file=token=/private/otel-token.txt \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
 **Check:** the token is authorized for OTLP ingestion and the Secret exists in the collector namespace. Reuse an existing correct Secret instead of replacing it. Store/remove temporary credential files according to your secret policy.
@@ -137,7 +137,7 @@ config:
 
 The chart keeps its default OTLP receivers on 4317/4318 and health endpoint. This is a single-replica lab example with memory-backed queues. It does not provide durable delivery or an HA design. Network policy must permit only your intended application namespaces to reach the receiver and allow the collector to reach the Kubernetes API and SUSE. Do not expose this unauthenticated internal receiver to the Internet.
 
-For a private server CA, follow [the private CA Secret procedure](prerequisites.md#6-check-the-module-specific-prerequisites), then merge these fields into the same file. Keep the other exporter settings:
+For a private server CA, follow [the private CA Secret procedure](prerequisites.md#7-custom-secret-names-or-private-certificates), then merge these fields into the same file. Keep the other exporter settings:
 
 ```yaml
 extraVolumes:
@@ -163,11 +163,11 @@ helm repo update open-telemetry
 helm upgrade --install application-otel open-telemetry/opentelemetry-collector \
   --version 0.178.0 --values application-otel.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 10m
+  --namespace suse-observability-agent --wait --timeout 10m
 kubectl rollout status deployment/application-otel --timeout=5m \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 kubectl get service application-otel --kubeconfig /path/to/cluster.yaml \
-  --context my-cluster --namespace suse-observability
+  --context my-cluster --namespace suse-observability-agent
 ```
 
 **Check:** the Deployment is ready and its ClusterIP Service exposes 4317 and 4318. Do not install this if another working pipeline already receives the application's data.
@@ -187,7 +187,7 @@ env:
   - name: OTEL_RESOURCE_ATTRIBUTES
     value: "k8s.pod.uid=$(POD_UID)"
   - name: OTEL_EXPORTER_OTLP_ENDPOINT
-    value: http://application-otel.suse-observability.svc.cluster.local:4318
+    value: http://application-otel.suse-observability-agent.svc.cluster.local:4318
   - name: OTEL_EXPORTER_OTLP_PROTOCOL
     value: http/protobuf
   - name: OTEL_METRICS_EXPORTER
@@ -206,7 +206,7 @@ Send a few normal requests through the application, then inspect:
 
 ```sh
 kubectl logs deployment/application-otel --tail=100 \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
 In SUSE Metrics Explorer, find the actual HTTP request counter and duration histogram. Verify service/cluster/namespace identity, response status and normalized route. Check timestamps and duration units. The required names are in [Applications](applications.md#1-check-the-requirements).
@@ -251,16 +251,16 @@ First remove the Applications **dashboard module**, keeping its publisher Secret
 
 ```sh
 helm uninstall obs-applications --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 If the optional `application-otel` collector was installed only for this experiment, first restore the application's previous exporter settings through its owner and check its rollout. Confirm no other applications use this receiver, then remove it:
 
 ```sh
 helm uninstall application-otel --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 10m
+  --namespace suse-observability-agent --wait --timeout 10m
 kubectl delete secret application-otel-ingestion --kubeconfig /path/to/cluster.yaml \
-  --context my-cluster --namespace suse-observability
+  --context my-cluster --namespace suse-observability-agent
 ```
 
 Remove the dedicated ingestion Secret only after confirming it has no other users. Keep shared CA Secrets, the official Agent and server OTLP endpoint. For an Agent gateway, revert only the settings you added through its owner after checking other consumers; do not uninstall the Agent.

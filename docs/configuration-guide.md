@@ -70,7 +70,7 @@ Use a private note like this. Replace the examples once, then use the same names
 |---|---|---|
 | Server kubeconfig / context | `/path/to/observability.yaml` / `observability` | Only for configuring the SUSE server and its ingress |
 | Monitored cluster kubeconfig / context | `/path/to/cluster.yaml` / `my-cluster` | Installs the Agent and collectors on the correct cluster |
-| Agent / collector namespace | `suse-observability` | Collectors reference Secrets in this namespace |
+| Agent / collector namespace | `suse-observability-agent` for a new install | Collectors reference Secrets in this namespace; older Agents may use `suse-observability` |
 | Integration name | `my-cluster` | Joins collected measurements with the cluster in SUSE; may differ from the context |
 | Browser/API URL | `https://observability.example.com` | Publisher destination and base for Prometheus remote write |
 | Agent receiver | `https://observability.example.com/receiver/stsAgent` | Destination for the official Agent |
@@ -296,7 +296,7 @@ Installing a chart does not launch Grafana. These are native SUSE dashboard defi
 2. Templates create the required workloads, configuration and RBAC. Content templates load this module's dashboard JSON and monitor definitions into ConfigMaps.
 3. Separate `post-install,post-upgrade` Jobs publish dashboards and monitors using the respective Secret references. They download a pinned official SUSE CLI and verify its checksum before using it.
 4. The publisher checks existing identifiers and its module catalog. It creates missing objects and reconciles changed definitions. It checks the persisted result rather than treating a successful command as sufficient.
-5. Chart 1.7.0 uses `patch` by default and preserves the IDs of existing dashboards. This was tested with CLI 3.3.6 and SUSE Observability 2.10.2. Explicit `replace` mode deletes/recreates a changed dashboard, so saved links can change. Export personal changes before updating; managed definitions can overwrite them.
+5. Chart 1.8.0 uses `patch` by default and preserves the IDs of existing dashboards. This was tested with CLI 3.3.6 and SUSE Observability 2.10.2. Explicit `replace` mode deletes/recreates a changed dashboard, so saved links can change. Export personal changes before updating; managed definitions can overwrite them.
 6. Helm removes successful hook Jobs. Failed Jobs remain for diagnosis, subject to their TTL. Collectors keep running independently of the completed publisher.
 
 The publisher runs code inside its container. **You do not run local Python or Bash scripts to install, update or remove modules.**
@@ -314,6 +314,49 @@ The publisher runs code inside its container. **You do not run local Python or B
 | Detail link | Opens the complete resource query for investigation |
 
 For a new panel, start with a question such as “Which running VMs are waiting for CPU?” Validate the raw series first, keep resource identities in the result, then decide how to display it. Test one resource, several resources, Everything, no match and more than one time range. A correct query that lists no resource names is often not enough to help someone act.
+
+### Worked example: from a VM object to a dashboard number
+
+Suppose the question is **“How many VMs are running in the selected cluster and namespace?”** The implementation has five traceable steps:
+
+1. **Choose the source of truth.** `kubectl get vmi --all-namespaces` lists KubeVirt `VirtualMachineInstance` objects. Count only `status.phase: Running`; a defined but powered-off VM should not count as running.
+2. **Collect a source metric.** The Virtualization chart discovers `kubevirt-prometheus-metrics` endpoints, validates their certificate with the public KubeVirt CA, and sends the `kubevirt_vmi_info` series to SUSE through OTLP. The metric has the cluster, namespace, VM name and phase labels. The official Agent independently provides topology so a VM can be investigated as a resource.
+3. **Write the query.** The overview panel uses the equivalent of:
+
+   ```promql
+   count(max by (k8s_cluster_name, namespace, name) (
+     kubevirt_vmi_info{
+       k8s_cluster_name=~"${vm_cluster}",
+       namespace=~"${vm_namespace}",
+       name=~"${vm_name}",
+       phase="running"
+     }
+   ))
+   ```
+
+   `max by` collapses duplicate target series for the same VM identity; `count` then returns a whole-number count. The three `${...}` variables come from the dashboard's Cluster, Namespace and VM selectors. In a new cluster, confirm the actual label names and phase spelling before copying this query.
+4. **Choose a display that matches the unit.** This is a Stat panel with zero decimal places and a title that says **Running VMs**. The detailed VM panels keep names, namespace and values, so the summary can lead to a resource.
+5. **Compare and challenge the result.** Select one known VM and check that the count becomes one; select a nonexistent VM and check that the panel is empty rather than silently claiming health. Compare the complete set with the live VMI API and check the timestamp. The 2026-11-09 lab comparison found 10 running VMIs and a dashboard value of 10.
+
+The same method applies to other sources: Longhorn volume API and its state/backup metrics; `VirtualMachineImport` CRs and the inventory collector; Kubernetes Pod/Node objects and host collectors; Traefik counters; application SDK counters and histograms. [Metric definitions](metric-contracts.md) lists the units, formulas and missing-data limits. [Every panel explained](panel-guide.md) maps the resulting panels to operator questions.
+
+### Worked example: a request rate and an alert
+
+For an instrumented HTTP application, the source is a **counter** such as `http_server_requests_total` with cluster, service, route and response-code labels. Confirm its name in Metrics Explorer; an SDK that only exports traces or a native histogram without classic buckets does not satisfy this example. The request-rate panel calculates `rate(counter[5m])` per original series **before** summing by service/route. This handles counter resets. A 5xx ratio divides 5xx requests by all eligible requests over the same window, with a traffic gate so zero requests do not become 100% availability or a false alert. The p95 panel uses histogram buckets in seconds and multiplies by 1,000 to show milliseconds. The monitor adds a time window, threshold, topology identifier and remediation hint; [Alerts](alerts.md) explains why a successful monitor execution is still not notification delivery.
+
+The Traefik dashboard uses ingress counters instead. Its totals can differ from the application dashboard because the request can be rejected, retried or fail before reaching the application. Compare the same route and time window when investigating such a difference.
+
+### Where to make a reusable change
+
+| File or stage | What belongs there |
+|---|---|
+| `dev/components/suse-observability-content/dashboards/*.json` | Native SUSE dashboard definition: filters, layout, panel query, display, unit, description and links |
+| `dev/components/suse-observability-content/files/catalog.json` and `monitors/*.sty` | Monitor ownership, query, threshold, topology mapping and remediation |
+| Collector component under `dev/components/` | Source discovery, scraping, relabeling, metric allowlist and transmission to SUSE |
+| `dev/scripts/enhance-dashboards.py`, `build-virtualization-dashboards.py`, `curate-dashboards.py`, `build-charts.py` | Maintainer generation of consistent dashboards and independent module charts |
+| `charts/`, then `helm/` | Generated chart source, versioned packages and Helm index consumed by users |
+
+For a new panel, identify its source and collection owner first, document the metric's type, unit and labels, then add the query and description. Give it a filter contract (`Everything`, one value, multiple values, no match), a missing-data interpretation and an operator action. If it should alert, define the component it attaches to and test the notification route separately. Run the [development checks](../dev/README.md#build-and-check), test the native SUSE query API and UI, then publish a **new** chart version and package. End users installing that version still use only their values YAML, Helm and kubectl.
 
 ### Create a personal dashboard in SUSE
 

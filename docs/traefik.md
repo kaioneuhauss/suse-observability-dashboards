@@ -94,7 +94,7 @@ This command installs the module and waits for it to finish. Keep the values fil
 helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
   --version 1.8.0 --values traefik.yaml \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports `STATUS: deployed`. Successful publishing Jobs are removed automatically.
@@ -103,7 +103,7 @@ helm upgrade --install obs-traefik obs-dashboards/suse-observability-traefik \
 
 ```sh
 kubectl get deployment/obs-traefik-traefik \
-  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability
+  --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
 **Expected result:** collector workloads are ready. Deployments should have all replicas ready, and DaemonSets should be ready on every expected node. Successful publishing Jobs are removed automatically.
@@ -132,7 +132,7 @@ Keep the publishing Secret available. The following command removes this release
 ```sh
 helm uninstall obs-traefik \
   --kubeconfig /path/to/cluster.yaml --kube-context my-cluster \
-  --namespace suse-observability --wait --timeout 15m
+  --namespace suse-observability-agent --wait --timeout 15m
 ```
 
 **Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
