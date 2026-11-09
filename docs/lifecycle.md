@@ -14,7 +14,7 @@ helm get manifest obs-virtualization \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability > virtualization-manifest.yaml
 ```
 
-**Expected result:** the release is listed and the two files contain its values and Kubernetes definitions. Keep them outside Git. Export manual dashboard edits from SUSE separately; Helm's backup does not include them.
+**Expected result:** the release is listed and the two files contain its values and Kubernetes definitions. Keep them outside Git. Export manual dashboard edits from SUSE Observability separately; Helm's backup does not include them.
 
 ## 2. Remove the module
 
@@ -26,7 +26,7 @@ helm uninstall obs-virtualization \
   --namespace suse-observability --wait --timeout 15m
 ```
 
-Helm first runs cleanup Jobs for this module's dashboards and monitors. After they succeed, it removes the release's collectors, definitions and RBAC. Successful Jobs are removed too. Keep the publishing Secret and network access to SUSE available until this finishes. A `telemetry` release has no external content to delete.
+Helm first runs cleanup Jobs for this module's dashboards and monitors. After they succeed, it removes the release's collectors, definitions and RBAC. Successful Jobs are removed too. Keep the publishing Secret and network access to SUSE Observability available until this finishes. A `telemetry` release has no external content to delete.
 
 **Expected result:** Helm reports the release was uninstalled. Check:
 
@@ -36,7 +36,7 @@ helm status obs-virtualization \
   --kubeconfig /path/to/harvester.yaml --kube-context harvester --namespace suse-observability
 ```
 
-**Expected result:** the release is absent from the list and `helm status` returns `release: not found`. Repeat the module guide's workload check: its named workloads should return `NotFound` as well. Open SUSE and confirm the module's dashboards disappeared. Other modules, applications, VMs, volumes, the SUSE server and its historical metrics, official Agents and shared Secrets stay in place. **Do not delete the namespace.**
+**Expected result:** the release is absent from the list and `helm status` returns `release: not found`. Repeat the module guide's workload check: its named workloads should return `NotFound` as well. Open SUSE Observability and confirm the module's dashboards disappeared. Other modules, applications, VMs, volumes, the SUSE Observability server and its historical metrics, official Agents and shared Secrets stay in place. **Do not delete the namespace.**
 
 With multiple clusters, repeat removal for each source collector and then the central publisher. See [Multiple clusters](multiple-clusters.md#3-remove-a-module-or-start-again).
 
@@ -70,7 +70,7 @@ helm upgrade --install obs-virtualization obs-dashboards/suse-observability-virt
   --namespace suse-observability --wait --timeout 15m
 ```
 
-**Expected result:** Helm reports `deployed`, collectors become ready and dashboards return. Dashboard IDs can change after reinstalling. Historical metrics remain in SUSE. Follow [Check the installation](validation.md) to confirm fresh samples.
+**Expected result:** Helm reports `deployed`, collectors become ready and dashboards return. Dashboard IDs can change after reinstalling. Historical metrics remain in SUSE Observability. Follow [Check the installation](validation.md) to confirm fresh samples.
 
 ## Update without removing
 
@@ -98,10 +98,10 @@ lifecycle:
   deleteOnUninstall: false
 ```
 
-This deliberately keeps the managed dashboards and monitors in SUSE. It is not the default cleanup procedure. Plan-only (`lifecycle.action: plan`) releases also have no deletion hooks.
+This deliberately keeps the managed dashboards and monitors in SUSE Observability. It is not the default cleanup procedure. Plan-only (`lifecycle.action: plan`) releases also have no deletion hooks.
 
 ## Optional: disable monitors
 
 Before the first installation, `content.monitors.enabled: false` skips monitors. Changing this later does not delete already published monitors, and disabled content is not targeted by uninstall hooks.
 
-To remove existing monitors while keeping dashboards and collectors, first run an explicit deletion upgrade with the installed version and existing values, adding `--set lifecycle.action=delete --set lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS --set content.dashboards.enabled=false --set content.monitors.enabled=true`. After success, upgrade again with your normal values, `lifecycle.action=apply`, dashboards enabled and monitors disabled. Confirm the result in SUSE. This is an advanced selective operation, not part of the normal installation or removal.
+To remove existing monitors while keeping dashboards and collectors, first run an explicit deletion upgrade with the installed version and existing values, adding `--set lifecycle.action=delete --set lifecycle.confirmDelete=DELETE_MANAGED_OBJECTS --set content.dashboards.enabled=false --set content.monitors.enabled=true`. After success, upgrade again with your normal values, `lifecycle.action=apply`, dashboards enabled and monitors disabled. Confirm the result in SUSE Observability. This is an advanced selective operation, not part of the normal installation or removal.

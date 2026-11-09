@@ -48,7 +48,7 @@ The old combined profiles in `dev/tests/fixtures/legacy-profiles` are regression
 
 ## Optional metric audits
 
-Backend acceptance does not prove that the SUSE API accepts the same syntax. In a test environment with real metrics, also check the native API. Use an authorized read token supplied through a private environment variable; never commit it:
+Backend acceptance does not prove that the SUSE Observability API accepts the same syntax. In a test environment with real metrics, also check the native API. Use an authorized read token supplied through a private environment variable; never commit it:
 
 ```sh
 python3 dev/scripts/audit-queries.py --native --url https://observability.example.com \
@@ -59,6 +59,6 @@ python3 dev/scripts/audit-http-totals.py --native --url https://observability.ex
   --service-token-env SRE_AUDIT_TOKEN --output local/native-http.json
 ```
 
-These are read-only checks. `/api/metrics` is an internal API checked on SUSE 2.10.2, not a stable public integration contract. Reports contain environment names and should remain private. Review empty results and check the UI: HTTP 200 is not proof that a panel measures what its title says.
+These are read-only checks. `/api/metrics` is an internal API checked on SUSE Observability 2.10.2, not a stable public integration contract. Reports contain environment names and should remain private. Review empty results and check the UI: HTTP 200 is not proof that a panel measures what its title says.
 
-Static checks do not prove a deployment, failover or notification delivery. Record what actually ran and what did not in [Lab validation](../docs/lab-validation.md). Design references: [SRE monitoring signals](https://sre.google/sre-book/monitoring-distributed-systems/), [SLO alerts](https://sre.google/workbook/alerting-on-slos/) and [SUSE dashboards](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/dashboards/dashboards.html).
+Static checks do not prove a deployment, failover or notification delivery. Record what actually ran and what did not in [Lab validation](../docs/lab-validation.md). Design references: [SRE monitoring signals](https://sre.google/sre-book/monitoring-distributed-systems/), [SLO alerts](https://sre.google/workbook/alerting-on-slos/) and [SUSE Observability dashboards](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/dashboards/dashboards.html).

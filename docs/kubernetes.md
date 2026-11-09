@@ -76,7 +76,7 @@ telemetry:
 
 The collector runs on nodes labeled `node-role.kubernetes.io/etcd=true`. It does not expose the port or change etcd. Check `up{job="sre-etcd",cluster_name="my-cluster"}` after enabling it. If Virtualization owns host collection, set this option in that release instead.
 
-etcd panels and monitors have no samples where collection is disabled. That is not a healthy etcd result. To skip publishing all monitors for this module, set `content.monitors.enabled: false` before the first installation. Changing this flag later stops publication but does not delete monitors already in SUSE; see [lifecycle](lifecycle.md).
+etcd panels and monitors have no samples where collection is disabled. That is not a healthy etcd result. To skip publishing all monitors for this module, set `content.monitors.enabled: false` before the first installation. Changing this flag later stops publication but does not delete monitors already in SUSE Observability; see [lifecycle](lifecycle.md).
 
 ## 6. Remove this module
 
@@ -88,6 +88,6 @@ helm uninstall obs-kubernetes \
   --namespace suse-observability-agent --wait --timeout 15m
 ```
 
-**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
+**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE Observability server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
 
 To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.

@@ -1,6 +1,6 @@
 # Alerts: what is covered and what is not
 
-The five modules publish **39 enabled monitors** in total. They do not configure notification channels. A monitor evaluates a query and attaches its result to a topology component; routing an alert to a person is a separate SUSE configuration.
+The five modules publish **39 enabled monitors** in total. They do not configure notification channels. A monitor evaluates a query and attaches its result to a topology component; routing an alert to a person is a separate SUSE Observability configuration.
 
 > Community lab thresholds, not recommended for production without validation against your own workload and incident policy.
 
@@ -33,10 +33,10 @@ The windows use observed samples, evaluated every 60 seconds. They do not prove 
 
 ## Check monitors and notifications
 
-1. Open **Monitors** in SUSE and find the `SRE ·` rules for your module. Confirm they are enabled and evaluating.
+1. Open **Monitors** in SUSE Observability and find the `SRE ·` rules for your module. Confirm they are enabled and evaluating.
 2. Inspect a result and confirm it is attached to the intended PVC, node, namespace or cluster. A valid query without a matching topology component is not enough.
 3. Read the remediation hint and compare it with the source before taking action.
-4. Configure your own [SUSE notifications](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/alerting/notifications/configure.html) if needed, then test delivery through the intended channel. This project has not tested email or other external notification delivery.
+4. Configure your own [SUSE Observability notifications](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/alerting/notifications/configure.html) if needed, then test delivery through the intended channel. This project has not tested email or other external notification delivery.
 
 Use a safe, planned failure test before relying on a rule. This lab did not fault disks, stop VMs or start a failed migration to trigger alerts. Helm upgrades reapply managed definitions; review and maintain changed thresholds in the chart source or create separately owned rules.
 

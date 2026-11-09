@@ -1,10 +1,10 @@
-# Set up the server's OTLP gRPC endpoint
+# Set up the SUSE Observability OTLP gRPC endpoint
 
-Skip this page if your SUSE server already has a working OTLP gRPC endpoint. This setup belongs to the **SUSE server cluster**, not Harvester. It changes the server's Helm release, so do it with the administrator who manages that release.
+Skip this page if your SUSE Observability server already has a working OTLP gRPC endpoint. This setup belongs to the **SUSE Observability server cluster**, not Harvester. It changes the server's Helm release, so do it with the administrator who manages that release.
 
 The endpoint can receive Virtualization metrics or telemetry from a separate application collector. It does not install application instrumentation. For applications, continue afterward with [application telemetry setup](application-telemetry.md).
 
-The example uses Traefik and the server chart's existing OpenTelemetry Collector. For other ingress controllers or chart versions, follow the [official SUSE ingress guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html).
+The example uses Traefik and the server chart's existing OpenTelemetry Collector. For other ingress controllers or chart versions, follow the [official SUSE Observability ingress guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html).
 
 ## 1. Check the existing server
 
@@ -100,4 +100,4 @@ In `virtualization.yaml`, use `observability.otlpEndpoint: otlp-observability.ex
 
 ## 5. Removing only an endpoint you added
 
-Dashboard uninstall leaves this shared server configuration in place. If you later want to remove it, first confirm that **no** VM or application collector still uses it. Remove only your added host/TLS entries from the server owner's saved values and repeat the same-version Helm upgrade from step 3. If this was the only collector ingress, use `opentelemetry-collector.ingress.enabled: false` in a small override file. Verify the resulting ingress list. Delete its dedicated TLS Secret only after checking that nothing else references it; never uninstall the SUSE server for this cleanup.
+Dashboard uninstall leaves this shared server configuration in place. If you later want to remove it, first confirm that **no** VM or application collector still uses it. Remove only your added host/TLS entries from the server owner's saved values and repeat the same-version Helm upgrade from step 3. If this was the only collector ingress, use `opentelemetry-collector.ingress.enabled: false` in a small override file. Verify the resulting ingress list. Delete its dedicated TLS Secret only after checking that nothing else references it; never uninstall the SUSE Observability server for this cleanup.

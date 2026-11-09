@@ -2,22 +2,31 @@
 
 Choose a module, fill in a small YAML file and install it with Helm. Each module includes its own dashboards and monitors. Collectors are included where extra metrics are needed.
 
-> [!WARNING]
-> Community project, **not an officially supported SUSE integration** and **not recommended for production without target-environment acceptance**. A successful installation in this lab does not certify another environment. Complete the [production acceptance checks](docs/sre-review.md#production-acceptance) before operational use, including backup restore and notification delivery.
+These charts publish dashboards **to SUSE Observability**. They collect data **from** the cluster you choose to monitor; the Virtualization module reads SUSE Virtualization (Harvester). The charts do not install either platform.
 
-You need **Helm, kubectl and a text editor** for these module installations. You do not need local scripts, Python, Grafana or a repository clone. For a new SUSE instance, an administrator uses the SUSE `sts` CLI once to create the dedicated publishing role/token; browser steps create the official integrations and obtain ingestion credentials.
+> [!WARNING]
+> Community project, **not an officially supported SUSE Observability integration** and **not recommended for production without target-environment acceptance**. A successful installation in this lab does not certify another environment. Complete the [production acceptance checks](docs/sre-review.md#production-acceptance) before operational use, including backup restore and notification delivery.
+
+You need **Helm, kubectl and a text editor** for these module installations. You do not need local scripts, Python, Grafana or a repository clone. For a new SUSE Observability instance, an administrator uses the SUSE Observability `sts` CLI once to create the dedicated publishing role/token; browser steps create the official integrations and obtain ingestion credentials.
+
+| Name used here | What it means |
+|---|---|
+| **SUSE Observability** | The server, browser interface, metrics API and destination for dashboards and monitors. |
+| **SUSE Virtualization (Harvester)** | The virtualization cluster whose VMs, hosts and Longhorn storage you want to observe. |
+| **SUSE Observability Agent** | The official Agent installed in a monitored Kubernetes or Harvester cluster. It is separate from this project's optional collectors. |
+| **Project Helm chart** | One of the optional dashboard modules listed below; it can install a collector and publish content to SUSE Observability. |
 
 ## 1. Choose your modules
 
 | Module | What it shows | Dashboards / monitors |
 |---|---|---|
-| **virtualization** | Harvester VMs, hosts, performance, capacity, storage and backups | 4 / 7 |
-| **imports** | VM Import Controller records and optional importer CPU, memory and network use | 1 / 3 |
+| **virtualization** | SUSE Virtualization (Harvester) VMs, hosts, performance, capacity, storage and backups | 4 / 7 |
+| **imports** | VMware imports into SUSE Virtualization via VM Import Controller, plus optional importer CPU, memory and network use | 1 / 3 |
 | **kubernetes** | Cluster health and application resource use | 2 / 21 |
 | **traefik** | Incoming traffic, HTTP errors and response times | 1 / 6 |
 | **applications** | HTTP traffic, errors and response times from instrumented applications | 1 / 2 |
 
-Only want SUSE Virtualization? Install **virtualization**. Imports is optional and independent. Coriolis is not included.
+Only want dashboards for SUSE Virtualization? Install **virtualization**. Imports is optional and independent. Coriolis is not included.
 
 ## 2. Prepare the prerequisites once
 
@@ -31,12 +40,12 @@ Only want SUSE Virtualization? Install **virtualization**. Imports is optional a
 |---|---|---|---|
 | 1 | Cluster access, Helm and kubectl | All modules | [Access checks](docs/prerequisites.md#1-check-access-to-your-clusters) |
 | 2 | SUSE Observability server, storage, license, DNS and HTTPS | All modules | [Server setup and official installation](docs/prerequisites.md#2-prepare-the-suse-observability-server) |
-| 3 | Server OTLP endpoint | Virtualization and applications using OTLP | [OpenTelemetry setup](docs/prerequisites.md#3-prepare-opentelemetry-on-the-server) |
-| 4 | Kubernetes integration and official Agent on the monitored cluster | Virtualization, Imports, Kubernetes and Traefik | [Agent on Harvester or Kubernetes](docs/prerequisites.md#4-connect-harvester-or-kubernetes-to-suse) |
+| 3 | SUSE Observability OTLP endpoint | Virtualization and applications using OTLP | [OpenTelemetry setup](docs/prerequisites.md#3-prepare-opentelemetry-on-the-server) |
+| 4 | SUSE Observability Kubernetes integration and Agent on the monitored cluster | Virtualization, Imports, Kubernetes and Traefik | [Agent on Harvester or Kubernetes](docs/prerequisites.md#4-connect-harvester-or-kubernetes-to-suse-observability) |
 | 5 | Publishing credential stored in a Kubernetes Secret | Releases that publish dashboards | [Create the Secret](docs/prerequisites.md#5-prepare-the-publishing-credential) |
 | 6 | Registry access, metrics endpoints and required network access | Depends on the module | [Module checks](docs/prerequisites.md#6-check-the-module-specific-prerequisites) |
 
-**Keep working prerequisites.** Reinstalling dashboards does not require reinstalling SUSE, its Agent, Harvester or your applications. These charts do not create those platforms or instrument an application.
+**Keep working prerequisites.** Reinstalling dashboards does not require reinstalling the SUSE Observability server, its official Agent, SUSE Virtualization (Harvester) or your applications. These charts do not create those platforms or instrument an application.
 
 Fill in these details before continuing. Keep values and credential files in a private folder outside Git:
 
@@ -44,10 +53,10 @@ Fill in these details before continuing. Keep values and credential files in a p
 |---|---|
 | `/path/to/cluster.yaml` | Kubeconfig of the cluster where this release will run |
 | `my-cluster` in commands | Context listed by `kubectl config get-contexts --kubeconfig /path/to/cluster.yaml` |
-| `clusterName: my-cluster` in YAML | Exact SUSE Kubernetes integration name; it can differ from the context |
-| `suse-observability-agent` | Current official Agent namespace and the namespace used by the commands below. If your Agent already uses `suse-observability`, replace the namespace in **every** command and Secret check. Do not install a second Agent. |
-| `https://observability.example.com` | SUSE browser/API URL |
-| `otlp-observability.example.com:443` | TLS gRPC endpoint, without `https://`; Virtualization only |
+| `clusterName: my-cluster` in YAML | Exact name of the cluster's Kubernetes integration in SUSE Observability; it can differ from the context |
+| `suse-observability-agent` | Current default namespace of the official SUSE Observability Agent and the namespace used by the commands below. If your Agent already uses `suse-observability`, replace the namespace in **every** command and Secret check. Do not install a second Agent. |
+| `https://observability.example.com` | SUSE Observability browser/API URL |
+| `otlp-observability.example.com:443` | SUSE Observability TLS/gRPC endpoint, without `https://`; Virtualization only |
 
 The short examples below use the default Secret names: `suse-observability-agent-secrets` for ingestion, `suse-observability-publisher-token` for publication, and `application-collection` for the Virtualization image. [Custom names and private CAs](docs/prerequisites.md#7-custom-secret-names-or-private-certificates) are optional overrides.
 
@@ -213,7 +222,7 @@ kubectl get deployment,daemonset,pods \
 With optional etcd collection enabled, also expect `obs-virtualization-etcd` or `obs-kubernetes-etcd` on the eligible etcd nodes.
 
 1. Confirm every installed release is **deployed** and its expected collectors are ready. Successful publishing Jobs disappear automatically.
-2. Open **SUSE → Dashboards → All**. Confirm the dashboards from your selected modules exist.
+2. Open **SUSE Observability → Dashboards → All**. Confirm the dashboards from your selected modules exist.
 3. Select your **Cluster**, then **Namespace** and resource. **Everything** selects all values; **None** selects nothing. Reset dependent filters when switching clusters.
 4. Allow a few minutes for fresh samples and rate calculations. A newly started collector can briefly have empty rankings before enough samples arrive. Check collection indicators, then compare a known VM, Pod, volume, import record or application against its source. Data older than the installation does not prove the new collector works.
 5. Open **Monitors** and inspect the module's `SRE ·` rules. Review thresholds and configure [notification channels](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/alerting/notifications/configure.html) if you want notifications.
@@ -231,10 +240,10 @@ Replace `JOB_NAME` with the failed Job. Check credentials, DNS, TLS and permissi
 
 ## 6. Add another cluster or keep publication central
 
-You need **one publication per module per SUSE instance**, not a dashboard copy for every cluster.
+You need **one publication per module per SUSE Observability instance**, not a dashboard copy for every cluster.
 
 - **Another source cluster:** prepare its Agent and ingestion Secret, save new module values with `mode: telemetry`, and run the module command with that cluster's context. No publisher token is needed there.
-- **Publish from the Observability cluster:** install each source with `mode: telemetry`, then publish each module once with `mode: content` on the Observability cluster. One shared `content.yaml` can serve all five publishers when their common settings are identical.
+- **Publish from the cluster hosting SUSE Observability:** install each source with `mode: telemetry`, then publish each module once with `mode: content` on the server cluster. One shared `content.yaml` can serve all five publishers when their common settings are identical.
 
 Follow [the complete commands, placement table and removal procedure](docs/multiple-clusters.md). This is the arrangement used in the three-cluster validation. Record which release owns publication: uninstalling it removes that module's shared dashboards for every source cluster.
 
@@ -258,7 +267,7 @@ helm uninstall obs-imports \
 
 ### Remove every installed module
 
-First list releases using step 5. Run **only the lines for modules installed in that cluster and namespace**. Keep SUSE and the publishing Secret available until cleanup finishes:
+First list releases using step 5. Run **only the lines for modules installed in that cluster and namespace**. Keep SUSE Observability and the publishing Secret available until cleanup finishes:
 
 ```sh
 helm uninstall obs-imports --kubeconfig /path/to/cluster.yaml --kube-context my-cluster --namespace suse-observability-agent --wait --timeout 15m

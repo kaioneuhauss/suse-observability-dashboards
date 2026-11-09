@@ -27,7 +27,7 @@ kubectl logs job/obs-traefik-monitors \
 
 Wait a few minutes for collection and ingestion. Open the module's dashboard and select the right cluster. Check the collection health panels and compare one known resource with its source: a running VM in Harvester, a request in an application or a Pod's resource settings in Kubernetes.
 
-For deeper checks, use **Metrics Explorer** in SUSE. The module guides give the relevant metric names. Confirm the expected targets, recent samples and correct cluster name. Remote write uses `cluster_name`; KubeVirt OTLP uses `k8s_cluster_name`. Both must refer to the same integration name.
+For deeper checks, use **Metrics Explorer** in SUSE Observability. The module guides give the relevant metric names. Confirm the expected targets, recent samples and correct cluster name. Remote write uses `cluster_name`; KubeVirt OTLP uses `k8s_cluster_name`. Both must refer to the same integration name.
 
 ## 3. Try the filters
 
@@ -37,7 +37,7 @@ Try Everything, a single cluster and a single VM or application. Reset dependent
 
 ## 4. Check monitors separately
 
-Confirm monitors are enabled, have recent data and attach to the right component. Set notification channels and rules in SUSE. Test an incident and recovery in an approved lab before relying on notifications. Publishing a monitor does not prove that an email or page is delivered.
+Confirm monitors are enabled, have recent data and attach to the right component. Set notification channels and rules in SUSE Observability. Test an incident and recovery in an approved lab before relying on notifications. Publishing a monitor does not prove that an email or page is delivered.
 
 ## Common problems
 

@@ -1,17 +1,17 @@
 # Prepare application metrics, with or without Virtualization
 
-Use this page if you want the Applications dashboard and your application's HTTP metrics are not reaching SUSE yet. Skip it if you already have a working pipeline with the [required metric contract](applications.md#1-check-the-requirements).
+Use this page if you want the Applications dashboard and your application's HTTP metrics are not reaching SUSE Observability yet. Skip it if you already have a working pipeline with the [required metric contract](applications.md#1-check-the-requirements).
 
-The flow is: **instrumented application → telemetry collector → SUSE → Applications dashboard**. You do not need Harvester or the Virtualization chart. This is a community lab example, not recommended for production.
+The flow is: **instrumented application → telemetry collector → SUSE Observability → Applications dashboard**. You do not need Harvester or the Virtualization chart. This is a community lab example, not recommended for production.
 
 ## 1. Choose the path that matches your application
 
 | Your application | What to do |
 |---|---|
-| Already sends compatible HTTP metrics to SUSE | Check their names/labels and install [Applications](applications.md) |
+| Already sends compatible HTTP metrics to SUSE Observability | Check their names/labels and install [Applications](applications.md) |
 | Has an OpenTelemetry SDK and exports OTLP | Use the separate collector below, or the version-compatible Agent gateway in section 6 |
-| Exposes Prometheus/OpenMetrics at `/metrics` | Configure scraping using the [official SUSE scraping guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/use/metrics/k8s-otel-prometheus-scraping.html), or your existing approved collector; verify Agent version support first |
-| Sends traces only, or has no instrumentation | Follow the [SUSE instrumentation guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-k8s.html) for your runtime and enable HTTP metrics before installing the dashboard |
+| Exposes Prometheus/OpenMetrics at `/metrics` | Configure scraping using the [official SUSE Observability scraping guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/use/metrics/k8s-otel-prometheus-scraping.html), or your existing approved collector; verify Agent version support first |
+| Sends traces only, or has no instrumentation | Follow the [SUSE Observability instrumentation guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-k8s.html) for your runtime and enable HTTP metrics before installing the dashboard |
 
 Environment variables configure an existing SDK; they do not insert one into an arbitrary application. SDKs differ in metric names, histogram type and labels. A trace or a span-derived metric is not automatically the HTTP metric contract used by this project.
 
@@ -22,7 +22,7 @@ Environment variables configure an existing SDK; they do not insert one into an 
 **Where:** use the application's Kubernetes cluster, in this example namespace `suse-observability-agent`. Keep the official Agent if you need Kubernetes topology. The collector does not replace it.
 
 1. Complete the [server OTLP setup](otlp.md). Record the TLS gRPC address, for example `otlp-observability.example.com:443`.
-2. In SUSE, follow the OpenTelemetry StackPack setup and obtain its ingestion Service Token. Save it in `/private/otel-token.txt` without extra whitespace or a trailing newline. This is not the publishing token.
+2. In SUSE Observability, follow the OpenTelemetry StackPack setup and obtain its ingestion Service Token. Save it in `/private/otel-token.txt` without extra whitespace or a trailing newline. This is not the publishing token.
 3. Check whether the namespace exists; create it only if absent. Then create a dedicated ingestion Secret:
 
 ```sh
@@ -45,7 +45,7 @@ kubectl create secret generic application-otel-ingestion \
 
 ## 3. Install a separate OpenTelemetry collector with Helm
 
-This example uses the [official OpenTelemetry Collector chart](https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/), pinned to chart `0.178.0` and collector `0.163.2`. Those versions are independent of the dashboard chart. It accepts OTLP inside the cluster and exports to SUSE over TLS. It does not scrape hosts or change VMs.
+This example uses the [official OpenTelemetry Collector chart](https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/), pinned to chart `0.178.0` and collector `0.163.2`. Those versions are independent of the dashboard chart. It accepts OTLP inside the cluster and exports to SUSE Observability over TLS. It does not scrape hosts or change VMs.
 
 Save `application-otel.yaml`. Replace **`my-cluster`** and **`otlp-observability.example.com:443`**. The cluster name must match the official Agent when one is present.
 
@@ -135,7 +135,7 @@ config:
 | `transform/dashboard_labels` | Copies resource identity into the labels expected by the dashboard; does not invent metrics or convert units |
 | `pipelines` | Metrics and traces are enabled; logs are excluded. Memory protection, Kubernetes enrichment and batching precede export |
 
-The chart keeps its default OTLP receivers on 4317/4318 and health endpoint. This is a single-replica lab example with memory-backed queues. It does not provide durable delivery or an HA design. Network policy must permit only your intended application namespaces to reach the receiver and allow the collector to reach the Kubernetes API and SUSE. Do not expose this unauthenticated internal receiver to the Internet.
+The chart keeps its default OTLP receivers on 4317/4318 and health endpoint. This is a single-replica lab example with memory-backed queues. It does not provide durable delivery or an HA design. Network policy must permit only your intended application namespaces to reach the receiver and allow the collector to reach the Kubernetes API and SUSE Observability. Do not expose this unauthenticated internal receiver to the Internet.
 
 For a private server CA, follow [the private CA Secret procedure](prerequisites.md#7-custom-secret-names-or-private-certificates), then merge these fields into the same file. Keep the other exporter settings:
 
@@ -209,7 +209,7 @@ kubectl logs deployment/application-otel --tail=100 \
   --kubeconfig /path/to/cluster.yaml --context my-cluster --namespace suse-observability-agent
 ```
 
-In SUSE Metrics Explorer, find the actual HTTP request counter and duration histogram. Verify service/cluster/namespace identity, response status and normalized route. Check timestamps and duration units. The required names are in [Applications](applications.md#1-check-the-requirements).
+In SUSE Observability Metrics Explorer, find the actual HTTP request counter and duration histogram. Verify service/cluster/namespace identity, response status and normalized route. Check timestamps and duration units. The required names are in [Applications](applications.md#1-check-the-requirements).
 
 The common OTel duration histogram can appear as `http_server_request_duration_seconds_*`; its `_count` may be your request counter. Only after confirming that, add this to `applications.yaml`:
 
@@ -226,7 +226,7 @@ If the SDK emits an exponential/native histogram, configure its supported explic
 
 ## 6. Alternative: use a newer Agent's telemetry gateway
 
-Current [SUSE gateway documentation](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/telemetry-gateway.html) describes a bundled receiver. Use it only if your compatible Agent chart actually contains these settings:
+Current [SUSE Observability gateway documentation](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/telemetry-gateway.html) describes a bundled receiver. Use it only if your compatible Agent chart actually contains these settings:
 
 ```sh
 helm show values suse-observability/suse-observability-agent --version AGENT_CHART_VERSION

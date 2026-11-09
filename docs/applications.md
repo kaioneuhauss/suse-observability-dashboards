@@ -20,7 +20,7 @@ You need the [publishing Secret](prerequisites.md#5-prepare-the-publishing-crede
 | Application identity | `cluster_name`, `service_name`, `namespace` |
 | Route and HTTP result | `http_route`, `http_response_status_code` |
 
-Use normalized routes such as `/orders/{id}`, not individual IDs or user names. Traces alone do not guarantee these metrics exist. A histogram without buckets cannot provide p95/p99. For instrumentation, follow the [SUSE OpenTelemetry guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-k8s.html).
+Use normalized routes such as `/orders/{id}`, not individual IDs or user names. Traces alone do not guarantee these metrics exist. A histogram without buckets cannot provide p95/p99. For instrumentation, follow the [SUSE Observability OpenTelemetry guide](https://documentation.suse.com/en-us/cloudnative/suse-observability/latest/en/setup/otel/getting-started/getting-started-k8s.html).
 
 ## 2. Add the repository
 
@@ -92,6 +92,6 @@ helm uninstall obs-applications \
   --namespace suse-observability-agent --wait --timeout 15m
 ```
 
-**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. Applications has no telemetry mode or collectors.
+**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE Observability server, official Agent and shared Secrets remain. Do not delete the namespace. Applications has no telemetry mode or collectors.
 
 To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.

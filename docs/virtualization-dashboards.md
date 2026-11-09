@@ -1,6 +1,6 @@
 # Understand the Virtualization dashboards
 
-The Virtualization chart provides four views. Start with the overview, then open the view that matches the problem. The optional Imports module adds a fifth view for VMware imports.
+The Virtualization chart publishes four SUSE Virtualization (Harvester) views in SUSE Observability. Start with the overview, then open the view that matches the problem. The optional Imports module adds a fifth view for VMware imports.
 
 ## VM & Host Overview
 
@@ -50,6 +50,6 @@ The [Imports module](imports.md) shows controller phases, failures, disk readine
 
 ## Inspiration and definitions
 
-The contention, capacity and protection topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards), revision `e40bb3d751f0b2f0afa765ab7cf0a3afc4767c8d` (Apache-2.0). This project implements native SUSE dashboards; it does not import those Grafana JSON files or require an extra Grafana/Prometheus installation.
+The contention, capacity and protection topics were inspired by [doccaz/harvester-extra-dashboards](https://github.com/doccaz/harvester-extra-dashboards), revision `e40bb3d751f0b2f0afa765ab7cf0a3afc4767c8d` (Apache-2.0). This project implements native SUSE Observability dashboards; it does not import those Grafana JSON files or require an extra Grafana/Prometheus installation.
 
 See [Metric definitions and limits](metric-contracts.md) for formulas and source versions. This remains a community lab project, not a production recommendation.

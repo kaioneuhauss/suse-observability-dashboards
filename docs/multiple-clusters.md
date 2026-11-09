@@ -1,6 +1,6 @@
 # Install across multiple clusters
 
-Publish each module **once per SUSE instance**. Its existing cluster filter will show the source clusters as their data arrives.
+Publish each module **once per SUSE Observability instance**. Its existing cluster filter will show the source clusters as their data arrives.
 
 | Mode | What Helm installs | Publishing Secret needed? |
 |---|---|---|
@@ -8,7 +8,7 @@ Publish each module **once per SUSE instance**. Its existing cluster filter will
 | `telemetry` | Collectors only | No |
 | `content` | Dashboards and monitors only | Yes |
 
-Applications always uses `content`. Do not install two publishers for the same module and SUSE instance.
+Applications always uses `content`. Do not install two publishers for the same module and SUSE Observability instance.
 
 ## 1. Add a second source to an existing installation
 
@@ -201,7 +201,7 @@ Run the [README checks](../README.md#5-check-that-it-works) with each cluster an
 
 ## 3. Remove a module or start again
 
-Keep the SUSE server and publishing credentials available until cleanup succeeds. Remove only the releases you installed.
+Keep the SUSE Observability server and publishing credentials available until cleanup succeeds. Remove only the releases you installed.
 
 ### Remove only Imports
 
@@ -237,7 +237,7 @@ helm uninstall obs-virtualization --kubeconfig /path/to/observability.yaml --kub
 
 **Expected:** no project releases/collectors remain, and its nine dashboards and 39 monitors are absent. The native dashboard, unrelated content, platforms, Agents, applications, VMs, volumes and metric history remain. Chart-owned cross-namespace policies are removed; existing platform policies remain.
 
-Check `helm list` and `kubectl get deployment,daemonset,pods` in every destination, then refresh the SUSE dashboard/monitor lists. Do not remove namespaces or disable cleanup hooks. See [cleanup failure handling](lifecycle.md).
+Check `helm list` and `kubectl get deployment,daemonset,pods` in every destination, then refresh the SUSE Observability dashboard/monitor lists. Do not remove namespaces or disable cleanup hooks. See [cleanup failure handling](lifecycle.md).
 
 **Reinstall:** keep the prerequisites and seven saved values files. Repeat steps B–D, then E. The releases start again at revision 1 and managed dashboards receive new IDs. Update old bookmarks. No local installer script is needed.
 

@@ -9,7 +9,7 @@
 
 ## 2026-11-03 — Installation guide and clean reinstall validation
 
-- Shortened the README and ordered prerequisite setup from SUSE server and OTLP to the Agent, credentials and module/network checks.
+- Shortened the README and ordered prerequisite setup from SUSE Observability server and OTLP to the Agent, credentials and module/network checks.
 - Added complete central publication/removal commands and reused one shared values file for publishers. Kept end-user commands Helm/kubectl-only.
 - Reinstalled all 11 project releases from the public 1.8.0 charts, preserving platforms, applications, VMs and volumes. See [the evidence and boundaries](lab-validation.md). No chart package or dashboard definition changed.
 
@@ -56,9 +56,9 @@
 
 The inventory-only memory limit could trigger OOMKilled when performance collection parsed the kubelet response. Enabling `imports.performance.enabled` now automatically selects a separate 128 MiB request / 512 MiB limit and 50m / 500m CPU budget. Customize `imports.performance.resources` for larger environments. Collection remains opt-in with the same read-only permissions and TLS verification.
 
-## 1.4.1 — Match SUSE's stored Pod label
+## 1.4.1 — Match SUSE Observability's stored Pod label
 
-SUSE normalizes the cAdvisor `pod` label to `pod_name`. Import performance selectors and legends now use the stored label; 1.4.0 could collect the data while showing empty performance panels. Seven positive native queries and seven nonexistent-cluster queries were checked explicitly after correction. The selector correction first shipped in 1.4.1; existing immutable packages remain available.
+SUSE Observability normalizes the cAdvisor `pod` label to `pod_name`. Import performance selectors and legends now use the stored label; 1.4.0 could collect the data while showing empty performance panels. Seven positive native queries and seven nonexistent-cluster queries were checked explicitly after correction. The selector correction first shipped in 1.4.1; existing immutable packages remain available.
 
 CPU is shown in mCPU so small values remain readable. Unpaired Imports panels use the full row, keeping paired CPU/memory and receive/transmit charts aligned.
 
@@ -73,7 +73,7 @@ CPU is shown in mCPU so small values remain readable. Unpaired Imports panels us
 ## 1.3.0 — Simpler installation and removal
 
 - Numbered English guides explain what to fill in, what to run and what to expect.
-- `helm uninstall` now removes the module's managed SUSE dashboards and monitors before removing Kubernetes resources. Keep the publisher token available.
+- `helm uninstall` now removes the module's managed SUSE Observability dashboards and monitors before removing Kubernetes resources. Keep the publisher token available.
 - Successful publishing and cleanup Jobs are removed automatically; failed Jobs remain for inspection.
 - Plan-only and telemetry releases never delete external content; `lifecycle.deleteOnUninstall: false` explicitly retains it.
 - Development sources, tests and tooling are grouped under `dev/`. Redundant prerequisite fragments were removed; the active guides contain the required settings.
@@ -86,7 +86,7 @@ CPU is shown in mCPU so small values remain readable. Unpaired Imports panels us
 - Smaller values examples and a consistent workflow across all five modules.
 - Removed the user-facing Bash installer helper and its helper-only tests. Build and audit tools remain for maintainers.
 - Separate guides for common prerequisites, OTLP setup, multiple clusters and cleanup.
-- Clear lab-only warning: not recommended for production and not an officially supported SUSE integration.
+- Clear lab-only warning: not recommended for production and not an officially supported SUSE Observability integration.
 - Dashboard definitions, metric queries, collection settings and publisher behavior are unchanged from 1.2.0.
 
 ## 1.2.0 — Readability and installation review
@@ -95,7 +95,7 @@ CPU is shown in mCPU so small values remain readable. Unpaired Imports panels us
 - Reviewed 161 panels: titles, descriptions, units, precision and diagnostic purpose.
 - Integer counts; appropriate precision for rates and percentages without rounding source data.
 - Dedicated performance, capacity and storage views; readable volume states, backup codes and import phases.
-- HTTP queries compatible with the SUSE parser, checked through its native API at three resolutions.
+- HTTP queries compatible with the SUSE Observability parser, checked through its native API at three resolutions.
 - Corrected inherited panel links and simplified the VM overview.
 - Added the previous installer helper and documented clean installation, verification and removal.
 - Recorded source comparisons, versions and validation limits in `docs/lab-validation.md`.

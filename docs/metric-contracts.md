@@ -20,7 +20,7 @@ A query can run successfully and still be interpreted incorrectly. Check its lab
 | Longhorn capacity | Provisioned volume size is logical. Node usage/capacity is physical managed storage. Scheduled capacity is logical replica reservation and can exceed physical capacity. |
 | Longhorn backups | Last backup is a Unix timestamp or zero. Calculate age only for positive timestamps. Snapshot size is not guaranteed reclaimable space or total replicated physical usage. |
 | HTTP | Calculate counter rates before aggregation. Histogram values are seconds; multiply quantiles by 1,000 for ms. Percentiles depend on bucket boundaries. |
-| HTTP period totals | `range_sum(increase(counter[${__interval}]) …)` sums non-overlapping increments using the resolution resolved by SUSE. `[1i]` works in the backend but is rejected by the SUSE 2.10.2 parser. Do not freeze the increase at `@ end()` or assume a fixed one-minute step. |
+| HTTP period totals | `range_sum(increase(counter[${__interval}]) …)` sums non-overlapping increments using the resolution resolved by SUSE Observability. `[1i]` works in the backend but is rejected by the SUSE Observability 2.10.2 parser. Do not freeze the increase at `@ end()` or assume a fixed one-minute step. |
 | HTTP availability | 1 − the 5xx share of completed requests. With no traffic, the ratio is undefined. It is not uptime; 4xx does not consume this particular error budget. |
 | VM Import Controller | Inventory of retained CRs. `diskSize` is logical bytes. Intervals use explicit timestamps, not estimated transfer progress or full migration duration. |
 
@@ -35,7 +35,7 @@ State and configuration metrics are deduplicated by logical identity before coun
 - Old series may remain visible during the backend lookback period. Check sample freshness, not just whether a line exists.
 - A 24-hour p95 uses only the history actually collected. New installations do not have a full day of data. Rates, quantiles and sampled counts have limits; missing samples and resets affect them.
 - HTTP totals were compared across 60-, 300- and 900-second steps for the same aligned window. Window boundaries, rounding and missing samples still depend on collection resolution.
-- These queries use the SUSE MetricsQL backend. They are not automatically portable to plain Prometheus.
+- These queries use the SUSE Observability MetricsQL backend. They are not automatically portable to plain Prometheus.
 
 ## Check again when versions change
 
@@ -43,7 +43,7 @@ The implementation was checked against [KubeVirt v1.7.4 metrics](https://github.
 
 After a platform or Agent upgrade, check metric types, labels and values against the source API again. Lab validation does not automatically cover another version, workload or instrumentation contract.
 
-SUSE resolves `${__interval}` according to chart resolution; see its [query guidance](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). Acceptance by VictoriaMetrics alone does not prove acceptance by the SUSE API or UI. The [development guide](../dev/README.md) covers the optional native API audits.
+SUSE Observability resolves `${__interval}` according to chart resolution; see its [query guidance](https://documentation.suse.com/cloudnative/suse-observability/latest/en/develop/reference/writing-promql.html). Acceptance by VictoriaMetrics alone does not prove acceptance by the SUSE Observability API or UI. The [development guide](../dev/README.md) covers the optional native API audits.
 
 ## Actionable resource details (1.4.0)
 
@@ -59,7 +59,7 @@ The controller handles multiple imports and serves exported images; its traffic 
 
 Performance collection is opt-in. It requires Nodes discovery plus `nodes/metrics` read access, direct TCP/10250 and a trusted serving certificate with the node IP. No `nodes/proxy` grant is used. A failed scrape is `up=0`; no matching Pods is an empty performance chart, even if node collection is up. The inventory health check remains independent. Completed-import validation does not validate active VMware transfer throughput.
 
-SUSE ingestion normalizes cAdvisor `pod` to `pod_name`. The collection allowlist uses the source label `pod`; dashboard selectors and aliases use the stored `pod_name`. A successful query with empty results is not acceptance when the matching source Pods exist.
+SUSE Observability ingestion normalizes cAdvisor `pod` to `pod_name`. The collection allowlist uses the source label `pod`; dashboard selectors and aliases use the stored `pod_name`. A successful query with empty results is not acceptance when the matching source Pods exist.
 
 ## Resource labels and Pod-to-volume associations (1.7.0)
 

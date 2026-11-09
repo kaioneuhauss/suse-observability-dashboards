@@ -1,6 +1,6 @@
 # VMware imports with VM Import Controller
 
-Follow VMware imports into Harvester: which imports are active, completed or failed, which disks are ready, and whether the inventory is up to date. This module installs one dashboard and a read-only collector. It does not start imports, contact vCenter or change VMs. Coriolis is not included.
+Follow VMware imports into SUSE Virtualization (Harvester): which imports are active, completed or failed, which disks are ready, and whether the inventory is up to date. This module publishes one dashboard to SUSE Observability and installs a read-only collector on the Harvester cluster. It does not start imports, contact vCenter or change VMs. Coriolis is not included.
 
 This is a community lab integration, **not recommended for production**.
 
@@ -86,7 +86,7 @@ Open **Virtualization · VMware Import Progress**. Compare import names, phases 
 | Recorded intervals | Specific controller timestamps; not full migration duration |
 | Inventory health and age | Whether the collector can still read recent data |
 
-There is no reliable global completion percentage or ETA in this contract. `virtualMachineRunning` is controller success; still check the guest OS, networking and application. Deleting an import object removes it from current inventory, while old metrics follow SUSE retention.
+There is no reliable global completion percentage or ETA in this contract. `virtualMachineRunning` is controller success; still check the guest OS, networking and application. Deleting an import object removes it from current inventory, while old metrics follow SUSE Observability retention.
 
 Validated with VM Import Controller **1.8.2**, API `migration.harvesterhci.io/v1beta1`. Existing completed imports were checked live; no new migration was started. Three monitors cover failed/invalid imports, inventory failure and optional performance scrape failure. See [alert coverage](alerts.md). See [metric limits](metric-contracts.md), [multiple clusters](multiple-clusters.md) and [removal](lifecycle.md).
 
@@ -100,7 +100,7 @@ helm uninstall obs-imports \
   --namespace suse-observability-agent --wait --timeout 15m
 ```
 
-**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
+**Expected result:** Helm reports the release was uninstalled. Your applications, VMs, volumes, SUSE Observability server, official Agent and shared Secrets remain. Do not delete the namespace. A `telemetry` release only removes its collectors.
 
 To reinstall, repeat step 4 with the same values file. If removal fails, follow [the removal guide](lifecycle.md#3-if-removal-fails) before retrying. Older versions need the [upgrade step](lifecycle.md#moving-from-120-or-121) first.
 
@@ -141,4 +141,4 @@ kubectl auth can-i get nodes --subresource=metrics \
   --kubeconfig /path/to/harvester.yaml --context harvester
 ```
 
-The authorization check requires impersonation permission on your own account. Confirm fresh values in SUSE as well. The collector being Ready alone does not validate its scrape. Disabling `imports.performance.enabled` with the same Helm command removes these extra RBAC rules and stops performance collection; import progress remains available.
+The authorization check requires impersonation permission on your own account. Confirm fresh values in SUSE Observability as well. The collector being Ready alone does not validate its scrape. Disabling `imports.performance.enabled` with the same Helm command removes these extra RBAC rules and stops performance collection; import progress remains available.

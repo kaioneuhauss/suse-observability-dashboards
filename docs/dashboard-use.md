@@ -36,5 +36,5 @@ The charts install **39 monitors** across all five modules. Virtualization inclu
 
 They are starting points, not complete incident coverage. Virtualization alone does not include Kubernetes host-memory/etcd monitors. Backup age, missing backups, import duration and bandwidth need your own recovery/performance policies. Not every graph should create an alert. See [alert coverage and limits](alerts.md).
 
-Open **Monitors** in SUSE and review the `SRE ·` rules. Notification channels/routing must be configured separately in SUSE. A published monitor is not proof that an email or other notification reaches someone.
+Open **Monitors** in SUSE Observability and review the `SRE ·` rules. Notification channels/routing must be configured separately in SUSE Observability. A published monitor is not proof that an email or other notification reaches someone.
 

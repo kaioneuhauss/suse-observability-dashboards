@@ -2,10 +2,10 @@
 
 ## 9 November 2026 — live audit and new-environment guide review
 
-This pass was read-only against the running three-cluster deployment. It did not reinstall the server, official Agents or dashboard releases, and it did not start an import or alter applications, VMs or volumes. The live layout still uses separate `telemetry` releases on source clusters and `content` releases on the Observability cluster. The README's one-release `mode: all` path was rendered and linted but was **not** installed into an additional SUSE instance.
+This pass was read-only against the running three-cluster deployment. It did not reinstall the server, official Agents or dashboard releases, and it did not start an import or alter applications, VMs or volumes. The live layout still uses separate `telemetry` releases on source clusters and `content` releases on the Observability cluster. The README's one-release `mode: all` path was rendered and linted but was **not** installed into an additional SUSE Observability instance.
 
 - All five module releases and nine project dashboards were present. The native Kubernetes dashboard was separate. All 39 project monitors were enabled, executed successfully, had no execution errors and had no unmatched topology states. The current real findings included one degraded Longhorn volume and one etcd WAL latency warning.
-- The native SUSE Metrics API accepted 8,854 query/filter combinations: 5,177 Virtualization, 420 Imports, 2,718 Kubernetes, 425 Traefik and 114 Applications. There were zero query errors and zero non-finite values. The sweep covered all discovered single-value filter paths, representative multi-select, Everything and nonexistent-cluster checks. Empty negative and inapplicable combinations were kept empty.
+- The native SUSE Observability Metrics API accepted 8,854 query/filter combinations: 5,177 Virtualization, 420 Imports, 2,718 Kubernetes, 425 Traefik and 114 Applications. There were zero query errors and zero non-finite values. The sweep covered all discovered single-value filter paths, representative multi-select, Everything and nonexistent-cluster checks. Empty negative and inapplicable combinations were kept empty.
 - In the Everything case, only active-import age and status-change age (no active import) and instantaneous Longhorn read latency (no read I/O) had no series. The other 192 metric query instances in the nine dashboards returned series. This is an API check, not a fresh visual browser inspection.
 - Harvester source API comparisons again matched 10 running VMIs, 50 assigned vCPUs, 100 GiB assigned guest memory, 184 Longhorn volumes (41 healthy, one degraded, 142 unknown), and eight import CRs. The related dashboard counts matched. Both instrumented application services appeared in the application filter. Traefik exposed two clusters and the applicable namespaces/backends. Eighteen HTTP period-total checks passed across 60-, 300- and 900-second steps.
 - The four Pod missing-setting summaries were compared with the running-container specs of all three clusters. The source and dashboards both reported 53/83/53/82 on Harvester, 45/58/45/58 on Observability, and 27/43/27/43 on Rancher (CPU request, CPU limit, memory request, memory limit). These are snapshots, not fixed expected values.
@@ -23,7 +23,7 @@ This run followed the README and its linked **central publication** procedure. I
 - Uninstalled six source collector releases and five central publishers. Confirmed that all regular chart-owned resources, all **nine project dashboards** and all **39 project monitors** were absent before reinstalling.
 - The native **Kubernetes Cluster** dashboard retained its ID. The 38 unrelated monitors present after cleanup remained present after publication.
 - **828 protected resources** retained their UIDs and specifications both after removal and after reinstall: 86 in Observability, 29 in Rancher and 713 in Harvester. This includes workloads, persistent volumes/claims, VMs, VMIs and Longhorn volumes. Existing platform Helm release revisions and non-project NetworkPolicies did not change.
-- The official Agents, SUSE server, Harvester, Rancher, demo applications, import controller/records and historical metrics were preserved. Coriolis remained outside this work.
+- The official Agents, SUSE Observability server, Harvester, Rancher, demo applications, import controller/records and historical metrics were preserved. Coriolis remained outside this work.
 
 ### Installation and data
 
@@ -43,7 +43,7 @@ The README was shortened to the module selection, prerequisite map, small values
 
 ### Boundaries and existing issues
 
-The SUSE server, Agents, DNS, certificates, registry credentials and application instrumentation were **reused and checked**, not installed from scratch in this run. Their setup instructions point to the official documentation and were reviewed; this is not a claim that a new platform installation was tested. The live reinstall used split `telemetry`/`content` mode. The simpler `all` mode passed chart validation but was not a separate live installation in this round.
+The SUSE Observability server, Agents, DNS, certificates, registry credentials and application instrumentation were **reused and checked**, not installed from scratch in this run. Their setup instructions point to the official documentation and were reviewed; this is not a claim that a new platform installation was tested. The live reinstall used split `telemetry`/`content` mode. The simpler `all` mode passed chart validation but was not a separate live installation in this round.
 
 Four failed ClickHouse backup Pods were already present before the work and remained afterward. The degraded Longhorn volume and active etcd/memory monitor findings were not remediated or hidden by changing thresholds. These are separate from successful dashboard deployment. This run does not prove backup restoration, failover, notification delivery, active import performance, every browser viewport or compatibility with other server/Agent versions.
 
@@ -106,16 +106,16 @@ The new application collector/SDK example was **not deployed** and no new applic
 
 ## 1.3.0 — Live removal and installation using Helm and kubectl
 
-This run followed the module guides and the multiple-cluster layout. Cluster changes used direct `helm` and `kubectl` commands: no local installer script, Python helper or local SUSE CLI was used to remove or install the modules. Existing platform prerequisites were checked and reused; the SUSE server, Agents, Traefik configuration and VM Import Controller were not reinstalled.
+This run followed the module guides and the multiple-cluster layout. Cluster changes used direct `helm` and `kubectl` commands: no local installer script, Python helper or local SUSE Observability CLI was used to remove or install the modules. Existing platform prerequisites were checked and reused; the SUSE Observability server, Agents, Traefik configuration and VM Import Controller were not reinstalled.
 
 ### Procedure tested
 
 1. Saved values and manifests for the 11 existing releases and recorded protected resource UIDs/specifications.
 2. Added the public Helm repository and verified a downloaded 1.3.0 package against the validated artifact.
 3. Upgraded the five existing 1.2.0 central publishers to 1.3.0 with their saved values and existing publisher identities. This adds the new cleanup hooks; the dashboard and monitor definitions are byte-for-byte unchanged.
-4. Ran `helm uninstall` for six source collector releases and five central publishers. All commands succeeded. The nine project dashboards disappeared; the native SUSE dashboard retained its original ID. No project release remained in any cluster.
+4. Ran `helm uninstall` for six source collector releases and five central publishers. All commands succeeded. The nine project dashboards disappeared; the native SUSE Observability dashboard retained its original ID. No project release remained in any cluster.
 5. Reinstalled the six source releases and five central publishers using 1.3.0 packages from the public Helm repository and small values files. Source releases use `mode: telemetry`; central releases use `mode: content`. Existing Secret names, etcd collection and the approved Longhorn policy are documented optional settings.
-6. Checked readiness, fresh samples, source comparisons and the SUSE dashboard interface.
+6. Checked readiness, fresh samples, source comparisons and the SUSE Observability dashboard interface.
 
 ### Results
 
@@ -126,7 +126,7 @@ This run followed the module guides and the multiple-cluster layout. Cluster cha
 - **362 query checks passed** through the Kubernetes service proxy to VictoriaMetrics: every one of the 181 panel queries with Everything selected, plus the same queries with a nonexistent cluster. No execution errors or non-finite numbers. All 181 negative cases returned no series. The only two empty positive cases were active-import age/status-age panels, because all eight retained imports were complete.
 - Source comparisons matched **10 running VMIs, 50 assigned vCPUs, 100 GiB of configured guest RAM, 184 Longhorn volumes and eight completed imports**. Longhorn reported 41 healthy, one degraded and 142 unknown volumes, matching the source. The degraded condition already existed before this run; storage was not changed to hide it.
 - Five KubeVirt targets and one Longhorn target reported `up=1`; their samples were less than 30 seconds old at the freshness check. All 23 expected node, etcd and Traefik targets reported `up=1`. The import inventory reported healthy and recent data.
-- Nine dashboards and 34 monitors were republished by the chart Jobs, which verify their persisted definitions. Integer counts and populated summary charts were checked in the SUSE UI.
+- Nine dashboards and 34 monitors were republished by the chart Jobs, which verify their persisted definitions. Integer counts and populated summary charts were checked in the SUSE Observability UI.
 - **61 local tests passed**. CI passed with Helm 3.19.0 and Helm 4.1.1. Package integrity, generation, deletion scope, identity reuse, opt-out/plan behavior and module isolation were checked. All 11 real configurations also passed Helm server dry-runs before any mutation.
 
 ### Corrections found while following the guide
@@ -156,19 +156,19 @@ This revision replaces the local installer helper with direct Helm and kubectl i
 - Reinstalled all 11 releases with the generated values, preserving approved publisher identities, etcd collection and existing restricted policies. This historical run used the helper that has since been removed; it is not the current installation procedure.
 - **59 local tests passed**, including integer formatting, layouts, repeatable generation and safe handling of external deletion failures. Helm lint, rendering and server-side admission checks passed.
 - **7,967 backend query/filter cases**: zero execution errors or non-finite values; 2,930 empty results counted separately. A nonexistent cluster returned no series in any panel.
-- **7,967 additional cases through the native SUSE API**: zero execution errors or non-finite values; 2,940 empty results, including filters without matching data. The environment changed between runs.
+- **7,967 additional cases through the native SUSE Observability API**: zero execution errors or non-finite values; 2,940 empty results, including filters without matching data. The environment changed between runs.
 - **779 historical six-hour cases through the native API**: zero errors or non-finite values; 195 empty results. Covered Everything, individual clusters and representative multiple selections.
 - **45 native HTTP-total queries and 18 invariants passed** at 60-, 300- and 900-second steps. All 34 monitor queries returned data without errors; this was not a full incident/notification test.
 - Source comparison matched 10 running VMIs, 50 vCPUs, 100 GiB of configured guest RAM, 32 host logical CPUs, 184 Longhorn volumes and eight import records. VMIC phases, disks and recorded intervals matched its API.
 - **772 current requests/limits fields matched**, with no missing current fields after collection caught up with the rollout. Newly created Pods were initially detected before their first samples arrived. Old Pod series can remain in backend history and are not treated as current Pods.
 - Five KubeVirt targets and one Longhorn target reported `up=1`. Import inventory was healthy. Samples were newer than installation and less than 30 seconds old at the check.
-- Reviewed all nine dashboards in the SUSE UI, including integer counts, units, labels and the VM filter (10 total, one selected). Traefik errors use lines because the tested native bar chart did not draw the points correctly.
+- Reviewed all nine dashboards in the SUSE Observability UI, including integer counts, units, labels and the VM filter (10 total, one selected). Traefik errors use lines because the tested native bar chart did not draw the points correctly.
 - Longhorn NetworkPolicy allowed only TCP/9500 from the collector, with namespace and Pod selectors in the same peer. Native policies were preserved.
 - Final readiness check: 10 Ready nodes, 11 installed project releases and 24 ready collector Pods across the three clusters.
 
 The clean-install run caught differences between Helm 3/4 flags, cross-namespace admission checks for CA/Longhorn resources, and cleanup of older collectors.
 
-The UI review caught an issue that direct backend checks missed: the SUSE parser rejected `[1i]` in HTTP totals. The final expressions use `${__interval}`, resolved by the native API. The same six-hour window returned 31,895 application requests and 384,384 Traefik requests at all three resolutions. These measure different sources and are not expected to equal each other. VM performance summary panels also retained the identity of the VM with the highest value.
+The UI review caught an issue that direct backend checks missed: the SUSE Observability parser rejected `[1i]` in HTTP totals. The final expressions use `${__interval}`, resolved by the native API. The same six-hour window returned 31,895 application requests and 384,384 Traefik requests at all three resolutions. These measure different sources and are not expected to equal each other. VM performance summary panels also retained the identity of the VM with the highest value.
 
 ## Observed versions
 
@@ -190,7 +190,7 @@ These are lab observations. The server, official Agents and existing platforms w
 
 The previous combined releases were inventoried and backed up privately. Five old project dashboards and 33 old monitors were exported and removed, while the native dashboard was preserved. Old platform collectors, the Harvester KubeVirt collector and the central content release were replaced by independent modules. Imports was added separately.
 
-The old KubeVirt collector had a stale CA. The replacement used the current public CA and collected ten VMs. The unused CA copy was backed up and removed after checking that the namespace's 19 Pods/workloads no longer referenced it. SUSE metric history and the demo applications `brasil-dados` and `request-lab` were preserved.
+The old KubeVirt collector had a stale CA. The replacement used the current public CA and collected ten VMs. The unused CA copy was backed up and removed after checking that the namespace's 19 Pods/workloads no longer referenced it. SUSE Observability metric history and the demo applications `brasil-dados` and `request-lab` were preserved.
 
 That earlier revision passed 53 local tests, 7,346 query/filter cases (2,030 empty) and 831 historical cases (213 empty), with no query errors or non-finite values. Additional application and Traefik filter audits passed after fixes. HTTP totals were checked with 45 queries and 18 invariants: the same period correctly produced 31,104 requests across three resolutions, whereas the earlier expression incorrectly dropped to 6,252 and 2,053 at wider steps.
 
@@ -238,10 +238,10 @@ Backups, tokens and raw telemetry remain outside the repository. Published examp
 
 ## 27 October 2026 — chart 1.4.0 dashboard review
 
-This round updated the five existing central content releases and the Harvester Imports collector. It did **not** repeat the earlier clean uninstall, install a new SUSE server or Agent, or start a VMware migration. The from-zero Virtualization walkthrough is for the user to execute; the separate lab handoff preserves the existing central-content/Harvester-telemetry split.
+This round updated the five existing central content releases and the Harvester Imports collector. It did **not** repeat the earlier clean uninstall, install a new SUSE Observability server or Agent, or start a VMware migration. The from-zero Virtualization walkthrough is for the user to execute; the separate lab handoff preserves the existing central-content/Harvester-telemetry split.
 
 - 64 automated tests passed, including opt-in RBAC, TLS configuration, link round trips, complete offender links, integer counts, rendering and repeatable chart generation. Helm checks passed. The new Agent example was rendered against the official Agent chart 1.2.14; no second Agent was deployed.
-- The SUSE native API accepted 1,727 instant query/filter cases (up to two discovered values per variable, including multi-select and nonexistent-cluster cases) and 824 range cases. There were no API errors or nonfinite values. Empty results were retained: negative filters, no active imports and inapplicable measurements are not healthy zeroes. This is not every possible combination of filters or versions.
+- The SUSE Observability native API accepted 1,727 instant query/filter cases (up to two discovered values per variable, including multi-select and nonexistent-cluster cases) and 824 range cases. There were no API errors or nonfinite values. Empty results were retained: negative filters, no active imports and inapplicable measurements are not healthy zeroes. This is not every possible combination of filters or versions.
 - At the comparison snapshot, the memory review panel matched all **15** qualifying Pods and their percentages against independently calculated usage/limits from live metrics and Kubernetes Pod specs. Missing-setting counts also matched Kubernetes: **125** CPU requests, **184** CPU limits, **125** memory requests, **183** memory limits. These are point-in-time values, not permanent expected counts.
 - The Harvester kubelet scrape reported `up=1` with TLS verification enabled. Eighteen retained CPU/memory/network source series were received. The initial cAdvisor response exceeded 16 MiB; streaming parsing and a 64 MiB response ceiling resolved collection without disabling TLS or granting `nodes/proxy`.
 - Optional `nodes` discovery and `nodes/metrics` read access were explicitly approved for the Harvester Imports collector. No Secret, exec, proxy or write permission was added.
@@ -251,7 +251,7 @@ The eight existing import objects were completed. The new network panels therefo
 
 ### 1.4.1 correction during visual acceptance
 
-The first 1.4.0 native-query sweep did not treat expected-positive empty panels as a failure. Visual acceptance then caught SUSE ingestion's `pod` → `pod_name` normalization. The 1.4.1 dashboard selectors and legends were corrected. All seven performance panels were tested again through the native API with explicit nonempty assertions: one controller receive series, one transmit series, one CPU series, one memory series, two shared-image receive interfaces, two transmit interfaces and one healthy node target. The seven nonexistent-cluster controls returned no series. The full automated suite now contains 65 tests.
+The first 1.4.0 native-query sweep did not treat expected-positive empty panels as a failure. Visual acceptance then caught SUSE Observability ingestion's `pod` → `pod_name` normalization. The 1.4.1 dashboard selectors and legends were corrected. All seven performance panels were tested again through the native API with explicit nonempty assertions: one controller receive series, one transmit series, one CPU series, one memory series, two shared-image receive interfaces, two transmit interfaces and one healthy node target. The seven nonexistent-cluster controls returned no series. The full automated suite now contains 65 tests.
 
 The final Harvester inventory contained 429 VM/PV/PVC objects with the same UIDs and specifications as the prior clean-install evidence. The Imports ServiceAccount authorization check allows `get nodes --subresource=metrics` and denies `get nodes --subresource=proxy`.
 

@@ -1,6 +1,6 @@
 # Check network access before installation
 
-Do this on the monitored cluster. You do not need to create a NetworkPolicy when traffic is already allowed. Keep existing platform policies in place.
+Do this on the monitored cluster: SUSE Virtualization (Harvester) for the Virtualization or Imports module, or the relevant Kubernetes cluster for other collectors. You do not need to create a NetworkPolicy when traffic is already allowed. Keep existing platform policies in place.
 
 ## 1. Check the paths your module uses
 
@@ -8,14 +8,14 @@ Do this on the monitored cluster. You do not need to create a NetworkPolicy when
 |---|---|---|
 | Collectors and publishing Jobs | Cluster DNS, UDP/TCP 53 | Name resolution |
 | Collectors and publishing Jobs | Kubernetes API, usually TCP 443 | Discovery, inventory and public CA reads |
-| Collectors | SUSE HTTPS receiver, TCP 443 | Agent and Prometheus remote write |
-| Virtualization collector | SUSE OTLP hostname, TCP 443 with TLS/gRPC | VM and Longhorn metrics |
+| Collectors | SUSE Observability HTTPS receiver, TCP 443 | Agent and Prometheus remote write |
+| Virtualization collector | SUSE Observability OTLP hostname, TCP 443 with TLS/gRPC | VM and Longhorn metrics |
 | Virtualization collector | KubeVirt metrics endpoints discovered through `kubevirt-prometheus-metrics` | VM metrics; inspect EndpointSlices for the actual target ports |
 | Virtualization collector | Longhorn managers, TCP 9500 | Storage metrics; this port also serves the Longhorn API |
 | Imports collector, when performance is enabled | Node kubelets, TCP 10250 with TLS | Importer and image-service CPU, memory and network metrics |
 | Traefik collector | Traefik metrics Pods, TCP 9100 by default | Requests, errors and duration |
 | Host collector | Local node exporter and optional local etcd metrics | Node metrics; etcd defaults to `127.0.0.1:2381` |
-| Publishing Jobs | SUSE API and `dl.stackstate.com`, HTTPS | Publish content and obtain the checksum-verified CLI |
+| Publishing Jobs | SUSE Observability API and `dl.stackstate.com`, HTTPS | Publish content and obtain the checksum-verified CLI |
 | Cluster nodes | Chart image registries, HTTPS | Pull container images |
 
 Use your actual ports and destinations. A firewall, egress policy or CNI-specific policy can block a path even when Kubernetes NetworkPolicies look correct. Registry pulls originate from nodes; do not assume a Pod egress rule controls them.
@@ -57,7 +57,7 @@ kubectl get networkpolicy obs-virtualization-longhorn-metrics \
   --kubeconfig /path/to/cluster.yaml --context my-cluster
 ```
 
-**Check:** the rule contains the correct namespace, the `obs-virtualization` Pod selector and TCP/9500 only. This rule does not remove access granted by other policies. Confirm fresh `up=1` collection in SUSE as well; a policy object is not a connectivity test.
+**Check:** the rule contains the correct namespace, the `obs-virtualization` Pod selector and TCP/9500 only. This rule does not remove access granted by other policies. Confirm fresh `up=1` collection in SUSE Observability as well; a policy object is not a connectivity test.
 
 ## 4. Traefik and other restrictions
 

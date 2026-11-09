@@ -1,11 +1,11 @@
 # Dashboard configuration, step by step
 
-This guide explains what we configured, why it is there and how to repeat it. Use the [README](../README.md) for the installation commands. Keep this page beside it when you want to understand a setting or change the setup.
+This guide explains what we configured, why it is there and how to repeat it. SUSE Observability stores and displays the dashboards; SUSE Virtualization (Harvester) is the VM and storage data source when you install the Virtualization or Imports modules. Use the [README](../README.md) for the installation commands. Keep this page beside it when you want to understand a setting or change the setup.
 
 The examples use chart **1.8.0** and the lab's **SUSE Observability 2.10.2** baseline. They are not a compatibility promise for every server, Agent or Harvester version. Documentation and the complete module reinstall were checked on **2026-11-03**. The detailed installation and UI results are recorded in [Lab validation](lab-validation.md).
 
 > [!WARNING]
-> Community project for labs and learning. Not recommended for production and not an officially supported SUSE integration. Validate the metrics, resource usage, permissions and alert policy in your own environment.
+> Community project for labs and learning. Not recommended for production and not an officially supported SUSE Observability integration. Validate the metrics, resource usage, permissions and alert policy in your own environment.
 
 **Find a topic:** [Architecture](#1-understand-what-is-being-installed) · [Lab setup](#how-the-current-lab-is-organized) · [Credentials](#3-understand-the-three-credentials) · [Virtualization prerequisites](#5-prepare-the-virtualization-metric-path) · [Install](#6-fill-in-the-module-file-and-install) · [Check](#7-check-the-complete-path) · [Additional modules](#8-add-another-module-or-another-cluster) · [Dashboard creation](#9-understand-how-dashboards-are-created) · [Remove](#11-update-remove-and-reinstall) · [Parameter reference](#12-chart-parameters-common-settings)
 
@@ -13,13 +13,13 @@ The examples use chart **1.8.0** and the lab's **SUSE Observability 2.10.2** bas
 
 There are three separate jobs here:
 
-1. **The official Agent connects the cluster to SUSE.** It supplies the Kubernetes inventory, topology and its standard signals.
+1. **The official Agent connects the cluster to SUSE Observability.** It supplies the Kubernetes inventory, topology and its standard signals.
 2. **Collectors send the extra measurements.** A collector reads an API or metrics endpoint and forwards the results. It does not start VMs, repair storage or import VMware machines.
-3. **The publisher creates the dashboards and monitors.** It is a short-lived Kubernetes Job. The dashboard itself is stored in SUSE, not inside the collector Pod.
+3. **The publisher creates the dashboards and monitors.** It is a short-lived Kubernetes Job. The dashboard itself is stored in SUSE Observability, not inside the collector Pod.
 
 ```mermaid
 flowchart LR
-  K[Harvester or Kubernetes] --> A[Official Agent]
+  K[SUSE Virtualization / Harvester or Kubernetes] --> A[SUSE Observability Agent]
   A --> S[SUSE Observability]
   V[KubeVirt and Longhorn] --> O[Virtualization OTel collector]
   O -->|OTLP gRPC with TLS| S
@@ -31,7 +31,7 @@ flowchart LR
   G --> S
   F[Your YAML values] --> Helm[Helm chart]
   Helm --> J[Publishing Jobs]
-  J -->|Authenticated API| D[Dashboards and monitors in SUSE]
+  J -->|Authenticated API| D[Dashboards and monitors in SUSE Observability]
   S --> D
 ```
 
@@ -51,8 +51,8 @@ flowchart LR
 
 | From → to | Protocol / usual port | Purpose |
 |---|---|---|
-| Publisher → SUSE browser/API address | HTTPS / 443 | Create, verify and delete content |
-| Host, Pod, Imports and Traefik forwarders → SUSE | HTTPS / 443 | Prometheus remote write |
+| Publisher → SUSE Observability browser/API address | HTTPS / 443 | Create, verify and delete content |
+| Host, Pod, Imports and Traefik forwarders → SUSE Observability | HTTPS / 443 | Prometheus remote write |
 | Virtualization/application OTel collector → server OTLP address | TLS gRPC / 443 externally, 4317 behind ingress | Send telemetry |
 | Virtualization collector → KubeVirt endpoints | HTTPS / discovered metrics port, normally 8443 | Read VM metrics with KubeVirt CA verification |
 | Virtualization collector → Longhorn managers | HTTP / 9500 internally | Read storage metrics; this port also exposes the Longhorn API |
@@ -68,10 +68,10 @@ Use a private note like this. Replace the examples once, then use the same names
 
 | Item | Example | Why you need it |
 |---|---|---|
-| Server kubeconfig / context | `/path/to/observability.yaml` / `observability` | Only for configuring the SUSE server and its ingress |
+| Server kubeconfig / context | `/path/to/observability.yaml` / `observability` | Only for configuring the SUSE Observability server and its ingress |
 | Monitored cluster kubeconfig / context | `/path/to/cluster.yaml` / `my-cluster` | Installs the Agent and collectors on the correct cluster |
 | Agent / collector namespace | `suse-observability-agent` for a new install | Collectors reference Secrets in this namespace; older Agents may use `suse-observability` |
-| Integration name | `my-cluster` | Joins collected measurements with the cluster in SUSE; may differ from the context |
+| Integration name | `my-cluster` | Joins collected measurements with the cluster in SUSE Observability; may differ from the context |
 | Browser/API URL | `https://observability.example.com` | Publisher destination and base for Prometheus remote write |
 | Agent receiver | `https://observability.example.com/receiver/stsAgent` | Destination for the official Agent |
 | OTLP gRPC address | `otlp-observability.example.com:443` | Destination for the Virtualization or separate application OTel collector |
@@ -92,7 +92,7 @@ helm list --all-namespaces --kubeconfig /path/to/cluster.yaml --kube-context my-
 
 The lab uses the optional **central publisher** arrangement. All five content releases are on the Observability cluster; collectors run on the source clusters. A new environment can start more simply with `mode: all` on its first monitored cluster.
 
-The clean reinstall on 2026-11-03 removed all 11 project releases and recreated them at chart **1.8.0**, revision 1, using the published Helm repository. The existing SUSE server `2.10.2`, Harvester `1.8.2` and official Agents were preserved. The Harvester Agent remains `1.2.14`; the Rancher and Observability Agents remain `1.5.32`. Follow [the complete central installation commands](multiple-clusters.md#2-keep-publishers-on-the-observability-cluster) to reproduce this arrangement.
+The clean reinstall on 2026-11-03 removed all 11 project releases and recreated them at chart **1.8.0**, revision 1, using the published Helm repository. The existing SUSE Observability server `2.10.2`, Harvester `1.8.2` and official Agents were preserved. The Harvester Agent remains `1.2.14`; the Rancher and Observability Agents remain `1.5.32`. Follow [the complete central installation commands](multiple-clusters.md#2-keep-publishers-on-the-observability-cluster) to reproduce this arrangement.
 
 | Cluster | Namespace | Module releases | Mode / chart version |
 |---|---|---|---|
@@ -120,15 +120,15 @@ For the full history and the exact scope of each test, read [Lab validation](lab
 
 | Credential | What it allows | Where it is used |
 |---|---|---|
-| Ingestion token | Send measurements to SUSE | Official Agent and metric collectors |
+| Ingestion token | Send measurements to SUSE Observability | Official Agent and metric collectors |
 | Publishing Service Token | Manage the project's dashboards and monitors | Publishing Jobs |
 | Registry credential | Pull the Virtualization collector image | Kubernetes image pull Secret |
 
-They are not interchangeable. A Kubernetes ServiceAccount controls access **inside Kubernetes**; a SUSE Service Token controls access **to SUSE**.
+They are not interchangeable. A Kubernetes ServiceAccount controls access **inside Kubernetes**; a SUSE Observability Service Token controls access **to SUSE Observability**.
 
-**Prepare the ingestion token:** create the cluster integration in the Kubernetes StackPack and follow the instructions from your SUSE version. The [README Agent step](../README.md#connect-the-cluster-to-suse) installs it through Helm and checks the resulting Secret. The default Secret/key used by these charts is `suse-observability-agent-secrets` / `STS_API_KEY`.
+**Prepare the ingestion token:** create the cluster integration in the Kubernetes StackPack and follow the instructions from your SUSE Observability version. The [README Agent step](../README.md#connect-the-cluster-to-suse) installs it through Helm and checks the resulting Secret. The default Secret/key used by these charts is `suse-observability-agent-secrets` / `STS_API_KEY`.
 
-**Prepare the publishing token:** the SUSE administrator must issue a service identity with dashboard and monitor management permissions. The [official Service Token guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/security/k8s-service-tokens.html) describes issuance and roles. This guide does not pretend that `kubectl create secret` grants those permissions. Ask for the token before beginning the Helm installation. Keep the same publishing identity for updates and removal.
+**Prepare the publishing token:** the SUSE Observability administrator must issue a service identity with dashboard and monitor management permissions. The [official Service Token guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/security/k8s-service-tokens.html) describes issuance and roles. This guide does not pretend that `kubectl create secret` grants those permissions. Ask for the token before beginning the Helm installation. Keep the same publishing identity for updates and removal.
 
 Save it in a private text file containing only the token, without a trailing newline. Then run:
 
@@ -148,7 +148,7 @@ Store credentials in your approved secret store. Keep private files and Helm val
 
 1. Prepare the server using the [README server prerequisite](../README.md#if-suse-observability-is-not-installed-yet). That section links sizing, installation, compatibility and ingress documentation.
 2. On the monitored cluster, install one official Agent using the [README Agent procedure](../README.md#connect-the-cluster-to-suse). On Harvester, use the version-specific Agent/add-on documentation linked there.
-3. Wait for nodes and Pods to appear in SUSE. Check the Agent's cluster name and Secret keys. Copy the integration name exactly into `clusterName`.
+3. Wait for nodes and Pods to appear in SUSE Observability. Check the Agent's cluster name and Secret keys. Copy the integration name exactly into `clusterName`.
 4. Create the publishing Secret once in the namespace that will publish content.
 
 **Check before continuing:** login works, the cluster is visible, the correct Secret exists and you know the Agent namespace. Newer official instructions may use `suse-observability-agent`; this lab uses `suse-observability`. Replace the example namespace consistently rather than moving a working Agent just for these charts.
@@ -264,7 +264,7 @@ kubectl logs deployment/obs-virtualization --container collector --tail=50 \
 
 The three workload checks apply to default `mode: all` or `telemetry`. A `content` release has no collectors. Successful publishing Jobs disappear; their absence after a successful Helm command is normal.
 
-**Then, SUSE:** open **Dashboards → All**, choose Virtualization and select the integration name. Allow a few minutes for fresh samples. Check collection health before resource values. Compare running VM names and volume identities with Harvester. Use a current time range for current-state checks.
+**Then, SUSE Observability:** open **Dashboards → All**, choose Virtualization and select the integration name. Allow a few minutes for fresh samples. Check collection health before resource values. Compare running VM names and volume identities with Harvester. Use a current time range for current-state checks.
 
 **Finally, meaning:** compare a known resource with its source at the same time. CPU usage is not CPU waiting time. Guest memory is not host process memory. A backup record is not a successful restore test. The [metric definitions](metric-contracts.md) and [panel guide](panel-guide.md) explain these distinctions.
 
@@ -282,19 +282,19 @@ For example, Imports uses `imports.yaml` and `obs-imports`. It needs the VM Impo
 
 ### The same module on another cluster
 
-Use `mode: telemetry` on the additional cluster. Give it its own Agent integration name and local ingestion Secret. It sends data to the existing dashboards, which already have cluster filters. Do not create a second `all` publisher for the same module and SUSE instance.
+Use `mode: telemetry` on the additional cluster. Give it its own Agent integration name and local ingestion Secret. It sends data to the existing dashboards, which already have cluster filters. Do not create a second `all` publisher for the same module and SUSE Observability instance.
 
 ### A central publisher, as used in the lab
 
-Use `mode: telemetry` on each source cluster and one `mode: content` release per module on the publishing cluster. The central publisher needs only the SUSE URL and publishing Secret. See the complete examples in [Multiple clusters](multiple-clusters.md).
+Use `mode: telemetry` on each source cluster and one `mode: content` release per module on the publishing cluster. The central publisher needs only the SUSE Observability URL and publishing Secret. See the complete examples in [Multiple clusters](multiple-clusters.md).
 
 ## 9. Understand how dashboards are created
 
-Installing a chart does not launch Grafana. These are native SUSE dashboard definitions.
+Installing a chart does not launch Grafana. These are native SUSE Observability dashboard definitions.
 
 1. Helm merges the package defaults with your values and validates the result against `values.schema.json`.
 2. Templates create the required workloads, configuration and RBAC. Content templates load this module's dashboard JSON and monitor definitions into ConfigMaps.
-3. Separate `post-install,post-upgrade` Jobs publish dashboards and monitors using the respective Secret references. They download a pinned official SUSE CLI and verify its checksum before using it.
+3. Separate `post-install,post-upgrade` Jobs publish dashboards and monitors using the respective Secret references. They download a pinned official SUSE Observability CLI and verify its checksum before using it.
 4. The publisher checks existing identifiers and its module catalog. It creates missing objects and reconciles changed definitions. It checks the persisted result rather than treating a successful command as sufficient.
 5. Chart 1.8.0 uses `patch` by default and preserves the IDs of existing dashboards. This was tested with CLI 3.3.6 and SUSE Observability 2.10.2. Explicit `replace` mode deletes/recreates a changed dashboard, so saved links can change. Export personal changes before updating; managed definitions can overwrite them.
 6. Helm removes successful hook Jobs. Failed Jobs remain for diagnosis, subject to their TTL. Collectors keep running independently of the completed publisher.
@@ -320,7 +320,7 @@ For a new panel, start with a question such as “Which running VMs are waiting 
 Suppose the question is **“How many VMs are running in the selected cluster and namespace?”** The implementation has five traceable steps:
 
 1. **Choose the source of truth.** `kubectl get vmi --all-namespaces` lists KubeVirt `VirtualMachineInstance` objects. Count only `status.phase: Running`; a defined but powered-off VM should not count as running.
-2. **Collect a source metric.** The Virtualization chart discovers `kubevirt-prometheus-metrics` endpoints, validates their certificate with the public KubeVirt CA, and sends the `kubevirt_vmi_info` series to SUSE through OTLP. The metric has the cluster, namespace, VM name and phase labels. The official Agent independently provides topology so a VM can be investigated as a resource.
+2. **Collect a source metric.** The Virtualization chart discovers `kubevirt-prometheus-metrics` endpoints, validates their certificate with the public KubeVirt CA, and sends the `kubevirt_vmi_info` series to SUSE Observability through OTLP. The metric has the cluster, namespace, VM name and phase labels. The official Agent independently provides topology so a VM can be investigated as a resource.
 3. **Write the query.** The overview panel uses the equivalent of:
 
    ```promql
@@ -350,15 +350,15 @@ The Traefik dashboard uses ingress counters instead. Its totals can differ from 
 
 | File or stage | What belongs there |
 |---|---|
-| `dev/components/suse-observability-content/dashboards/*.json` | Native SUSE dashboard definition: filters, layout, panel query, display, unit, description and links |
+| `dev/components/suse-observability-content/dashboards/*.json` | Native SUSE Observability dashboard definition: filters, layout, panel query, display, unit, description and links |
 | `dev/components/suse-observability-content/files/catalog.json` and `monitors/*.sty` | Monitor ownership, query, threshold, topology mapping and remediation |
-| Collector component under `dev/components/` | Source discovery, scraping, relabeling, metric allowlist and transmission to SUSE |
+| Collector component under `dev/components/` | Source discovery, scraping, relabeling, metric allowlist and transmission to SUSE Observability |
 | `dev/scripts/enhance-dashboards.py`, `build-virtualization-dashboards.py`, `curate-dashboards.py`, `build-charts.py` | Maintainer generation of consistent dashboards and independent module charts |
 | `charts/`, then `helm/` | Generated chart source, versioned packages and Helm index consumed by users |
 
-For a new panel, identify its source and collection owner first, document the metric's type, unit and labels, then add the query and description. Give it a filter contract (`Everything`, one value, multiple values, no match), a missing-data interpretation and an operator action. If it should alert, define the component it attaches to and test the notification route separately. Run the [development checks](../dev/README.md#build-and-check), test the native SUSE query API and UI, then publish a **new** chart version and package. End users installing that version still use only their values YAML, Helm and kubectl.
+For a new panel, identify its source and collection owner first, document the metric's type, unit and labels, then add the query and description. Give it a filter contract (`Everything`, one value, multiple values, no match), a missing-data interpretation and an operator action. If it should alert, define the component it attaches to and test the notification route separately. Run the [development checks](../dev/README.md#build-and-check), test the native SUSE Observability query API and UI, then publish a **new** chart version and package. End users installing that version still use only their values YAML, Helm and kubectl.
 
-### Create a personal dashboard in SUSE
+### Create a personal dashboard in SUSE Observability
 
 Use the native editor described in the [official dashboard guide](https://documentation.suse.com/cloudnative/suse-observability/latest/en/use/dashboards/dashboards.html). Create a separately named personal dashboard rather than editing the Helm-managed one. Add and validate a metric in Metrics Explorer, then use that query in a widget. Add a plain-English title, unit and interpretation. Save, reopen and return to the catalog to check that it does not acquire unintended changes.
 
@@ -399,11 +399,11 @@ kubectl get deployment,daemonset --kubeconfig /path/to/cluster.yaml \
   --context my-cluster --namespace suse-observability
 ```
 
-**Check:** the release and its named collectors disappear, and its content disappears from SUSE. With a central publisher, uninstall source telemetry releases and then the single central content release. Keep the publishing token and API access until cleanup finishes.
+**Check:** the release and its named collectors disappear, and its content disappears from SUSE Observability. With a central publisher, uninstall source telemetry releases and then the single central content release. Keep the publishing token and API access until cleanup finishes.
 
 If Kubernetes content was reusing Virtualization's collectors, those Kubernetes dashboards will lose their extra data when Virtualization is removed. If you want to keep that collection, change Kubernetes to `mode: all` and upgrade it **after** the Virtualization collectors are gone. Expect a brief collection gap.
 
-**Keep shared prerequisites:** uninstall does not remove the SUSE server, official Agent, applications, VMs, volumes, shared credentials, existing import controller, application instrumentation or OTLP ingress. Do not delete the namespace. Historical metrics follow the server's retention policy. The [README removal section](../README.md#7-update-remove-or-reinstall) lists all five module commands and the optional dedicated publishing Secret cleanup.
+**Keep shared prerequisites:** uninstall does not remove the SUSE Observability server, official Agent, applications, VMs, volumes, shared credentials, existing import controller, application instrumentation or OTLP ingress. Do not delete the namespace. Historical metrics follow the server's retention policy. The [README removal section](../README.md#7-update-remove-or-reinstall) lists all five module commands and the optional dedicated publishing Secret cleanup.
 
 If a hook fails, inspect its Job logs and retry after correcting the error. External cleanup is not transactional: some objects may already have been removed. Do not bypass hooks or remove Secrets first. See [Lifecycle](lifecycle.md) for recovery and old chart versions.
 
@@ -421,8 +421,8 @@ helm show values obs-dashboards/suse-observability-imports --version 1.8.0
 | Setting | Meaning and when to change it |
 |---|---|
 | `mode` | `all`: collectors and content; `telemetry`: collectors only; `content`: publisher only. Applications accepts only `content`. |
-| `clusterName` | Exact SUSE integration name. Required for telemetry, unused by content-only releases. |
-| `observability.url` | HTTPS SUSE base URL. No token in the URL. |
+| `clusterName` | Exact SUSE Observability integration name. Required for telemetry, unused by content-only releases. |
+| `observability.url` | HTTPS SUSE Observability base URL. No token in the URL. |
 | `observability.remoteWriteUrl` | Optional full override of the remote-write receiver. Empty derives `/receiver/prometheus/api/v1/write` from the base URL. |
 | `observability.otlpEndpoint` | Required for Virtualization telemetry; `host:port` of a TLS gRPC endpoint. Ignored by other module collectors. |
 | `ingestion.existingSecret`, `ingestion.secretKey` | Ingestion credential reference; defaults to Agent Secret / `STS_API_KEY`. Not needed by content-only releases. |
@@ -445,7 +445,7 @@ helm show values obs-dashboards/suse-observability-imports --version 1.8.0
 | `image`, `imagePullPolicy`, `imagePullSecrets` | Job image, pull policy and namespace-local registry Secrets. The default image supplies the runtime used by the publisher. |
 | `cli.downloadUrl`, `cli.sha256` | Pinned official CLI archive and required SHA-256. Change together after validation. |
 | `cli.path` | Use a CLI already inside a custom image instead of downloading it. Not a path on your laptop. |
-| `caSecret`, `caKey` | Optional private CA Secret/key for the SUSE HTTPS API. Default key `ca.crt`. |
+| `caSecret`, `caKey` | Optional private CA Secret/key for the SUSE Observability HTTPS API. Default key `ca.crt`. |
 | `activeDeadlineSeconds` | Maximum Job lifetime, default 900 seconds. |
 | `ttlSecondsAfterFinished` | Job cleanup TTL, default 86400 seconds; successful Helm hooks normally disappear earlier. |
 | `resources.requests`, `resources.limits` | CPU, memory and ephemeral-storage reservation/ceiling for the Job. |
@@ -574,7 +574,7 @@ Every resource request/limit block in these charts uses some combination of thos
 - The Agent's integration name matches the collector `clusterName`.
 - Only the selected modules and one set of host collectors are installed per source cluster.
 - Publisher credentials have the required permissions and retain the correct ownership.
-- Collector workloads are ready and fresh source metrics reach SUSE.
+- Collector workloads are ready and fresh source metrics reach SUSE Observability.
 - Known VM, Pod, volume or application names match their source at the same time.
 - Empty panels have an explained collection/applicability reason, rather than an invented zero.
 - Monitor component associations and thresholds have been reviewed; notification delivery is tested separately if needed.
